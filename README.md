@@ -1,6 +1,6 @@
 # Didot
 
-![Logo](https://raw.githubusercontent.com/Seddryck/Didot/main/assets/didot-icon-256.png)
+![Logo](https://raw.githubusercontent.com/Seddryck/Didot/main/assets/didot-logo-256.png)
 
 Transform your structured YAML data into beautiful, fully-customized HTML pages in seconds with Didot. This command-line tool allows you to seamlessly generate HTML from YAML files using your preferred templates. Whether you're building static sites, documentation, or reporting tools, Didot makes it easy to turn raw data into polished, web-ready content.
 
