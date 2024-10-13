@@ -1,0 +1,79 @@
+version: build.{build}
+image: Visual Studio 2022
+
+branches:
+  except:
+    - /v\d+\.\d+\.\d+/
+skip_commits:
+  files:
+    - .github/
+    - docs/
+    - assets/
+    - README.md
+    - LICENSE
+    - CODE_OF_CONDUCT.md
+    - CONTRIBUTING.md
+    - SECURITY.md
+
+environment:
+  github_access_token:
+    secure: gtEHCUmmDjYfrp/NEe2qULAkD/4uzohQRg46gqognNrcSQfv+7YrWbh/M+1VDlSZUk+fPvkUSDq89uYkgCHuJZ3IIMCsMBZH7vQfKVcU+w6PipuNDku9ab64u0owA+u8
+  
+init:
+- cmd: git config --global core.autocrlf true
+- cmd: setx IGNORE_NORMALISATION_GIT_HEAD_MOVE "1"
+- cmd: RefreshEnv.cmd
+- pwsh: Write-Host "Target branch is '$($env:APPVEYOR_REPO_BRANCH)'"
+
+before_build:
+- cmd: gitversion /output buildserver /verbosity Minimal
+- pwsh: Write-Host "Building Didot version $($env:GitVersion_SemVer)"
+- pwsh: |
+    . "$env:APPVEYOR_BUILD_FOLDER\github.ps1"
+    if (($env:APPVEYOR_REPO_BRANCH -eq "main") -and ($null -eq $env:APPVEYOR_PULL_REQUEST_NUMBER)) {
+      $context = [PSCustomObject] @{
+        Id = $env:APPVEYOR_REPO_COMMIT
+        Owner = ($env:APPVEYOR_REPO_NAME -Split '/')[0]
+        Repository = ($env:APPVEYOR_REPO_NAME -Split '/')[1]
+        SecretToken = $env:github_access_token
+      }
+      foreach($id in ($context | Get-Commit-Associated-Pull-Requests)) {
+        $context.Id = $id
+        $context | Set-Pull-Request-Expected-Labels -Config '.github\conventional_commits_labels.json'
+      }
+    } else {
+        Write-Host 'Not a merge on main built on appveyor. Skipping mapping conventional commits and labels.'
+    }
+
+build_script:
+  #- dotnet --info
+  - dotnet build Didot.sln -p:version="%GitVersion_SemVer%" -c Release /p:ContinuousIntegrationBuild=true --nologo 
+
+test_script:
+- pwsh: |
+    $ErrorActionPreference = "Stop"
+    dotnet test testing/Didot.Core.Testing -c Release /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:Include="[Didot.Core]*" /p:Threshold=10 /p:ThresholdType=line /p:CoverletOutput=../.coverage/coverage.Didot.xml --test-adapter-path:. --logger:Appveyor --no-build --nologo
+    $globalTestResult = $LastExitCode
+    if($globalTestResult -ne 0) { $host.SetShouldExit($globalTestResult) }
+
+- pwsh: |
+    $ProgressPreference = 'SilentlyContinue'
+    Invoke-WebRequest -Uri https://uploader.codecov.io/latest/windows/codecov.exe -Outfile codecov.exe
+    .\codecov.exe --dir "./.coverage/"
+
+after_test:
+- dotnet pack src/Didot.Core -p:version="%GitVersion_SemVer%" -c Release --include-symbols --no-build --nologo
+- dotnet pack src/Didot.Cli -p:version="%GitVersion_SemVer%" -c Release --include-symbols --no-build --nologo
+
+artifacts:
+- path: '**\*.nupkg'
+- path: '**\*.snupkg'
+
+deploy:
+- provider: NuGet
+  api_key:
+    secure: 3EEYl8XRqcYYe/pDY/tQu+zT8kTsgHNTJE3tzgvH1L3lG77dBE0YESj2h0WegT7G
+  skip_symbols: false
+  artifact: /.*(\.|\.s)nupkg/
+  on:
+    branch: main

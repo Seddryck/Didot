@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AssemblyName>Didot</AssemblyName>
+    <ApplicationIcon>didot.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>didot</ToolCommandName>
+    <PackageOutputPath>./.nupkg</PackageOutputPath>
+    <PackageId>Didot-cli</PackageId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="didot.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommandLineParser" Version="2.9.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Didot.Core\Didot.Core.csproj" />
+  </ItemGroup>
+
+</Project>
