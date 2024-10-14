@@ -21,7 +21,7 @@ Transform your structured YAML data into beautiful, fully-customized HTML pages 
 ![Still maintained](https://img.shields.io/maintenance/yes/2024.svg)
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/y/Seddryck/Didot)
 
-**Continuous integration builds:** [![Build status](https://ci.appveyor.com/api/projects/status/gf0ijb6gejf1awxr?svg=true)](https://ci.appveyor.com/project/Seddryck/Didot/)
+**Continuous integration builds:** [![Build status](https://ci.appveyor.com/api/projects/status/na3dklqjsuv1lbfv?svg=true)](https://ci.appveyor.com/project/Seddryck/Didot/)
 [![Tests](https://img.shields.io/appveyor/tests/seddryck/Didot.svg)](https://ci.appveyor.com/project/Seddryck/Didot/build/tests)
 [![CodeFactor](https://www.codefactor.io/repository/github/seddryck/Didot/badge)](https://www.codefactor.io/repository/github/seddryck/Didot)
 [![codecov](https://codecov.io/github/Seddryck/Didot/branch/main/graph/badge.svg?token=YRA8IRIJYV)](https://codecov.io/github/Seddryck/Didot)
