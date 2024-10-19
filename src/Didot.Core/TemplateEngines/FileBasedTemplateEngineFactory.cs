@@ -13,6 +13,7 @@ public class FileBasedTemplateEngineFactory
         {
             ".scriban" => new ScribanWrapper(),
             ".liquid" => new DotLiquidWrapper(),
+            ".hbs" => new HandlebarsWrapper(),
             _ => throw new NotSupportedException()
         };
 }
