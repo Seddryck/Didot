@@ -59,7 +59,7 @@ test_script:
 - pwsh: |
     $ProgressPreference = 'SilentlyContinue'
     Invoke-WebRequest -Uri https://uploader.codecov.io/latest/windows/codecov.exe -Outfile codecov.exe
-    .\codecov.exe --dir "./.coverage/"
+    .\codecov.exe --dir "./testing/.coverage/"
 
 after_test:
 - dotnet pack src/Didot.Core -p:version="%GitVersion_SemVer%" -c Release --include-symbols --no-build --nologo
