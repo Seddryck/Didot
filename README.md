@@ -33,9 +33,82 @@ Transform your structured YAML, JSON or XML data into beautiful, fully-customize
 
 ## Installing
 
+### Install as a .NET global tool
+
+A .NET global tool is a console application that you can install and run from any directory on your machine. Here’s a guide on how to perform a global installation of a .NET tool:
+
+#### Prerequisites
+Before installing a .NET global tool, you must have the .NET SDK installed on your machine. You can check if it's installed by running the following command in your terminal or Command Prompt:
+
+```bash
+dotnet --version
+```
+If .NET is not installed, download it from [Microsoft's official website](https://dotnet.microsoft.com/download/dotnet).
+
+#### Install a .NET Global Tool
+To install a .NET global tool, you use the dotnet tool install command. This command installs a tool for all users globally on your system.
+
 ```bash
 dotnet tool install -g Didot-cli
 ```
+
+`-g`: This flag tells the dotnet command to install the tool globally.
+
+#### Verify Installation
+
+After installing the tool, you can verify that it's available globally by running it from any directory.
+
+```bash
+didot --version
+```
+
+This command will display the installed tool’s version if the installation was successful.
+
+#### Update a .NET Global Tool
+
+To update a globally installed .NET tool, use the dotnet tool update command:
+
+```bash
+dotnet tool update -g Didot-cli
+```
+
+### Install from GitHub Releases
+
+#### Step 1: Download the ZIP from the GitHub Release
+
+1. Navigate to the **GitHub repository** of the project.
+2. Go to the **Releases** section, usually found under the "Code" tab.
+3. Download the `.zip` file containing the executable from the desired release.
+
+Example:
+
+   ```
+   https://github.com/Seddryck/Didot/releases/latest/
+   ```
+
+#### Step 2: Extract the ZIP File
+
+1. Right-click the downloaded `.zip` file and choose **Extract All**.
+2. Extract the contents to a directory of your choice, such as `C:\Program Files\Didot`.
+
+> **Tip**: Choose a path that is easy to remember and doesn't contain special characters.
+
+#### Step 3: Add the Executable to the System PATH
+
+To run the executable from any location in the command line, you need to add its folder to your system's PATH.
+
+1. Open the **Start Menu** and search for **Environment Variables**.
+2. Click **Edit the system environment variables**.
+3. In the **System Properties** window, click **Environment Variables**.
+4. In the **System Variables** section, scroll down, select **Path**, and click **Edit**.
+5. In the **Edit Environment Variable** dialog, click **New** and enter the path to your extracted folder, e.g., `C:\Program Files\Didot`.
+6. Click **OK** to close all windows.
+
+### Step 4: Verify Installation
+
+1. Open **Command Prompt** (CMD).
+2. Type the name of the executable (e.g., `didot.exe`) and hit Enter.
+3. If everything is set up correctly, the program should run.
 
 ## QuickStart
 
