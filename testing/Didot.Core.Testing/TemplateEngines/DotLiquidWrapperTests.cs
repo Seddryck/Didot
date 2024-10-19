@@ -24,7 +24,7 @@ public class DotLiquidWrapperTests
     public void Render_MultiProperty_Successful()
     {
         var engine = new DotLiquidWrapper();
-        var model = new Dictionary<object, object>()
+        var model = new Dictionary<string, object>()
             { { "Name", "Albert"}, {"Age", 30 } };
         var result = engine.Render("Hello {{model.Name}}. You're {{model.Age}} years old.", new { model });
         Assert.That(result, Is.EqualTo("Hello Albert. You're 30 years old."));
@@ -34,9 +34,9 @@ public class DotLiquidWrapperTests
     public void Render_NestedProperties_Successful()
     {
         var engine = new DotLiquidWrapper();
-        var name = new Dictionary<object, object>()
+        var name = new Dictionary<string, object>()
             { { "First", "Albert"}, {"Last", "Einstein" } };
-        var model = new Dictionary<object, object>()
+        var model = new Dictionary<string, object>()
             { { "Name", name}, {"Age", 30 } };
         var result = engine.Render("Hello {{model.Name.First}} {{model.Name.Last}}. Your age is {{model.Age}} years old.", new { model });
         Assert.That(result, Is.EqualTo("Hello Albert Einstein. Your age is 30 years old."));
@@ -46,9 +46,9 @@ public class DotLiquidWrapperTests
     public void Render_ArrayItems_Successful()
     {
         var engine = new DotLiquidWrapper();
-        var albert = new Dictionary<object, object>()
+        var albert = new Dictionary<string, object>()
             { { "Name", "Albert"}, {"Age", 30 } };
-        var nikola = new Dictionary<object, object>()
+        var nikola = new Dictionary<string, object>()
             { { "Name", "Nikola"}, {"Age", 50 } };
         var model = new[] { albert, nikola };
         var result = engine.Render("Hello {{model[0].Name}}. Your colleague is {{model[1].Age}} years old.", new { model });
@@ -59,9 +59,9 @@ public class DotLiquidWrapperTests
     public void Render_ArrayLoop_Successful()
     {
         var engine = new DotLiquidWrapper();
-        var albert = new Dictionary<object, object>()
+        var albert = new Dictionary<string, object>()
             { { "Name", "Albert"}, {"Age", 30 } };
-        var nikola = new Dictionary<object, object>()
+        var nikola = new Dictionary<string, object>()
             { { "Name", "Nikola"}, {"Age", 50 } };
         var model = new[] { albert, nikola };
         var result = engine.Render("Hello {% for item in model %}{{ item.Name }}{% if forloop.last == false %}, {% endif %}{% endfor %}!", new { model });
@@ -72,7 +72,7 @@ public class DotLiquidWrapperTests
     public void Render_Stream_Successful()
     {
         var engine = new DotLiquidWrapper();
-        var model = new Dictionary<object, object>()
+        var model = new Dictionary<string, object>()
             { { "Name", "World"} };
         using var stream = new MemoryStream(Encoding.UTF8.GetBytes("Hello {{model.Name}}"));
         var result = engine.Render(stream, new { model });

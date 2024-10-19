@@ -8,12 +8,12 @@ using Didot.Core.TemplateEngines;
 using NUnit.Framework;
 
 namespace Didot.Core.Testing.TemplateEngines;
-public class ScribanWrapperTests
+public class HandlebarsWrapperTests
 {
     [Test]
     public void Render_SingleProperty_Successful()
     {
-        var engine = new ScribanWrapper();
+        var engine = new HandlebarsWrapper();
         var model = new Dictionary<string, object>()
             { { "Name", "World"} };
         var result = engine.Render("Hello {{model.Name}}", new { model });
@@ -23,7 +23,7 @@ public class ScribanWrapperTests
     [Test]
     public void Render_MultiProperty_Successful()
     {
-        var engine = new ScribanWrapper();
+        var engine = new HandlebarsWrapper();
         var model = new Dictionary<string, object>()
             { { "Name", "Albert"}, {"Age", 30 } };
         var result = engine.Render("Hello {{model.Name}}. You're {{model.Age}} years old.", new { model });
@@ -33,45 +33,45 @@ public class ScribanWrapperTests
     [Test]
     public void Render_NestedProperties_Successful()
     {
-        var engine = new ScribanWrapper();
+        var engine = new HandlebarsWrapper();
         var name = new Dictionary<string, object>()
             { { "First", "Albert"}, {"Last", "Einstein" } };
         var model = new Dictionary<string, object>()
             { { "Name", name}, {"Age", 30 } };
-        var result = engine.Render("Hello {{model.Name.First}} {{model.Name.Last}}. Your age is {{model.Age}} years old.", new { model });
+        var result = engine.Render("{{#with model}}Hello {{#with Name}}{{First}} {{Last}}{{/with}}. Your age is {{Age}} years old.{{/with}}", new { model });
         Assert.That(result, Is.EqualTo("Hello Albert Einstein. Your age is 30 years old."));
     }
 
     [Test]
-    public void Render_Array_Successful()
+    public void Render_ArrayItems_Successful()
     {
-        var engine = new ScribanWrapper();
+        var engine = new HandlebarsWrapper();
         var albert = new Dictionary<string, object>()
             { { "Name", "Albert"}, {"Age", 30 } };
         var nikola = new Dictionary<string, object>()
             { { "Name", "Nikola"}, {"Age", 50 } };
         var model = new[] { albert, nikola };
-        var result = engine.Render("Hello {{model[0].Name}}. Your colleague is {{model[1].Age}} years old.", new { model });
+        var result = engine.Render("Hello {{model.0.Name}}. Your colleague is {{model.1.Age}} years old.", new { model });
         Assert.That(result, Is.EqualTo("Hello Albert. Your colleague is 50 years old."));
     }
 
     [Test]
     public void Render_ArrayLoop_Successful()
     {
-        var engine = new ScribanWrapper();
+        var engine = new HandlebarsWrapper();
         var albert = new Dictionary<string, object>()
             { { "Name", "Albert"}, {"Age", 30 } };
         var nikola = new Dictionary<string, object>()
-            { { "Name", "Nikola"}, {"Age", 50 } };
+            { { "Name", "Nikola"}, {"Nikola", 50 } };
         var model = new[] { albert, nikola };
-        var result = engine.Render("Hello {{ for item in model; item.Name; if !for.last; \", \"; end; end }}!", new { model });
+        var result = engine.Render("Hello {{#each model}}{{Name}}{{#unless @last}}, {{/unless}}{{/each}}!", new { model });
         Assert.That(result, Is.EqualTo("Hello Albert, Nikola!"));
     }
 
     [Test]
     public void Render_Stream_Successful()
     {
-        var engine = new ScribanWrapper();
+        var engine = new HandlebarsWrapper();
         var model = new Dictionary<string, object>()
             { { "Name", "World"} };
         using var stream = new MemoryStream(Encoding.UTF8.GetBytes("Hello {{model.Name}}"));

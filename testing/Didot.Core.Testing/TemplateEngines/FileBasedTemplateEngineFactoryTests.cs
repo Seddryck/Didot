@@ -12,6 +12,7 @@ public class FileBasedTemplateEngineFactoryTests
     [Test]
     [TestCase(".scriban", typeof(ScribanWrapper))]
     [TestCase(".liquid", typeof(DotLiquidWrapper))]
+    [TestCase(".hbs", typeof(HandlebarsWrapper))]
     public void GetSourceParser_Extension_CorrectParser(string extension, Type expected)
     {
         var factory = new FileBasedTemplateEngineFactory();
