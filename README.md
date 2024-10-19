@@ -39,23 +39,28 @@ dotnet tool install -g Didot-cli
 
 ## QuickStart
 
-Didot is a command-line tool designed for generating files based on templating. It supports both YAML and JSON as source data formats and uses Scriban as its templating engine. With Didot, you can easily automate file generation by combining structured data from YAML or JSON files with customizable templates.
+**Didot** is a command-line tool designed for generating files based on templating. It supports both YAML and JSON as source data formats and uses Scriban as its templating engine. With Didot, you can easily automate file generation by combining structured data from YAML or JSON files with customizable templates.
 
-Supported Data Formats:
-YAML: Files with the `.yaml` or `.yml` extension are parsed using a YAML source parser.
-JSON: Files with the `.json` extension are parsed using a JSON source parser.
-Templating Engine:
-Scriban: Didot utilizes the Scriban templating engine, which allows for powerful and flexible templating. Scriban supports conditional logic, loops, and variable interpolation, making it easy to create dynamic templates.
-Command Usage:
+### Supported Data Formats:
+
+- YAML: Files with the `.yaml` or `.yml` extension are parsed using a YAML source parser.
+- JSON: Files with the `.json` extension are parsed using a JSON source parser.
+- 
+### Supported Templating Engine:
+
+- Scriban: Didot utilizes the Scriban templating engine, which allows for powerful and flexible templating. Scriban supports conditional logic, loops, and variable interpolation, making it easy to create dynamic templates.
+
+### Command Usage:
+
 The command to run Didot is simply `didot`. When executing it, you need to provide three required arguments:
 
-`-t, --Template`: Specifies the path to the Scriban template file.
-`-s, --Source`: Specifies the path to the source data file, which can be in YAML or JSON format.
-`-o, --Output`: Specifies the path to the output file where the generated content will be saved.
+- `-t, --Template`: Specifies the path to the Scriban template file.
+- `-s, --Source`: Specifies the path to the source data file, which can be in YAML or JSON format.
+- `-o, --Output`: Specifies the path to the output file where the generated content will be saved.
 
+#### Example:
 
-**Example:**
-```bash```
+```bash
 didot -t template.scriban -s data.yaml -o page.html
 ```
 
