@@ -39,10 +39,30 @@ dotnet tool install -g Didot-cli
 
 ## QuickStart
 
-The command is named `didot`. Don't forget to append the following required arguments:
+Didot is a command-line tool designed for generating files based on templating. It supports both YAML and JSON as source data formats and uses Scriban as its templating engine. With Didot, you can easily automate file generation by combining structured data from YAML or JSON files with customizable templates.
 
-```bash
-  -t, --Template    Required. Path to the template file.
-  -s, --Source      Required. Path to the source file.
-  -o, --Output      Required. Path to the generated file
+Supported Data Formats:
+YAML: Files with the `.yaml` or `.yml` extension are parsed using a YAML source parser.
+JSON: Files with the `.json` extension are parsed using a JSON source parser.
+Templating Engine:
+Scriban: Didot utilizes the Scriban templating engine, which allows for powerful and flexible templating. Scriban supports conditional logic, loops, and variable interpolation, making it easy to create dynamic templates.
+Command Usage:
+The command to run Didot is simply `didot`. When executing it, you need to provide three required arguments:
+
+`-t, --Template`: Specifies the path to the Scriban template file.
+`-s, --Source`: Specifies the path to the source data file, which can be in YAML or JSON format.
+`-o, --Output`: Specifies the path to the output file where the generated content will be saved.
+
+
+**Example:**
+```bash```
+didot -t template.scriban -s data.yaml -o page.html
 ```
+
+In this example:
+
+* template.scriban is the Scriban template file.
+* data.yaml is the source file containing the structured data in YAML format.
+* result.txt is the output file that will contain the generated content.
+
+Make sure that the template file and source file are correctly formatted and aligned with your data model to produce the desired result.
