@@ -7,13 +7,12 @@ using System.Text;
 using System.Threading.Tasks;
 using Didot.Core.DataSourceEngines;
 using NUnit.Framework;
-using Scriban;
 
 namespace Didot.Core.Testing.DataSourceEngines;
 public class YamlSourceTests
 {
     [Test]
-    public void Load_SingleProperty_Successful()
+    public void Parse_SingleProperty_Successful()
     {
         var source = new YamlSource();
         dynamic result = source.Parse("Name: World");
@@ -23,7 +22,7 @@ public class YamlSourceTests
     }
 
     [Test]
-    public void Load_MultipleProperties_Successful()
+    public void Parse_MultipleProperties_Successful()
     {
         var source = new YamlSource();
         dynamic result = source.Parse("Name: Albert\r\nAge: 30");
@@ -35,7 +34,7 @@ public class YamlSourceTests
     }
 
     [Test]
-    public void Load_NestedProperties_Successful()
+    public void Parse_NestedProperties_Successful()
     {
         var source = new YamlSource();
         dynamic result = source.Parse("Name:\r\n  First: Albert\r\n  Last: Einstein\r\nAge: 30");
@@ -51,7 +50,7 @@ public class YamlSourceTests
     }
 
     [Test]
-    public void Load_Array_Successful()
+    public void Parse_Array_Successful()
     {
         var source = new YamlSource();
         dynamic result = source.Parse("- Name: Albert\r\n  Age: 30\r\n- Name: Nikola\r\n  Age: 50");
@@ -60,5 +59,16 @@ public class YamlSourceTests
         Assert.That(result[0]["Name"], Is.EqualTo("Albert"));
         Assert.That(result[0], Does.ContainKey("Age"));
         Assert.That(result[0]["Age"], Is.EqualTo("30"));
+    }
+
+    [Test]
+    public void Parse_Stream_Successful()
+    {
+        var source = new YamlSource();
+        var stream = new MemoryStream(Encoding.UTF8.GetBytes("Name: World"));
+        dynamic result = source.Parse(stream);
+        Assert.That(result, Is.AssignableTo<IDictionary<object, object>>());
+        Assert.That(result, Does.ContainKey("Name"));
+        Assert.That(result["Name"], Is.EqualTo("World"));
     }
 }

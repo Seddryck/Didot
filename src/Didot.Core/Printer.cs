@@ -16,30 +16,14 @@ public class Printer
         => (TemplateEngine, SourceParser) = (templateEngine, sourceParser);
 
     public string Render(string template, string content)
-    {
-        var source = SourceParser.Parse(content);
-        var model = new { model = source };
-        return TemplateEngine.Render(template, model);
-    }
+        => TemplateEngine.Render(template, new { model = SourceParser.Parse(content)});
 
-    public string Render(StreamReader template, string content)
-    {
-        var source = SourceParser.Parse(content);
-        var model = new { model = source };
-        return TemplateEngine.Render(template, model);
-    }
+    public string Render(Stream template, string content)
+        => TemplateEngine.Render(template, new { model = SourceParser.Parse(content) });
 
-    public string Render(string template, StreamReader content)
-    {
-        var source = SourceParser.Parse(content);
-        var model = new { model = source };
-        return TemplateEngine.Render(template, model);
-    }
+    public string Render(string template, Stream content)
+        => TemplateEngine.Render(template, new { model = SourceParser.Parse(content) });
 
-    public string Render(StreamReader template, StreamReader content)
-    {
-        var source = SourceParser.Parse(content);
-        var model = new { model = source };
-        return TemplateEngine.Render(template, model);
-    }
+    public string Render(Stream template, Stream content)
+        => TemplateEngine.Render(template, new { model = SourceParser.Parse(content) });
 }

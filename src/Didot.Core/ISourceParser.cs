@@ -8,5 +8,5 @@ namespace Didot.Core;
 public interface ISourceParser
 {
     object Parse(string content);
-    object Parse(StreamReader content);
+    object Parse(Stream content);
 }
