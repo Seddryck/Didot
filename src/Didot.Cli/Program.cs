@@ -17,8 +17,8 @@ class Program
     static void RunWithOptions(Options opts)
     {
         var printer = new Printer(new ScribanWrapper(), new YamlSource());
-        using var source = new StreamReader(opts.Source);
-        using var template = new StreamReader(opts.Template);
+        using var source = File.OpenRead(opts.Source);
+        using var template = File.OpenRead(opts.Template);
         var output = printer.Render(template, source);
         File.WriteAllText(opts.Output, output);
     }

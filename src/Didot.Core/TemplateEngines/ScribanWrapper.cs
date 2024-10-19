@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,9 +14,10 @@ public class ScribanWrapper : ITemplateEngine
         return templateInstance.Render(model);
     }
 
-    public string Render(StreamReader templateReader, dynamic model)
+    public string Render(Stream stream, dynamic model)
     {
-        var template = templateReader.ReadToEnd();
+        using var reader = new StreamReader(stream);
+        var template = reader.ReadToEnd();
         var templateInstance = Scriban.Template.Parse(template);
         return templateInstance.Render(model);
     }

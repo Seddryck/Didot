@@ -8,5 +8,5 @@ namespace Didot.Core;
 public interface ITemplateEngine
 {
     string Render(string template, object model);
-    string Render(StreamReader template, object model);
+    string Render(Stream template, object model);
 }
