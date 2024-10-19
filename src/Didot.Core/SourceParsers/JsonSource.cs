@@ -10,7 +10,7 @@ using YamlDotNet.Core.Tokens;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace Didot.Core.DataSourceEngines;
+namespace Didot.Core.SourceParsers;
 public class JsonSource : ISourceParser
 {
     public object Parse(string content)

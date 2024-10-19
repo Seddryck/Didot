@@ -9,7 +9,7 @@ using System.IO;
 using System.Xml;
 using System.Xml.Linq;
 
-namespace Didot.Core.DataSourceEngines;
+namespace Didot.Core.SourceParsers;
 public class XmlSource : ISourceParser
 {
     public object Parse(string content)

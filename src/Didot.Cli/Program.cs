@@ -1,7 +1,7 @@
 ﻿using System;
 using CommandLine;
 using Didot.Core;
-using Didot.Core.DataSourceEngines;
+using Didot.Core.SourceParsers;
 using Didot.Core.TemplateEngines;
 
 namespace Didot.Cli;
@@ -16,11 +16,15 @@ class Program
 
     static void RunWithOptions(Options opts)
     {
-        var extension = new FileInfo(opts.Source).Extension;
-        var sourceFactory = new FileBasedSourceEngineFactory();
-        var parser = sourceFactory.GetSourceParser(extension);
+        var sourceExtension = new FileInfo(opts.Source).Extension;
+        var parserFactory = new FileBasedSourceParserFactory();
+        var parser = parserFactory.GetSourceParser(sourceExtension);
 
-        var printer = new Printer(new ScribanWrapper(), parser);
+        var templateExtension = new FileInfo(opts.Template).Extension;
+        var engineFactory = new FileBasedTemplateEngineFactory();
+        var engine = engineFactory.GetTemplateEngine(templateExtension);
+
+        var printer = new Printer(engine, parser);
         using var source = File.OpenRead(opts.Source);
         using var template = File.OpenRead(opts.Template);
         var output = printer.Render(template, source);

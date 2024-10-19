@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Didot.Core.DataSourceEngines;
-public class FileBasedSourceEngineFactory
+namespace Didot.Core.SourceParsers;
+public class FileBasedSourceParserFactory
 {
     public ISourceParser GetSourceParser(string extension)
         => extension.ToLowerInvariant() switch
