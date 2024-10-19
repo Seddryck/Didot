@@ -45,7 +45,8 @@ dotnet tool install -g Didot-cli
 
 - YAML: Files with the `.yaml` or `.yml` extension are parsed using a YAML source parser.
 - JSON: Files with the `.json` extension are parsed using a JSON source parser.
-- 
+- XML: Files with the `.xml` extension are parsed using an XML source parser.
+
 ### Supported Templating Engine:
 
 - Scriban: Didot utilizes the Scriban templating engine, which allows for powerful and flexible templating. Scriban supports conditional logic, loops, and variable interpolation, making it easy to create dynamic templates.

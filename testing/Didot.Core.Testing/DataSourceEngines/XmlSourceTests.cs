@@ -9,14 +9,14 @@ using Didot.Core.DataSourceEngines;
 using NUnit.Framework;
 
 namespace Didot.Core.Testing.DataSourceEngines;
-public class YamlSourceTests
+public class XmlSourceTests
 {
     [Test]
     public void Parse_SingleProperty_Successful()
     {
-        var source = new YamlSource();
-        dynamic result = source.Parse("Name: World");
-        Assert.That(result, Is.AssignableTo<IDictionary<object, object>>());
+        var source = new XmlSource();
+        dynamic result = source.Parse("<Root><Name>World</Name></Root>");
+        Assert.That(result, Is.AssignableTo<IDictionary<string, object>>());
         Assert.That(result, Does.ContainKey("Name"));
         Assert.That(result["Name"], Is.EqualTo("World"));
     }
@@ -24,9 +24,9 @@ public class YamlSourceTests
     [Test]
     public void Parse_MultipleProperties_Successful()
     {
-        var source = new YamlSource();
-        dynamic result = source.Parse("Name: Albert\r\nAge: 30");
-        Assert.That(result, Is.AssignableTo<IDictionary<object, object>>());
+        var source = new XmlSource();
+        dynamic result = source.Parse("<Root><Name>Albert</Name>\r\n<Age>30</Age></Root>");
+        Assert.That(result, Is.AssignableTo<IDictionary<string, object>>());
         Assert.That(result, Does.ContainKey("Name"));
         Assert.That(result["Name"], Is.EqualTo("Albert"));
         Assert.That(result, Does.ContainKey("Age"));
@@ -36,11 +36,11 @@ public class YamlSourceTests
     [Test]
     public void Parse_NestedProperties_Successful()
     {
-        var source = new YamlSource();
-        dynamic result = source.Parse("Name:\r\n  First: Albert\r\n  Last: Einstein\r\nAge: 30");
-        Assert.That(result, Is.AssignableTo<IDictionary<object, object>>());
+        var source = new XmlSource();
+        dynamic result = source.Parse("<Root><Name><First>Albert</First>\r\n<Last>Einstein</Last></Name>\r\n<Age>30</Age></Root>");
+        Assert.That(result, Is.AssignableTo<IDictionary<string, object>>());
         Assert.That(result, Does.ContainKey("Name"));
-        Assert.That(result["Name"], Is.AssignableTo<IDictionary<object, object>>());
+        Assert.That(result["Name"], Is.AssignableTo<IDictionary<string, object>>());
         Assert.That(result["Name"], Does.ContainKey("First"));
         Assert.That(result["Name"]["First"], Is.EqualTo("Albert"));
         Assert.That(result["Name"], Does.ContainKey("Last"));
@@ -52,8 +52,8 @@ public class YamlSourceTests
     [Test]
     public void Parse_Array_Successful()
     {
-        var source = new YamlSource();
-        dynamic result = source.Parse("- Name: Albert\r\n  Age: 30\r\n- Name: Nikola\r\n  Age: 50");
+        var source = new XmlSource();
+        dynamic result = source.Parse("<Root><Employee><Name>Albert</Name>\r\n<Age>30</Age></Employee>\r\n<Employee><Name>Nikola</Name>\r\n<Age>50</Age></Employee></Root>");
         Assert.That(result, Is.AssignableTo<List<object>>());
         Assert.That(result[0], Does.ContainKey("Name"));
         Assert.That(result[0]["Name"], Is.EqualTo("Albert"));
@@ -64,10 +64,10 @@ public class YamlSourceTests
     [Test]
     public void Parse_Stream_Successful()
     {
-        var source = new YamlSource();
-        using var stream = new MemoryStream(Encoding.UTF8.GetBytes("Name: World"));
+        var source = new XmlSource();
+        using var stream = new MemoryStream(Encoding.UTF8.GetBytes("<Root><Name>World</Name></Root>"));
         dynamic result = source.Parse(stream);
-        Assert.That(result, Is.AssignableTo<IDictionary<object, object>>());
+        Assert.That(result, Is.AssignableTo<IDictionary<string, object>>());
         Assert.That(result, Does.ContainKey("Name"));
         Assert.That(result["Name"], Is.EqualTo("World"));
     }

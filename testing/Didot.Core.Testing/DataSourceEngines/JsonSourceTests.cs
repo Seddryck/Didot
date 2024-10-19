@@ -65,7 +65,7 @@ public class JsonSourceTests
     public void Parse_Stream_Successful()
     {
         var source = new JsonSource();
-        var stream = new MemoryStream(Encoding.UTF8.GetBytes("{\"Name\": \"World\"}"));
+        using var stream = new MemoryStream(Encoding.UTF8.GetBytes("{\"Name\": \"World\"}"));
         dynamic result = source.Parse(stream);
         Assert.That(result, Is.AssignableTo<IDictionary<string, object>>());
         Assert.That(result, Does.ContainKey("Name"));
