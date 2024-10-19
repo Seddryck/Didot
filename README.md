@@ -39,7 +39,7 @@ dotnet tool install -g Didot-cli
 
 ## QuickStart
 
-**Didot** is a command-line tool designed for generating files based on templating. It supports *YAML*, *JSON*, and *XML* as source data formats and provides flexibility in templating through both *Scriban* and *DotLiquid* engines. With Didot, you can easily automate file generation by combining structured data from YAML, JSON, or XML files with customizable templates using Scriban or DotLiquid.
+**Didot** is a command-line tool designed for generating files based on templating. It supports *YAML*, *JSON*, and *XML* as source data formats and provides flexibility in templating through both *Scriban*, *Liquid* and *Handlebars* templates languages. With Didot, you can easily automate file generation by combining structured data from YAML, JSON, or XML files with customizable templates using Scriban or DotLiquid.
 
 ### Supported Data Formats:
 
@@ -59,6 +59,10 @@ Didot utilizes some templating engines, which allow for powerful and flexible te
   - Secure (no access to system objects), making it ideal for user-generated templates.
   - Allows both dynamic and static templating.
   - Supports filters, tags, and various control flow structures.
+- **Handlebars**: Templates with the `.hbs` extension are parsed using a Handlebars template engine. Handlebars C# port of the popular JavaScript Handlebars templating engine.
+  - Simple syntax for generating HTML or text files from templates.
+  - Support for helpers, partial templates, and block helpers.
+  - Good separation of logic from presentation.
 
 ### Command Usage:
 
@@ -76,8 +80,8 @@ didot -t template.scriban -s data.yaml -o page.html
 
 In this example:
 
-* template.scriban is the Scriban template file.
-* data.yaml is the source file containing the structured data in YAML format.
-* result.txt is the output file that will contain the generated content.
+* `template.scriban` is the Scriban template file.
+* `data.yaml` is the source file containing the structured data in YAML format.
+* `page.html` is the output file that will contain the generated content.
 
 Make sure that the template file and source file are correctly formatted and aligned with your data model to produce the desired result.
