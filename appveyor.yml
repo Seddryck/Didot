@@ -64,10 +64,13 @@ test_script:
 after_test:
 - dotnet pack src/Didot.Core -p:version="%GitVersion_SemVer%" -c Release --include-symbols --no-build --nologo
 - dotnet pack src/Didot.Cli -p:version="%GitVersion_SemVer%" -c Release --include-symbols --no-build --nologo
+- 7z a Didot-%GitVersion_SemVer%-net7.0.zip ./src/Didot.Cli/bin/Release/net7.0/*.*
+- 7z a Didot-%GitVersion_SemVer%-net8.0.zip ./src/Didot.Cli/bin/Release/net8.0/*.*
 
 artifacts:
 - path: '**\*.nupkg'
 - path: '**\*.snupkg'
+- path: '**\*.zip'
 
 deploy:
 - provider: NuGet
