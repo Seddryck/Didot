@@ -49,6 +49,30 @@ function Send-GitHub-Post-Request {
 					-Body $($(ConvertTo-Json $body))
 }
 
+function Send-GitHub-FileUpload-Request {
+	[CmdletBinding()]
+	Param(
+		[Parameter(Mandatory=$true, ValueFromPipeline = $true)]
+        [object] $payload,
+		[Parameter(Mandatory=$true)]
+		[string] $uri,
+        [Parameter(Mandatory=$true)]
+		[string] $name, 
+		[Parameter(Mandatory=$true)]
+		[System.Collections.IDictionary] $headers
+	)
+    $headers.Add("Content-Type", "application/zip")
+
+    $uri = $uri -replace '{.*}', ''
+    $uri = $uri + "?name=" + $name
+
+	$response = Invoke-WebRequest `
+					-Method POST `
+					-Uri $uri `
+					-Headers $headers `
+					-Body $payload
+}
+
 function Get-Pull-Request-Title {
     [CmdletBinding()]
 	Param(
@@ -113,6 +137,44 @@ function Check-Release-Published {
 		return $true
 	}
     return $false
+}
+
+function Get-Release-Info {
+    [CmdletBinding()]
+	Param(
+        [Parameter(Mandatory=$true, ValueFromPipeline = $true, Position=0 )]
+        [object] $context,
+		[Parameter(Mandatory=$true)]
+		[string] $tag
+	)
+	$response = Send-GitHub-Get-Request `
+					-Owner $context.Owner `
+					-Repository $context.Repository `
+					-Segments @('releases') `
+					-Headers $($context.SecretToken | Get-GitHub-Headers)
+    return $response
+}
+
+function Upload-Release-Assets {
+    [CmdletBinding()]
+	Param(
+        [Parameter(Mandatory=$true, ValueFromPipeline = $true, Position=0 )]
+        [object] $context,
+		[Parameter(Mandatory=$true)]
+		[string] $tag,
+        [Parameter(Mandatory=$true)]
+		[string] $path
+	)
+    $headers = $context.SecretToken | Get-GitHub-Headers
+	$info = Get-Release-Info -Context $context -Tag $tag
+    $url = ($response.Content | ConvertFrom-Json) `
+					| ? {$_.tag_name -eq $tag}`
+					| Select-Object -Unique -ExpandProperty 'upload_url'
+    
+    Get-ChildItem -Path "." -Filter *.zip | ForEach-Object {
+        $payload = [System.IO.File]::ReadAllBytes($_.FullName)
+        Send-Github-FileUpload-Request -Payload $payload -Uri $url -Headers $headers -Name $($_.Name.ToLower())
+    }
 }
 
 function Post-Pull-Request-Labels {
