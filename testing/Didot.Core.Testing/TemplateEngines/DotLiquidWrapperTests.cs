@@ -67,4 +67,15 @@ public class DotLiquidWrapperTests
         var result = engine.Render("Hello {% for item in model %}{{ item.Name }}{% if forloop.last == false %}, {% endif %}{% endfor %}!", new { model });
         Assert.That(result, Is.EqualTo("Hello Albert, Nikola!"));
     }
+
+    [Test]
+    public void Render_Stream_Successful()
+    {
+        var engine = new DotLiquidWrapper();
+        var model = new Dictionary<object, object>()
+            { { "Name", "World"} };
+        using var stream = new MemoryStream(Encoding.UTF8.GetBytes("Hello {{model.Name}}"));
+        var result = engine.Render(stream, new { model });
+        Assert.That(result, Is.EqualTo("Hello World"));
+    }
 }
