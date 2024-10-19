@@ -16,7 +16,11 @@ class Program
 
     static void RunWithOptions(Options opts)
     {
-        var printer = new Printer(new ScribanWrapper(), new YamlSource());
+        var extension = new FileInfo(opts.Source).Extension;
+        var sourceFactory = new FileBasedSourceEngineFactory();
+        var parser = sourceFactory.GetSourceParser(extension);
+
+        var printer = new Printer(new ScribanWrapper(), parser);
         using var source = File.OpenRead(opts.Source);
         using var template = File.OpenRead(opts.Template);
         var output = printer.Render(template, source);
