@@ -14,6 +14,7 @@ public class FileBasedTemplateEngineFactory
             ".scriban" => new ScribanWrapper(),
             ".liquid" => new DotLiquidWrapper(),
             ".hbs" => new HandlebarsWrapper(),
+            ".smart" => new SmartFormatWrapper(),
             _ => throw new NotSupportedException()
         };
 }
