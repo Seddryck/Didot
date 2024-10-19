@@ -5,9 +5,9 @@ using Didot.Core.SourceParsers;
 using Didot.Core.TemplateEngines;
 
 namespace Didot.Cli;
-class Program
+public class Program
 {
-    static void Main(string[] args)
+    public static void Main(string[] args)
     {
         Parser.Default.ParseArguments<Options>(args)
             .WithParsed(RunWithOptions)
