@@ -61,6 +61,9 @@ function Send-GitHub-FileUpload-Request {
 		[Parameter(Mandatory=$true)]
 		[System.Collections.IDictionary] $headers
 	)
+    if ($headers.Keys -contains "Content-Type") {
+        $headers.Remove("Content-Type")
+    }
     $headers.Add("Content-Type", "application/zip")
 
     $uri = $uri -replace '{.*}', ''
