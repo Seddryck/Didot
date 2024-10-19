@@ -186,7 +186,7 @@ function Upload-Release-Assets {
     
     Get-ChildItem -Path "." -Filter *.zip | ForEach-Object {
         $payload = [System.IO.File]::ReadAllBytes($_.FullName)
-        Send-Github-FileUpload-Request -Payload $payload -Uri $url -Headers $headers -Name $($_.Name.ToLower())
+        Send-GitHub-FileUpload-Request -Payload $payload -Uri $url -Headers $headers -Name $($_.Name.ToLower())
     }
 }
 
