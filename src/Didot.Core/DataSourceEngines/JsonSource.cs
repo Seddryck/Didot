@@ -44,19 +44,4 @@ public class JsonSource : ISourceParser
         using (var jsonReader = new JsonTextReader(streamReader))
             return ParseToken(JToken.Load(jsonReader))!;
     }
-
-    private static Dictionary<string, object> Parse(JsonElement element)
-    {
-        if (element.ValueKind == JsonValueKind.Object)
-        {
-            var dict = new Dictionary<string, object>();
-            foreach (var property in element.EnumerateObject())
-            {
-                dict[property.Name] = Parse(property.Value);
-            }
-            return dict;
-        }
-        else
-            throw new NotSupportedException();
-    }
 }
