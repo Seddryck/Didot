@@ -13,6 +13,7 @@ public class FileBasedSourceEngineFactoryTests
     [TestCase(".json", typeof(JsonSource))]
     [TestCase(".yaml", typeof(YamlSource))]
     [TestCase(".yml", typeof(YamlSource))]
+    [TestCase(".xml", typeof(XmlSource))]
     public void GetSourceParser_Extension_CorrectParser(string extension, Type expected)
     {
         var factory = new FileBasedSourceEngineFactory();

@@ -12,6 +12,7 @@ public class FileBasedSourceEngineFactory
         {
             ".json" => new JsonSource(),
             ".yaml" or ".yml" => new YamlSource(),
+            ".xml" => new XmlSource(),
             _ => throw new NotSupportedException()
         };
 }
