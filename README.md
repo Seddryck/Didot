@@ -39,7 +39,7 @@ dotnet tool install -g Didot-cli
 
 ## QuickStart
 
-**Didot** is a command-line tool designed for generating files based on templating. It supports *YAML*, *JSON*, and *XML* as source data formats and provides flexibility in templating through both *Scriban*, *Liquid* and *Handlebars* templates languages. With Didot, you can easily automate file generation by combining structured data from YAML, JSON, or XML files with customizable templates using Scriban or DotLiquid.
+**Didot** is a command-line tool designed for generating files based on templating. It supports *YAML*, *JSON*, and *XML* as source data formats and provides flexibility in templating through both *Scriban*, *Liquid*, *Handlebars* and *SmartFormat* templates languages. With Didot, you can easily automate file generation by combining structured data from YAML, JSON, or XML files with customizable templates using Scriban or DotLiquid.
 
 ### Supported Data Formats:
 
@@ -55,14 +55,21 @@ Didot utilizes some templating engines, which allow for powerful and flexible te
   - Highly performant, designed to handle large-scale template processing.
   - Supports customizable scripting with rich expressions and filters.
   - Can work with JSON and YAML data sources.
-- **dotLiquid**: Templates with the `.liquid` extension are parsed using a dotLiquid template engine. DotLiquid is a .NET port of the Liquid templating engine used by platforms like Shopify.
+  - Typical Use Case: Config file generation, reports, email templates, or any templating scenario not tied to a specific web framework.
+- **Liquid**: Templates with the `.liquid` extension are parsed using a dotLiquid template engine. DotLiquid is a .NET port of the Liquid templating engine used by platforms like Shopify.
   - Secure (no access to system objects), making it ideal for user-generated templates.
   - Allows both dynamic and static templating.
   - Supports filters, tags, and various control flow structures.
+  - Typical Use Case: SaaS applications, dynamic content rendering, email templates.
 - **Handlebars**: Templates with the `.hbs` extension are parsed using a Handlebars template engine. Handlebars C# port of the popular JavaScript Handlebars templating engine.
   - Simple syntax for generating HTML or text files from templates.
   - Support for helpers, partial templates, and block helpers.
   - Good separation of logic from presentation.
+  - Typical Use Case: Email templates, reports, and content generation.
+- **SmartFormat**: Templates with the `.smart` extension are parsed using a SmartFormat template engine. SmartFormat.Net is a A lightweight templating engine primarily used for string formatting.
+  - Provides more advanced formatting capabilities than standard string formatting in C#.
+  - Supports nested templates, conditional formatting, and more.
+  - Typical Use Case: Log messages, report generation, and dynamic text formatting.
 
 ### Command Usage:
 
