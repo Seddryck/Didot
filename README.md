@@ -2,7 +2,7 @@
 
 ![Logo](https://raw.githubusercontent.com/Seddryck/Didot/main/assets/didot-logo-256.png)
 
-Transform your structured YAML data into beautiful, fully-customized HTML pages in seconds with Didot. This command-line tool allows you to seamlessly generate HTML from YAML files using your preferred templates. Whether you're building static sites, documentation, or reporting tools, Didot makes it easy to turn raw data into polished, web-ready content.
+Transform your structured YAML, JSON or XML data into beautiful, fully-customized HTML pages or plain text in seconds with Didot. This command-line tool allows you to seamlessly generate renders from data files using your preferred templates. Whether you're building static sites, documentation, or reporting tools, Didot makes it easy to turn raw data into polished, web-ready content.
 
 [About][] | [Installing][] | [Quickstart][]
 
@@ -39,7 +39,7 @@ dotnet tool install -g Didot-cli
 
 ## QuickStart
 
-**Didot** is a command-line tool designed for generating files based on templating. It supports both YAML and JSON as source data formats and uses Scriban as its templating engine. With Didot, you can easily automate file generation by combining structured data from YAML or JSON files with customizable templates.
+**Didot** is a command-line tool designed for generating files based on templating. It supports *YAML*, *JSON*, and *XML* as source data formats and provides flexibility in templating through both *Scriban* and *DotLiquid* engines. With Didot, you can easily automate file generation by combining structured data from YAML, JSON, or XML files with customizable templates using Scriban or DotLiquid.
 
 ### Supported Data Formats:
 
