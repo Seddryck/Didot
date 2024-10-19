@@ -98,6 +98,8 @@ on_success:
                     -ReleaseNotes `
                     -DiscussionCategory 'Announcements'
 
+                Start-Sleep -Seconds 5
+
                 $context | Upload-Release-Assets `
                     -Tag "v$($env:GitVersion_SemVer)" `
                     -Path "."
