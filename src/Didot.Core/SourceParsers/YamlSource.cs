@@ -7,7 +7,7 @@ using YamlDotNet.Serialization.NamingConventions;
 using YamlDotNet.Serialization;
 using System.IO;
 
-namespace Didot.Core.DataSourceEngines;
+namespace Didot.Core.SourceParsers;
 public class YamlSource : ISourceParser
 {
     private static IDeserializer GetDeserializer()

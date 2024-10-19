@@ -43,13 +43,22 @@ dotnet tool install -g Didot-cli
 
 ### Supported Data Formats:
 
-- YAML: Files with the `.yaml` or `.yml` extension are parsed using a YAML source parser.
-- JSON: Files with the `.json` extension are parsed using a JSON source parser.
-- XML: Files with the `.xml` extension are parsed using an XML source parser.
+- **YAML**: Files with the `.yaml` or `.yml` extension are parsed using a YAML source parser.
+- **JSON**: Files with the `.json` extension are parsed using a JSON source parser.
+- **XML**: Files with the `.xml` extension are parsed using an XML source parser.
 
-### Supported Templating Engine:
+### Supported Templating Engines:
 
-- Scriban: Didot utilizes the Scriban templating engine, which allows for powerful and flexible templating. Scriban supports conditional logic, loops, and variable interpolation, making it easy to create dynamic templates.
+Didot utilizes some templating engines, which allow for powerful and flexible templating.
+
+- **Scriban**: Templates with the `.scriban` extension are parsed using a Scriban template engine. Scriban is a lightweight and fast template engine with rich support for multiple output formats.
+  - Highly performant, designed to handle large-scale template processing.
+  - Supports customizable scripting with rich expressions and filters.
+  - Can work with JSON and YAML data sources.
+- **dotLiquid**: Templates with the `.liquid` extension are parsed using a dotLiquid template engine. DotLiquid is a .NET port of the Liquid templating engine used by platforms like Shopify.
+  - Secure (no access to system objects), making it ideal for user-generated templates.
+  - Allows both dynamic and static templating.
+  - Supports filters, tags, and various control flow structures.
 
 ### Command Usage:
 

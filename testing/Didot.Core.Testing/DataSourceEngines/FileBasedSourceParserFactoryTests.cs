@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Didot.Core.DataSourceEngines;
+using Didot.Core.SourceParsers;
 using NUnit.Framework;
 
 namespace Didot.Core.Testing.DataSourceEngines;
-public class FileBasedSourceEngineFactoryTests
+public class FileBasedSourceParserFactoryTests
 {
     [Test]
     [TestCase(".json", typeof(JsonSource))]
@@ -16,7 +16,7 @@ public class FileBasedSourceEngineFactoryTests
     [TestCase(".xml", typeof(XmlSource))]
     public void GetSourceParser_Extension_CorrectParser(string extension, Type expected)
     {
-        var factory = new FileBasedSourceEngineFactory();
+        var factory = new FileBasedSourceParserFactory();
         var parser = factory.GetSourceParser(extension);
         Assert.That(parser, Is.TypeOf(expected));
     }
@@ -25,7 +25,7 @@ public class FileBasedSourceEngineFactoryTests
     [TestCase(".toml")]
     public void GetSourceParser_NotSupportedExtension_Exception(string extension)
     {
-        var factory = new FileBasedSourceEngineFactory();
+        var factory = new FileBasedSourceParserFactory();
         Assert.Throws<NotSupportedException>(() => factory.GetSourceParser(extension));
     }
 }

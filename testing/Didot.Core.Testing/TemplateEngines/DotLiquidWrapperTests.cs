@@ -8,13 +8,13 @@ using Didot.Core.TemplateEngines;
 using NUnit.Framework;
 
 namespace Didot.Core.Testing.TemplateEngines;
-public class ScribanWrapperTests
+public class DotLiquidWrapperTests
 {
     [Test]
     public void Render_SingleProperty_Successful()
     {
-        var engine = new ScribanWrapper();
-        var model = new Dictionary<object, object>()
+        var engine = new DotLiquidWrapper();
+        var model = new Dictionary<string, object>()
             { { "Name", "World"} };
         var result = engine.Render("Hello {{model.Name}}", new { model });
         Assert.That(result, Is.EqualTo("Hello World"));
@@ -23,7 +23,7 @@ public class ScribanWrapperTests
     [Test]
     public void Render_MultiProperty_Successful()
     {
-        var engine = new ScribanWrapper();
+        var engine = new DotLiquidWrapper();
         var model = new Dictionary<object, object>()
             { { "Name", "Albert"}, {"Age", 30 } };
         var result = engine.Render("Hello {{model.Name}}. You're {{model.Age}} years old.", new { model });
@@ -33,7 +33,7 @@ public class ScribanWrapperTests
     [Test]
     public void Render_NestedProperties_Successful()
     {
-        var engine = new ScribanWrapper();
+        var engine = new DotLiquidWrapper();
         var name = new Dictionary<object, object>()
             { { "First", "Albert"}, {"Last", "Einstein" } };
         var model = new Dictionary<object, object>()
@@ -43,9 +43,9 @@ public class ScribanWrapperTests
     }
 
     [Test]
-    public void Render_Array_Successful()
+    public void Render_ArrayItems_Successful()
     {
-        var engine = new ScribanWrapper();
+        var engine = new DotLiquidWrapper();
         var albert = new Dictionary<object, object>()
             { { "Name", "Albert"}, {"Age", 30 } };
         var nikola = new Dictionary<object, object>()
@@ -58,13 +58,13 @@ public class ScribanWrapperTests
     [Test]
     public void Render_ArrayLoop_Successful()
     {
-        var engine = new ScribanWrapper();
+        var engine = new DotLiquidWrapper();
         var albert = new Dictionary<object, object>()
             { { "Name", "Albert"}, {"Age", 30 } };
         var nikola = new Dictionary<object, object>()
             { { "Name", "Nikola"}, {"Age", 50 } };
         var model = new[] { albert, nikola };
-        var result = engine.Render("Hello {{ for item in model; item.Name; if !for.last; \", \"; end; end }}!", new { model });
+        var result = engine.Render("Hello {% for item in model %}{{ item.Name }}{% if forloop.last == false %}, {% endif %}{% endfor %}!", new { model });
         Assert.That(result, Is.EqualTo("Hello Albert, Nikola!"));
     }
 }
