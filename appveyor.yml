@@ -69,7 +69,10 @@ after_test:
 - dotnet pack src/Didot.Cli -p:version="%GitVersion_SemVer%" -c Release --include-symbols --no-build --nologo
 - ps: Write-Host "Nuget artifacts packaged."
 - ps: Write-Host "Packaging binaries artifacts ..."
-- rmdir /s /q "./.publish"
+- ps: |
+    if (Test-Path "./.publish") {
+        rmdir /s /q "./.publish"
+    }    
 - dotnet publish ./src/Didot.Cli/Didot.Cli.csproj -c Release -f net7.0 -r win-x64 -o ./.publish/net7.0/win-x64 --no-build --nologo
 - 7z a ./.publish/Didot-%GitVersion_SemVer%-net7.0-win-x64.zip ./.publish/net7.0/win-x64/*.*
 - dotnet publish ./src/Didot.Cli/Didot.Cli.csproj -c Release -f net7.0 -r linux-x64 -o ./.publish/net7.0/linux-x64 --no-build --nologo
