@@ -169,6 +169,17 @@ In this example:
 
 ##### With data from the console:
 
+<sub>CMD:</sub>
+```cmd
+type data.json | didot -t template.hbs -p json
+```
+
+<sub>PowerShell:</sub>
+```powershell
+Get-Content data.json data.json | didot -t template.hbs -p json
+```
+
+<sub>Bash:</sub>
 ```bash
 cat data.json | didot -t template.hbs -p json
 ```
