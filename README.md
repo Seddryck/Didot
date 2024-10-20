@@ -148,11 +148,14 @@ Didot utilizes some templating engines, which allow for powerful and flexible te
 
 The command to run Didot is simply `didot`. When executing it, you need to provide three required arguments:
 
-- `-t, --Template`: Specifies the path to the Scriban template file.
-- `-s, --Source`: Specifies the path to the source data file, which can be in YAML or JSON format.
-- `-o, --Output`: Specifies the path to the output file where the generated content will be saved. If not specified the output is redirected to the console. 
+- `-t, --Template` (required): Specifies the path to the Scriban template file.
+- `-s, --Source`: Specifies the path to the source data file, which can be in YAML, JSON, or XML format. If this argument is not provided, the data will be read from the console input. In such cases, the `-p, --Parser` option becomes mandatory.
+- `-p, --Parser`: Defines the parser to use when the source data is provided through the console. Accepted values are `yaml`, `json` or `xml`. This option is required only when the --Source argument is omitted.
+- `-o, --Output`: Specifies the path to the output file where the generated content will be saved. If not provided, the output will be displayed directly in the console.
 
 #### Example:
+
+##### With a source file:
 
 ```bash
 didot -t template.scriban -s data.yaml -o page.html
@@ -163,5 +166,17 @@ In this example:
 * `template.scriban` is the Scriban template file.
 * `data.yaml` is the source file containing the structured data in YAML format.
 * `page.html` is the output file that will contain the generated content.
+
+##### With data from the console:
+
+```bash
+cat data.json | didot -t template.hbs -p json
+```
+
+In this example:
+
+* `template.hbs` is the Handlebars template file.
+* `json` is the parser of input data.
+* the output is redirected to the console.
 
 Make sure that the template file and source file are correctly formatted and aligned with your data model to produce the desired result.
