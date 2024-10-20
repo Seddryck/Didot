@@ -25,9 +25,15 @@ public class Program
             return;
         }
 
-        var sourceExtension = string.IsNullOrEmpty(opts.Source)
-                                ? $".{opts.Parser!.ToLowerInvariant()}"
-                                : new FileInfo(opts.Source).Extension;
+        if (opts.StdIn && string.IsNullOrEmpty(opts.Parser))
+        {
+            Console.WriteLine("Error: Missing input parser. When --StdIn is set, you must provide the --parser option.");
+            return;
+        }
+
+        var sourceExtension = string.IsNullOrEmpty(opts.Parser)
+                                ? new FileInfo(opts.Source!).Extension
+                                : $".{opts.Parser!.ToLowerInvariant()}";
 
         using var source = string.IsNullOrEmpty(opts.Source)
                                 ? copyInStream()
