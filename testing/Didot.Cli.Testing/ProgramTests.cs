@@ -43,10 +43,13 @@ public class ProgramTests
             [ValueSource(nameof(Templates))] string engine,
             [ValueSource(nameof(DataSets))] string data)
     {
+        using var source = new StreamReader(Path.Combine("data", $"data-01.{data}"));
+        Console.SetIn(source);
+
         var args = new string[]
         {
-                    $"-ttemplate/template-01.{engine}",
-                    $"-sdata/data-01.{data}"
+            $"-ttemplate/template-01.{engine}",
+            $"-p{data}"
         };
         Program.Main(args);
 
@@ -54,7 +57,7 @@ public class ProgramTests
         using (var reader = new StreamReader(MemoryStream))
         {
             var consoleOutput = reader.ReadToEnd().Standardize();
-            var expected = File.ReadAllText($"Expectation/expectation-01.txt").Standardize();
+            var expected = File.ReadAllText(Path.Combine("Expectation", $"expectation-01.txt")).Standardize();
             Assert.That(consoleOutput, Is.EqualTo(expected));
         }
     }

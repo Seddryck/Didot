@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Text;
 using CommandLine;
+using CommandLine.Text;
 using Didot.Core;
 using Didot.Core.SourceParsers;
 using Didot.Core.TemplateEngines;
+using HandlebarsDotNet;
 
 namespace Didot.Cli;
 public class Program
@@ -16,7 +19,27 @@ public class Program
 
     static void RunWithOptions(Options opts)
     {
-        var sourceExtension = new FileInfo(opts.Source).Extension;
+        if (string.IsNullOrEmpty(opts.Source) && string.IsNullOrEmpty(opts.Parser))
+        {
+            Console.WriteLine("Error: Missing input source. You must provide either the --parser option when reading from StdIn or the --source option for a file. At least one of these options is required.");
+            return;
+        }
+
+        var sourceExtension = string.IsNullOrEmpty(opts.Source)
+                                ? $".{opts.Parser!.ToLowerInvariant()}"
+                                : new FileInfo(opts.Source).Extension;
+
+        using var source = string.IsNullOrEmpty(opts.Source)
+                                ? copyInStream()
+                                : File.OpenRead(opts.Source);
+
+        static Stream copyInStream()
+        {
+            string consoleInput = Console.In.ReadToEnd();
+            byte[] inputBytes = Encoding.UTF8.GetBytes(consoleInput);
+            return new MemoryStream(inputBytes);
+        }
+
         var parserFactory = new FileBasedSourceParserFactory();
         var parser = parserFactory.GetSourceParser(sourceExtension);
 
@@ -25,7 +48,6 @@ public class Program
         var engine = engineFactory.GetTemplateEngine(templateExtension);
 
         var printer = new Printer(engine, parser);
-        using var source = File.OpenRead(opts.Source);
         using var template = File.OpenRead(opts.Template);
         var output = printer.Render(template, source);
 
