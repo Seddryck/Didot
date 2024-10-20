@@ -14,6 +14,6 @@ public class Options
     [Option('s', "Source", Required = true, HelpText = "Path to the source file.")]
     public required string Source { get; set; }
 
-    [Option('o', "Output", Required = true, HelpText = "Path to the generated file.")]
+    [Option('o', "Output", Required = false, HelpText = "Path to the generated file.")]
     public required string Output { get; set; }
 }

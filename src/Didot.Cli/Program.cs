@@ -28,7 +28,11 @@ public class Program
         using var source = File.OpenRead(opts.Source);
         using var template = File.OpenRead(opts.Template);
         var output = printer.Render(template, source);
-        File.WriteAllText(opts.Output, output);
+
+        if (string.IsNullOrEmpty(opts.Output))
+            Console.Out.WriteLine(output);
+        else
+            File.WriteAllText(opts.Output, output);
     }
 
     static void HandleParseError(IEnumerable<Error> errs)

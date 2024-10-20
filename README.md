@@ -150,7 +150,7 @@ The command to run Didot is simply `didot`. When executing it, you need to provi
 
 - `-t, --Template`: Specifies the path to the Scriban template file.
 - `-s, --Source`: Specifies the path to the source data file, which can be in YAML or JSON format.
-- `-o, --Output`: Specifies the path to the output file where the generated content will be saved.
+- `-o, --Output`: Specifies the path to the output file where the generated content will be saved. If not specified the output is redirected to the console. 
 
 #### Example:
 
