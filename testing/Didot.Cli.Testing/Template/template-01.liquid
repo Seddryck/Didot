@@ -1,0 +1,3 @@
+{% for employee in model -%}
+{{ employee.name.first }} {{ employee.name.last }} is a {{ employee.age }} years old.
+{%- endfor %}

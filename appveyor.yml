@@ -50,7 +50,9 @@ build_script:
 test_script:
 - pwsh: |
     $ErrorActionPreference = "Stop"
-    dotnet test testing/Didot.Core.Testing -c Release /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:Include="[Didot.Core]*" /p:Threshold=10 /p:ThresholdType=line /p:CoverletOutput=../.coverage/coverage.Didot.xml --test-adapter-path:. --logger:Appveyor --no-build --nologo
+    dotnet test testing/Didot.Core.Testing -c Release /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:Include="[Didot.Core]*" /p:Threshold=80 /p:ThresholdType=line /p:CoverletOutput=../.coverage/coverage.Didot.Core.xml --test-adapter-path:. --logger:Appveyor --no-build --nologo
+    $globalTestResult = $LastExitCode
+    dotnet test testing/Didot.Cli.Testing -c Release /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:Include="Didot.Cli" /p:Threshold=10 /p:ThresholdType=line /p:CoverletOutput=../.coverage/coverage.Didot.Cli.xml --test-adapter-path:. --logger:Appveyor --no-build --nologo
     $globalTestResult = $LastExitCode
     if($globalTestResult -ne 0) { $host.SetShouldExit($globalTestResult) }
 
