@@ -9,6 +9,7 @@
 	<PropertyGroup>
         <LangVersion>12.0</LangVersion>
         <TargetFrameworks>net7.0;net8.0</TargetFrameworks>
+        <RuntimeIdentifiers>win-x64;linux-x64</RuntimeIdentifiers>
 		<Platform>AnyCPU</Platform>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>

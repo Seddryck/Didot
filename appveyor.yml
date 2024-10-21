@@ -16,7 +16,9 @@ skip_commits:
 environment:
   github_access_token:
     secure: gtEHCUmmDjYfrp/NEe2qUHTObRr/pB1BD/RHZUrFdEB1gUFpAd8yOoKOam5OSkfm7gZqQMBWwdm7N3hYRUaAeEU5+zPDOQoh0tPeS0L0CiQrN/hzuOZuEF/NYNYtr1j5
-  
+  docker_access_token:
+    secure: TphJvTXq8VrwhLYbQqreSIBkYB9H18ufh+wzB6h44HCa48L2Wby3yKIf1fNumGW7
+
 init:
 - cmd: git config --global core.autocrlf true
 - cmd: setx IGNORE_NORMALISATION_GIT_HEAD_MOVE "1"
@@ -62,10 +64,26 @@ test_script:
     .\codecov.exe --dir "./testing/.coverage/"
 
 after_test:
-- dotnet pack src/Didot.Core -p:version="%GitVersion_SemVer%" -c Release --include-symbols --no-build --nologo
-- dotnet pack src/Didot.Cli -p:version="%GitVersion_SemVer%" -c Release --include-symbols --no-build --nologo
-- 7z a Didot-%GitVersion_SemVer%-net7.0.zip ./src/Didot.Cli/bin/Release/net7.0/*.*
-- 7z a Didot-%GitVersion_SemVer%-net8.0.zip ./src/Didot.Cli/bin/Release/net8.0/*.*
+- ps: |
+        if (($env:APPVEYOR_REPO_BRANCH -eq "main") -and ($null -eq $env:APPVEYOR_PULL_REQUEST_NUMBER)) {
+            ./package.ps1
+        }
+- ps: |
+        if (($env:APPVEYOR_REPO_BRANCH -eq "main") -and ($null -eq $env:APPVEYOR_PULL_REQUEST_NUMBER)) {    
+            Write-Host "Logging into Docker Hub ..."
+            docker login -u seddryck -p $env:docker_access_token
+            Write-Host "Successful log into Docker Hub ..."
+
+            Write-Host "Building docker image ..."    
+            docker build -t seddryck/didot:%APPVEYOR_BUILD_VERSION% .
+            docker tag seddryck/didot:%APPVEYOR_BUILD_VERSION% seddryck/didot:latest
+            Write-Host "Docker image built."
+
+            Write-Host "Pushing to Docker Hub ..."
+            docker push seddryck/didot:%APPVEYOR_BUILD_VERSION%
+            docker push seddryck/didot:latest
+            Write-Host "Pushed to Docker Hub."
+        }
 
 artifacts:
 - path: '**\*.nupkg'
