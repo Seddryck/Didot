@@ -75,12 +75,12 @@ after_test:
             Write-Host "Successful log into Docker Hub ..."
 
             Write-Host "Building docker image ..."    
-            docker build -t seddryck/didot:%APPVEYOR_BUILD_VERSION% .
-            docker tag seddryck/didot:%APPVEYOR_BUILD_VERSION% seddryck/didot:latest
+            docker build -t seddryck/didot:$env:APPVEYOR_BUILD_VERSION .
+            docker tag seddryck/didot:$env:APPVEYOR_BUILD_VERSION seddryck/didot:latest
             Write-Host "Docker image built."
 
             Write-Host "Pushing to Docker Hub ..."
-            docker push seddryck/didot:%APPVEYOR_BUILD_VERSION%
+            docker push seddryck/didot:$env:APPVEYOR_BUILD_VERSION
             docker push seddryck/didot:latest
             Write-Host "Pushed to Docker Hub."
         }
