@@ -4,16 +4,17 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DotLiquid;
+using Antlr4.StringTemplate;
 
 namespace Didot.Core.TemplateEngines;
-public class DotLiquidWrapper : ITemplateEngine
+public class StringTemplateWrapper : ITemplateEngine
 {
     public string Render(string template, object model)
     {
-        var templateInstance = Template.Parse(template);
-        var hash = Hash.FromAnonymousObject(model);
-        return templateInstance.Render(hash);
+        var templateInstance = new Template(template);
+        var dict = model.GetType().GetProperty("model")!.GetValue(model);
+        templateInstance.Add("model", dict);
+        return templateInstance.Render();
     }
 
     public string Render(Stream stream, object model)

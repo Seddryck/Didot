@@ -9,10 +9,10 @@ using SmartFormat;
 namespace Didot.Core.TemplateEngines;
 public class SmartFormatWrapper : ITemplateEngine
 {
-    public string Render(string template, dynamic model)
+    public string Render(string template, object model)
         => Smart.Format(template, model);
 
-    public string Render(Stream stream, dynamic model)
+    public string Render(Stream stream, object model)
     {
         using var reader = new StreamReader(stream);
         var template = reader.ReadToEnd();

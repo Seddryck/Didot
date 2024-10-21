@@ -171,7 +171,7 @@ To run the executable from any location in the command line, you need to add its
 
 ## QuickStart
 
-**Didot** is a command-line tool designed for generating files based on templating. It supports *YAML*, *JSON*, and *XML* as source data formats and provides flexibility in templating through both *Scriban*, *Liquid*, *Handlebars* and *SmartFormat* templates languages. With Didot, you can easily automate file generation by combining structured data from YAML, JSON, or XML files with customizable templates using Scriban or DotLiquid.
+**Didot** is a command-line tool designed for generating files based on templating. It supports *YAML*, *JSON*, and *XML* as source data formats and provides flexibility in templating through both *Scriban*, *Liquid*, *Handlebars*, *StringTemplate* and *SmartFormat* templates languages. With Didot, you can easily automate file generation by combining structured data from YAML, JSON, or XML files with customizable templates using Scriban or Liquid.
 
 ### Supported Data Formats:
 
@@ -202,12 +202,17 @@ Didot utilizes some templating engines, which allow for powerful and flexible te
   - Provides more advanced formatting capabilities than standard string formatting in C#.
   - Supports nested templates, conditional formatting, and more.
   - Typical Use Case: Log messages, report generation, and dynamic text formatting.
+- **StringTemplate**: Templates with the `.st` and `.stg` extension are parsed using the StringTemplate engine. StringTemplate is a powerful template engine specifically designed to enforce strict separation of logic from presentation.
+  - Focused on generating structured text, such as code, XML, and reports.
+  - Strong emphasis on enforcing Model-View separation.
+  - Supports conditionals, loops, and automatic escaping to prevent security issues.
+  - Typical Use Case: Code generation, configuration files, and situations where strict separation between logic and template is required.
 
 ### Command Usage:
 
 The command to run Didot is simply `didot`. When executing it, you need to provide three required arguments:
 
-- `-t, --Template` (required): Specifies the path to the Scriban template file.
+- `-t, --Template` (required): Specifies the path to the Scriban, Liquid, Handlebars, StringTemplate or SmartFormat template file.
 - `-s, --Source`: Specifies the path to the source data file, which can be in YAML, JSON, or XML format. If this argument is not provided, the data will be read from the console input. In such cases, the `-p, --Parser` option becomes mandatory.
 - `-i, --StdIn`: Specifies that the input is coming from the console. This option is required only when the --Source argument is omitted.
 - `-p, --Parser`: Defines the parser to use when the source data is provided through the console. Accepted values are `yaml`, `json` or `xml`. This option is required only when the `--Source` argument is omitted or if the extension of the source file is not recognized to determine the parser.
