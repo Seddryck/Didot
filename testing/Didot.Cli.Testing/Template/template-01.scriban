@@ -1,3 +1,3 @@
 {{~ for employee in model ~}}
-{{employee.name.first}} {{employee.name.last}} is a {{employee.age}} years old.
+{{employee.name.first}} {{employee.name.last}} is {{employee.age}} years old.
 {{~ end ~}}

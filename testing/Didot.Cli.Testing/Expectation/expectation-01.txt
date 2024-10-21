@@ -1,2 +1,2 @@
-Albert Einstein is a 30 years old.
-Nikola Tesla is a 50 years old.
+Albert Einstein is 30 years old.
+Nikola Tesla is 50 years old.
