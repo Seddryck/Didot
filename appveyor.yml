@@ -22,6 +22,7 @@ environment:
 init:
 - cmd: git config --global core.autocrlf true
 - cmd: setx IGNORE_NORMALISATION_GIT_HEAD_MOVE "1"
+- cmd: setx DOTNET_NO_WORKLOAD_UPDATE_NOTIFICATION "true"
 - cmd: RefreshEnv.cmd
 - pwsh: Write-Host "Target branch is '$($env:APPVEYOR_REPO_BRANCH)'"
 
@@ -75,12 +76,12 @@ after_test:
             Write-Host "Successful log into Docker Hub ..."
 
             Write-Host "Building docker image ..."    
-            docker build -t seddryck/didot:$env:APPVEYOR_BUILD_VERSION .
-            docker tag seddryck/didot:$env:APPVEYOR_BUILD_VERSION seddryck/didot:latest
+            docker build -t seddryck/didot:$env:GitVersion_SemVer .
+            docker tag seddryck/didot:$env:GitVersion_SemVer seddryck/didot:latest
             Write-Host "Docker image built."
 
             Write-Host "Pushing to Docker Hub ..."
-            docker push seddryck/didot:$env:APPVEYOR_BUILD_VERSION
+            docker push seddryck/didot:$env:GitVersion_SemVer
             docker push seddryck/didot:latest
             Write-Host "Pushed to Docker Hub."
         }
@@ -120,7 +121,7 @@ on_success:
 
                 $context | Upload-Release-Assets `
                     -Tag "v$($env:GitVersion_SemVer)" `
-                    -Path "."
+                    -Path "./.publish"
             }
         } else {
             Write-Host "No release published on GitHub when patch is not set to zero."
