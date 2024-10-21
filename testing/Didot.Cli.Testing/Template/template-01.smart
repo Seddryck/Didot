@@ -1,2 +1,2 @@
-{model:{name.first} {name.last} is a {age} years old.|
+{model:{name.first} {name.last} is {age} years old.|
 }

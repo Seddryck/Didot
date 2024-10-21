@@ -15,6 +15,7 @@ public class FileBasedTemplateEngineFactory
             ".liquid" => new DotLiquidWrapper(),
             ".hbs" => new HandlebarsWrapper(),
             ".smart" => new SmartFormatWrapper(),
+            ".st" or ".stg" => new StringTemplateWrapper(),
             _ => throw new NotSupportedException()
         };
 }

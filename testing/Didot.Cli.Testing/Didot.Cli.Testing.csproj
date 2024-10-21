@@ -42,6 +42,9 @@
     <None Update="Expectation\expectation-01.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Template\template-01.st">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Template\template-01.smart">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

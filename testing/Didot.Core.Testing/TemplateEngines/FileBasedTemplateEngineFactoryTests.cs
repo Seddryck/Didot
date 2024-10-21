@@ -14,6 +14,8 @@ public class FileBasedTemplateEngineFactoryTests
     [TestCase(".liquid", typeof(DotLiquidWrapper))]
     [TestCase(".hbs", typeof(HandlebarsWrapper))]
     [TestCase(".smart", typeof(SmartFormatWrapper))]
+    [TestCase(".st", typeof(StringTemplateWrapper))]
+    [TestCase(".stg", typeof(StringTemplateWrapper))]
     public void GetSourceParser_Extension_CorrectParser(string extension, Type expected)
     {
         var factory = new FileBasedTemplateEngineFactory();

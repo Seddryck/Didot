@@ -11,7 +11,7 @@ namespace Didot.Cli.Testing;
 
 public class ProgramTests
 {
-    private static readonly string[] Templates = { "scriban", "liquid", "hbs", "smart" };
+    private static readonly string[] Templates = { "scriban", "liquid", "hbs", "smart", "st" };
     private static readonly string[] DataSets = { "yaml", "json", "xml" };
 
     private TextWriter OriginalOutput { get; set; }
