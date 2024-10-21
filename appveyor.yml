@@ -64,7 +64,10 @@ test_script:
     .\codecov.exe --dir "./testing/.coverage/"
 
 after_test:
-- ps: ./package.ps1
+- ps: |
+        if (($env:APPVEYOR_REPO_BRANCH -eq "main") -and ($null -eq $env:APPVEYOR_PULL_REQUEST_NUMBER)) {
+            ./package.ps1
+        }
 - ps: |
         if (($env:APPVEYOR_REPO_BRANCH -eq "main") -and ($null -eq $env:APPVEYOR_PULL_REQUEST_NUMBER)) {    
             Write-Host "Logging into Docker Hub ..."
