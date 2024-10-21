@@ -15,7 +15,7 @@ Transform your structured YAML, JSON or XML data into beautiful, fully-customize
 **Social media:** [![website](https://img.shields.io/badge/website-seddryck.github.io/Didot-fe762d.svg)](https://seddryck.github.io/Didot)
 [![twitter badge](https://img.shields.io/badge/twitter%20Didot-@Seddryck-blue.svg?style=flat&logo=twitter)](https://twitter.com/Seddryck)
 
-**Releases:** [![nuget](https://img.shields.io/nuget/v/Didot-cli.svg)](https://www.nuget.org/packages/Didot-cli/) <!-- [![GitHub Release Date](https://img.shields.io/github/release-date/seddryck/Didot.svg)](https://github.com/Seddryck/Didot/releases/latest) --> [![licence badge](https://img.shields.io/badge/License-Apache%202.0-yellow.svg)](https://github.com/Seddryck/Didot/blob/master/LICENSE)
+**Releases:** [![nuget](https://img.shields.io/nuget/v/Didot-cli.svg)](https://www.nuget.org/packages/Didot-cli/) ![Docker Image Version](https://img.shields.io/docker/v/seddryck/didot?label=docker%20hub&color=0db7ed) [![GitHub Release Date](https://img.shields.io/github/release-date/seddryck/Didot.svg)](https://github.com/Seddryck/Didot/releases/latest) [![licence badge](https://img.shields.io/badge/License-Apache%202.0-yellow.svg)](https://github.com/Seddryck/Didot/blob/master/LICENSE) 
 
 **Dev. activity:** [![GitHub last commit](https://img.shields.io/github/last-commit/Seddryck/Didot.svg)](https://github.com/Seddryck/Didot/commits)
 ![Still maintained](https://img.shields.io/maintenance/yes/2024.svg)
@@ -70,6 +70,65 @@ To update a globally installed .NET tool, use the dotnet tool update command:
 
 ```bash
 dotnet tool update -g Didot-cli
+```
+
+### Install from Docker
+
+#### Prerequisites
+
+**Docker Installed**: Ensure that Docker is installed and running on your system. You can download Docker from Docker's official site.
+
+#### Pulling the Docker Image
+
+A pre-built Docker image is available on Docker Hub, you can pull it using the following command:
+
+```powershell
+docker pull seddryck/didot:latest
+```
+
+#### Running Didot from Docker
+
+Once you have the Docker image, you can run Didot using Docker in PowerShell.
+
+###### Basic Command
+
+<sub>CMD:</sub>
+```CMD
+docker run --rm -v %cd%:/files didot -t <template-file> -s <source-file> -o <output-file>
+```
+
+<sub>PowerShell:</sub>
+```powershell
+docker run --rm -v ${pwd}:/files didot -t <template-file> -s <source-file> -o <output-file>
+```
+
+- `--rm`: Automatically removes the container after it finishes executing.
+- `-v ${pwd}:/files`: Mounts the current directory (`${pwd}` in PowerShell or Bash, `%cd%` in CMD) to /files inside the Docker container, so Didot can access your local files.
+- `-t <template-file>`: Specifies the path to the template file inside the /files directory.
+- `-s <source-file>`: Specifies the path to the source file (YAML, JSON, or XML).
+- `-o <output-file>`: Specifies the path to the output file that Didot will generate. If omitted, it will display the result on the host console.
+
+##### Example Workflow:
+
+1. Prepare the Template and Source Files:
+
+  - Make sure your template and source files are correctly formatted and saved in the correct directory. For example:
+    - `./templates/template-01.hbs`
+    - `./data/data.json`
+2. Run Didot: Use the following command to generate templated output:
+
+```powershell
+docker run --rm -v ${pwd}:/files didot -t /files/templates/template-01.hbs -s /files/data/data.json -o /files/output/output.txt
+```
+
+3. Access the Output: The output file will be generated in ./output/output.txt on your local machine after the Docker container finishes execution.
+
+#### Updating Didot
+
+To update to the latest version of Didot, either pull the new Docker image
+
+```powershell
+docker pull seddryck/didot:latest
 ```
 
 ### Install from GitHub Releases
