@@ -64,24 +64,7 @@ test_script:
     .\codecov.exe --dir "./testing/.coverage/"
 
 after_test:
-- ps: Write-Host "Packaging Nuget artifacts ..."
-- dotnet pack src/Didot.Core -p:version="%GitVersion_SemVer%" -c Release --include-symbols --no-build --nologo
-- dotnet pack src/Didot.Cli -p:version="%GitVersion_SemVer%" -c Release --include-symbols --no-build --nologo
-- ps: Write-Host "Nuget artifacts packaged."
-- ps: Write-Host "Packaging binaries artifacts ..."
-- ps: |
-    if (Test-Path "./.publish") {
-        rmdir /s /q "./.publish"
-    }    
-- dotnet publish ./src/Didot.Cli/Didot.Cli.csproj -c Release -f net7.0 -r win-x64 -o ./.publish/net7.0/win-x64 --no-build --nologo
-- 7z a ./.publish/Didot-%GitVersion_SemVer%-net7.0-win-x64.zip ./.publish/net7.0/win-x64/*.*
-- dotnet publish ./src/Didot.Cli/Didot.Cli.csproj -c Release -f net7.0 -r linux-x64 -o ./.publish/net7.0/linux-x64 --no-build --nologo
-- 7z a ./.publish/Didot-%GitVersion_SemVer%-net7.0-linux-x64.zip ./.publish/net7.0/linux-x64/*.*
-- dotnet publish ./src/Didot.Cli/Didot.Cli.csproj -c Release -f net8.0 -r win-x64 -o ./.publish/net8.0/win-x64 --no-build --nologo
-- 7z a ./.publish/Didot-%GitVersion_SemVer%-net8.0-win-x64.zip ./.publish/net8.0/win-x64/*.*
-- dotnet publish ./src/Didot.Cli/Didot.Cli.csproj -c Release -f net8.0 -r linux-x64 -o ./.publish/net8.0/linux-x64 --no-build --nologo
-- 7z a ./.publish/Didot-%GitVersion_SemVer%-net8.0-linux-x64.zip ./.publish/net8.0/linux-x64/*.*
-- ps: Write-Host "Binaries artifacts packaged."
+- ps: ./package.ps1
 - ps: |
         if (($env:APPVEYOR_REPO_BRANCH -eq "main") -and ($null -eq $env:APPVEYOR_PULL_REQUEST_NUMBER)) {    
             Write-Host "Logging into Docker Hub ..."
