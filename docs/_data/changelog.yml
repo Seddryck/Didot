@@ -1,0 +1,17 @@
+# Changelog page source
+
+- title: Multi-channel publication
+  label:
+  date: Oct 20, 2024
+  list:
+  - Docker image available on Docker Hub
+  - CLI and libraries available on Nuget
+  - Binaries available on GitHub releases
+
+- title: First commit
+  label:
+  date: Oct 13, 2024
+  list:
+  - Create repository on GitHub
+  - Initial README with first ideas and references
+  - selection of license Apache 2.0

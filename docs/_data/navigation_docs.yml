@@ -1,0 +1,19 @@
+- title: Getting Started
+  docs:
+  - why-didot
+  
+- title: Installation
+  docs:
+  - installation-didot
+  - installation-net-global-tool
+  - installation-net-local-tool
+  - deployment-docker
+  - installation-windows
+  - installation-linux
+  - installation-library-nuget
+
+- title: Usage
+  docs:
+  - supported-format-engine
+  - basic-usage
+  - other-options
