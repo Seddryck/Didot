@@ -575,7 +575,7 @@
         }
         .uk-text-lead {
             font-size: 1.25rem;
-            color: #686c7b;
+            color: $global-secondary-background;
         }
     }
 
@@ -760,7 +760,7 @@
                 left: calc(30% - 2px);
                 bottom: 0;
                 width: $timeline-border-width;
-                background: $global-primary-background;
+                background: $global-secondary-background;
             }
     
             &:after {
@@ -797,7 +797,7 @@
                     width: $timeline-dot-diameter;
                     height: $timeline-dot-diameter;
                     border: $timeline-border-width solid $global-primary-background;
-                    background-color: #fff;
+                    background-color: $global-secondary-background;
                     border-radius: 100%;
                     top: 0;
                     right: - 14px;

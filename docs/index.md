@@ -3,7 +3,7 @@ layout: page
 width: expand
 hero:
     subtitle:  Transform data. Transform possibilities.
-    image: didot-icon-256.png
+    image: didot-title.png
     search: false
 ---
 
