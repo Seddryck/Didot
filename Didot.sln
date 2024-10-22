@@ -24,6 +24,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{95E83BA6
 		Dockerfile = Dockerfile
 		github.ps1 = github.ps1
 		GitVersion.yml = GitVersion.yml
+		package.ps1 = package.ps1
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Project", "Project", "{09BDFA96-353F-419D-890A-D9B9045E66DD}"
