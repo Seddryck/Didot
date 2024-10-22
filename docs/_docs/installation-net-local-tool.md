@@ -1,5 +1,5 @@
 ---
 title: Install as a .NET local tool
-tags: [quick-start, installation]
+tags: [installation]
 ---
 More to come

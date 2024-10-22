@@ -1,6 +1,6 @@
 ---
 title: Install from GitHub Releases on Linux
-tags: [quick-start, installation]
+tags: [installation]
 ---
 ## Step 1: Download the ZIP from the GitHub Release
 
@@ -11,7 +11,7 @@ tags: [quick-start, installation]
 Example:
 
 ```bash
-wget https://github.com/Seddryck/Didot/releases/latest/download/didot.zip
+wget https://github.com/Seddryck/Didot/releases/download/v0.13.0/Didot-0.13.0-net7.0-linux-x64.zip
 ```
 
 ## Step 2: Extract the ZIP File

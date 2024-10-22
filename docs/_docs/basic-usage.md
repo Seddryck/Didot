@@ -1,6 +1,6 @@
 ---
 title: Basic usage of the CLI
-tags: [quick-start]
+tags: [quick-start, cli-usage]
 ---
 The command to run Didot is simply `didot`. When executing it, you need to provide three required arguments:
 

@@ -1,7 +1,7 @@
 ---
 title: Install Didot
 subtitle: Get started in seconds - Install Didot and unlock the power of dynamic file generation!
-tags: [quick-start]
+tags: [quick-start, installation]
 ---
 Installing Didot is quick and easy, no matter your setup! Whether you're a seasoned developer or just getting started, we've got multiple ways for you to get up and running:
 

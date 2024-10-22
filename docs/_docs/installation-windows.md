@@ -10,8 +10,8 @@ tags: [quick-start, installation]
 
 Example:
 
-   ```
-   https://github.com/Seddryck/Didot/releases/latest/
+   ```pwsh
+   https://github.com/Seddryck/Didot/releases/download/v0.13.0/Didot-0.13.0-net7.0-win-x64.zip
    ```
 
 ## Step 2: Extract the ZIP File

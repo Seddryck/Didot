@@ -1,6 +1,6 @@
 ---
 title: Supported data formats and template engines
-tags: [quick-start]
+tags: [quick-start, cli-usage]
 ---
 **Didot** is a command-line tool designed for generating files based on templating. It supports *YAML*, *JSON*, and *XML* as source data formats and provides flexibility in templating through both *Scriban*, *Liquid*, *Handlebars*, *StringTemplate* and *SmartFormat* templates languages. With Didot, you can easily automate file generation by combining structured data from YAML, JSON, or XML files with customizable templates using Scriban or Liquid.
 

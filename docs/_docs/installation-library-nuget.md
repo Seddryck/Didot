@@ -1,5 +1,5 @@
 ---
 title: Installation as a library from NuGet
-tags: [quick-start, installation]
+tags: [installation]
 ---
 More to come

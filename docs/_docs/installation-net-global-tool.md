@@ -1,6 +1,6 @@
 ---
 title: Install as a .NET global tool
-tags: [quick-start, installation]
+tags: [installation]
 ---
 A .NET global tool is a console application that you can install and run from any directory on your machine. Here's a guide on how to perform a global installation of a .NET tool:
 

@@ -1,6 +1,6 @@
 ---
 title: Install from Docker
-tags: [quick-start, installation]
+tags: [installation]
 ---
 ## Prerequisites
 

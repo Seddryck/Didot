@@ -1,6 +1,6 @@
 ---
 title: Other options
-tags: [quick-start]
+tags: [cli-usage]
 ---
 ## With data from the console
 
