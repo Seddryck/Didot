@@ -41,12 +41,12 @@ $button-default-hover-color:                     $global-emphasis-color !default
 $button-default-active-background:               darken($button-default-background, 10%) !default;
 $button-default-active-color:                    $global-emphasis-color !default;
 
-$button-primary-background:                      $global-primary-background !default;
+$button-primary-background:                      $global-muted-color;
 $button-primary-color:                           $global-inverse-color !default;
-$button-primary-hover-background:                darken($button-primary-background, 5%) !default;
-$button-primary-hover-color:                     $global-inverse-color !default;
-$button-primary-active-background:               darken($button-primary-background, 10%) !default;
-$button-primary-active-color:                    $global-inverse-color !default;
+$button-primary-hover-background:                darken($button-primary-background, 5%);
+$button-primary-hover-color:                     #89C1C3;
+$button-primary-active-background:               darken($button-primary-background, 10%);
+$button-primary-active-color:                    #89C1C3;
 
 $button-secondary-background:                    $global-secondary-background !default;
 $button-secondary-color:                         $global-inverse-color !default;

@@ -52,8 +52,8 @@ $card-badge-right:                              $card-badge-top !default;
 $card-hover-background:                         $global-secondary-background !default;
 
 $card-default-background:                       $global-secondary-background;
-$card-default-color:                            $global-background;
-$card-default-title-color:                      $global-emphasis-color !default;
+$card-default-color:                            #89C1C3;
+$card-default-title-color:                      $global-primary-background;
 $card-default-hover-background:                 darken($card-default-background, 5%);
 
 $card-primary-background:                       $global-primary-background !default;
