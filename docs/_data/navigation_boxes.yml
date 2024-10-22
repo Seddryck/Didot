@@ -1,0 +1,16 @@
+# Boxes include navigation
+
+- title: Why Didot
+  desc: Didot - Transform your data into seamless, dynamic outputs, effortlessly.
+  icon: check
+  doc: why-didot
+
+- title: Installation
+  desc: Get started fast with installation and basic usages
+  icon: cog
+  doc: installation-didot
+
+- title: Usage
+  desc: Learn about how to configure inputs and outputs
+  icon: settings
+  doc: basic-usage
