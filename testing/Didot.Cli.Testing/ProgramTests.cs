@@ -142,8 +142,8 @@ public class ProgramTests
     [Test]
     [TestCase("-x", ':')]
     [TestCase("-x ", ':')]
-    [TestCase("--Extension=", ':')]
-    public void Main_AddNewExtension_Success(string token, char delimiter)
+    [TestCase("--EngineExtension=", ':')]
+    public void Main_AddNewEngineExtension_Success(string token, char delimiter)
     {
         string extension = "txt";
         string engineTag = "handlebars";
@@ -169,7 +169,7 @@ public class ProgramTests
 
     [Test]
     [TestCase("liquid", "fluid")]
-    public void Main_ReplaceExistingExtension_Success(string extension, string engineTag)
+    public void Main_ReplaceExistingEngineExtension_Success(string extension, string engineTag)
     {
         using var source = new StreamReader(Path.Combine("data", $"data-01.json"));
         Console.SetIn(source);
@@ -194,8 +194,8 @@ public class ProgramTests
     [Test]
     [TestCase("-x", ':', ';')]
     [TestCase("-x ", ':', ';')]
-    [TestCase("--Extension=", ':', ';')]
-    public void Main_AddAndReplaceExtensions_Success(string token, char delimiter, char separator)
+    [TestCase("--EngineExtension=", ':', ';')]
+    public void Main_AddAndReplaceEngineExtensions_Success(string token, char delimiter, char separator)
     {
         var extensions = new string[] { "txt", "liquid" };
         var engineTags = new string[] { "handlebars", "fluid" };
@@ -209,6 +209,85 @@ public class ProgramTests
         var args = new string[]
         {
             $"-ttemplate/template-01.{extensions[0]}",
+            extensionArgs,
+            $"-pjson"
+        };
+        Program.Main(args);
+
+        MemoryStream.Position = 0;
+        using (var reader = new StreamReader(MemoryStream))
+        {
+            var consoleOutput = reader.ReadToEnd().Standardize();
+            var expected = File.ReadAllText(Path.Combine("Expectation", $"expectation-01.txt")).Standardize();
+            Assert.That(consoleOutput, Is.EqualTo(expected));
+        }
+    }
+
+    [Test]
+    [TestCase("-X", ':')]
+    [TestCase("-X ", ':')]
+    [TestCase("--ParserExtension=", ':')]
+    public void Main_AddNewParserExtension_Success(string token, char delimiter)
+    {
+        string extension = "fm";
+        string engineTag = "frontmatter";
+
+        var args = new string[]
+        {
+            $"-ttemplate/template-01.hbs",
+            $"-sdata/data-01.{extension}",
+            $"{token}{extension}{delimiter}{engineTag}",
+        };
+        Program.Main(args);
+
+        MemoryStream.Position = 0;
+        using (var reader = new StreamReader(MemoryStream))
+        {
+            var consoleOutput = reader.ReadToEnd().Standardize();
+            var expected = File.ReadAllText(Path.Combine("Expectation", $"expectation-01.txt")).Standardize();
+            Assert.That(consoleOutput, Is.EqualTo(expected));
+        }
+    }
+
+    [Test]
+    [TestCase("md", "FrontMatter")]
+    public void Main_ReplaceExistingParserExtension_Success(string extension, string engineTag)
+    {
+        var args = new string[]
+        {
+            $"-ttemplate/template-01.hbs",
+            $"-sdata/data-01.md",
+            $"-X{extension}:{engineTag}",
+            $"-pFrontMatter"
+        };
+        Program.Main(args);
+
+        MemoryStream.Position = 0;
+        using (var reader = new StreamReader(MemoryStream))
+        {
+            var consoleOutput = reader.ReadToEnd().Standardize();
+            var expected = File.ReadAllText(Path.Combine("Expectation", $"expectation-01.txt")).Standardize();
+            Assert.That(consoleOutput, Is.EqualTo(expected));
+        }
+    }
+
+    [Test]
+    [TestCase("-X", ':', ';')]
+    [TestCase("-X ", ':', ';')]
+    [TestCase("--ParserExtension=", ':', ';')]
+    public void Main_AddAndReplaceParserExtensions_Success(string token, char delimiter, char separator)
+    {
+        var extensions = new string[] { "fm", "dat" };
+        var parserTags = new string[] { "FrontMatter", "Json" };
+
+        var extensionArgs = $"{token}";
+        for (int i = 0; i < extensions.Length; i++)
+            extensionArgs += $"{extensions[i]}{delimiter}{parserTags[i]}{separator}";
+
+        var args = new string[]
+        {
+            $"-ttemplate/template-01.hbs",
+            $"-sdata/data-01.{extensions[1]}",
             extensionArgs,
             $"-pjson"
         };

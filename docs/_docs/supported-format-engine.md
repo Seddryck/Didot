@@ -2,13 +2,15 @@
 title: Supported data formats and template engines
 tags: [quick-start, cli-usage]
 ---
-**Didot** is a command-line tool designed for generating files based on templating. It supports *YAML*, *JSON*, and *XML* as source data formats and provides flexibility in templating through both *Scriban*, *Liquid*, *Handlebars*, *StringTemplate* and *SmartFormat* templates languages. With Didot, you can easily automate file generation by combining structured data from YAML, JSON, or XML files with customizable templates using Scriban or Liquid.
+**Didot** is a command-line tool designed for generating files based on templating. It supports *YAML*, *JSON*, *FrontMatter/Markdown* and *XML* as source data formats and provides flexibility in templating through both *Scriban*, *Liquid*, *Handlebars*, *StringTemplate* and *SmartFormat* templates languages. With Didot, you can easily automate file generation by combining structured data from YAML, JSON, or XML files with customizable templates using Scriban or Liquid.
 
 ### Supported Data Formats
 
 - **YAML**: Files with the `.yaml` or `.yml` extension are parsed using a YAML source parser.
 - **JSON**: Files with the `.json` extension are parsed using a JSON source parser.
 - **XML**: Files with the `.xml` extension are parsed using an XML source parser.
+- **FrontMatterMarkdown**: Files with the `.md` extension are parsed using YAML parser for the FrontMatter located between two lines of 3 dashes (`---`). The markdown part is added to the key *Content* (overidden any pre-existing value of *Content*).
+- **FrontMatter**: Similar to *FrontMatterMarkdown* but doesn't parse the markdown content.
 
 ### Supported Templating Engines
 
