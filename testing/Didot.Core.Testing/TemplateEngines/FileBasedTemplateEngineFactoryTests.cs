@@ -19,7 +19,7 @@ public class FileBasedTemplateEngineFactoryTests
     public void GetSourceParser_Extension_CorrectParser(string extension, Type expected)
     {
         var factory = new FileBasedTemplateEngineFactory();
-        var parser = factory.GetTemplateEngine(extension);
+        var parser = factory.GetTemplateEngineByExtension(extension);
         Assert.That(parser, Is.TypeOf(expected));
     }
 
@@ -28,6 +28,29 @@ public class FileBasedTemplateEngineFactoryTests
     public void GetSourceParser_NotSupportedExtension_Exception(string extension)
     {
         var factory = new FileBasedTemplateEngineFactory();
-        Assert.Throws<NotSupportedException>(() => factory.GetTemplateEngine(extension));
+        Assert.Throws<NotSupportedException>(() => factory.GetTemplateEngineByExtension(extension));
+    }
+
+    [Test]
+    public void GetSourceParser_AddedSourceParser_Exception()
+    {
+        var factory = new FileBasedTemplateEngineFactory();
+        factory.AddOrReplaceEngine(".txt", new HandlebarsWrapper());
+        var parser = factory.GetTemplateEngineByExtension(".txt");
+        Assert.That(parser, Is.TypeOf<HandlebarsWrapper>());
+    }
+
+    [Test]
+    [TestCase("scriban", typeof(ScribanWrapper))]
+    [TestCase("dotliquid", typeof(DotLiquidWrapper))]
+    [TestCase("handlebars", typeof(HandlebarsWrapper))]
+    [TestCase("smartformat", typeof(SmartFormatWrapper))]
+    [TestCase("stringtemplate", typeof(StringTemplateWrapper))]
+    [TestCase("fluid", typeof(FluidWrapper))]
+    public void GetSourceParser_ByTag_Successful(string tag, Type expected)
+    {
+        var factory = new FileBasedTemplateEngineFactory();
+        var parser = factory.GetTemplateEngineByTag(tag);
+        Assert.That(parser, Is.TypeOf(expected));
     }
 }

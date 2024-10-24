@@ -5,7 +5,10 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Didot.Core.TemplateEngines;
+using HandlebarsDotNet;
 using NUnit.Framework;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Didot.Cli.Testing;
 
@@ -113,6 +116,110 @@ public class ProgramTests
         {
             var consoleOutput = reader.ReadToEnd().Standardize();
             Assert.That(consoleOutput, Does.StartWith("Error parsing arguments."));
+        }
+    }
+
+    [Test]
+    public void Main_ForcedEngine_Success()
+    {
+        var args = new string[]
+        {
+            $"-ttemplate/template-01.liquid",
+            $"-sdata/data-01.json",
+            $"-efluid"
+        };
+        Program.Main(args);
+
+        MemoryStream.Position = 0;
+        using (var reader = new StreamReader(MemoryStream))
+        {
+            var consoleOutput = reader.ReadToEnd().Standardize();
+            var expected = File.ReadAllText(Path.Combine("Expectation", $"expectation-01.txt")).Standardize();
+            Assert.That(consoleOutput, Is.EqualTo(expected));
+        }
+    }
+
+    [Test]
+    [TestCase("-x", ':')]
+    [TestCase("-x ", ':')]
+    [TestCase("--Extension=", ':')]
+    public void Main_AddNewExtension_Success(string token, char delimiter)
+    {
+        string extension = "txt";
+        string engineTag = "handlebars";
+        using var source = new StreamReader(Path.Combine("data", $"data-01.json"));
+        Console.SetIn(source);
+
+        var args = new string[]
+        {
+            $"-ttemplate/template-01.{extension}",
+            $"{token}{extension}{delimiter}{engineTag}",
+            $"-pjson"
+        };
+        Program.Main(args);
+
+        MemoryStream.Position = 0;
+        using (var reader = new StreamReader(MemoryStream))
+        {
+            var consoleOutput = reader.ReadToEnd().Standardize();
+            var expected = File.ReadAllText(Path.Combine("Expectation", $"expectation-01.txt")).Standardize();
+            Assert.That(consoleOutput, Is.EqualTo(expected));
+        }
+    }
+
+    [Test]
+    [TestCase("liquid", "fluid")]
+    public void Main_ReplaceExistingExtension_Success(string extension, string engineTag)
+    {
+        using var source = new StreamReader(Path.Combine("data", $"data-01.json"));
+        Console.SetIn(source);
+
+        var args = new string[]
+        {
+            $"-ttemplate/template-01.{extension}",
+            $"-x{extension}:{engineTag}",
+            $"-pjson"
+        };
+        Program.Main(args);
+
+        MemoryStream.Position = 0;
+        using (var reader = new StreamReader(MemoryStream))
+        {
+            var consoleOutput = reader.ReadToEnd().Standardize();
+            var expected = File.ReadAllText(Path.Combine("Expectation", $"expectation-01.txt")).Standardize();
+            Assert.That(consoleOutput, Is.EqualTo(expected));
+        }
+    }
+
+    [Test]
+    [TestCase("-x", ':', ';')]
+    [TestCase("-x ", ':', ';')]
+    [TestCase("--Extension=", ':', ';')]
+    public void Main_AddAndReplaceExtensions_Success(string token, char delimiter, char separator)
+    {
+        var extensions = new string[] { "txt", "liquid" };
+        var engineTags = new string[] { "handlebars", "fluid" };
+        using var source = new StreamReader(Path.Combine("data", $"data-01.json"));
+        Console.SetIn(source);
+
+        var extensionArgs = $"{token}";
+        for (int i = 0; i < extensions.Length; i++)
+            extensionArgs += $"{extensions[i]}{delimiter}{engineTags[i]}{separator}";
+
+        var args = new string[]
+        {
+            $"-ttemplate/template-01.{extensions[0]}",
+            extensionArgs,
+            $"-pjson"
+        };
+        Program.Main(args);
+
+        MemoryStream.Position = 0;
+        using (var reader = new StreamReader(MemoryStream))
+        {
+            var consoleOutput = reader.ReadToEnd().Standardize();
+            var expected = File.ReadAllText(Path.Combine("Expectation", $"expectation-01.txt")).Standardize();
+            Assert.That(consoleOutput, Is.EqualTo(expected));
         }
     }
 }

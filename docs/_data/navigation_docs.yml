@@ -15,5 +15,7 @@
 - title: Usage
   docs:
   - supported-format-engine
+  - cli-options
   - basic-usage
-  - other-options
+  - use-stdin-stdout
+  - specify-engine-parser

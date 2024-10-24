@@ -1,5 +1,5 @@
 ---
-title: Other options
+title: Usage of StdIn and StdOut
 tags: [cli-usage]
 ---
 ## With data from the console
@@ -8,7 +8,7 @@ tags: [cli-usage]
 - `-p, --Parser`: Defines the parser to use when the source data is provided through the console. Accepted values are `yaml`, `json` or `xml`. This option is required only when the `--Source` argument is omitted or if the extension of the source file is not recognized to determine the parser.
 
 <sub>CMD:</sub>
-```cmd
+```bash
 type data.json | didot --StdIn -t template.hbs -p json -o output.txt
 ```
 

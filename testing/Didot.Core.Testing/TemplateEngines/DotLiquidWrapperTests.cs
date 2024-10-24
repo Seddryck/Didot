@@ -10,10 +10,13 @@ using NUnit.Framework;
 namespace Didot.Core.Testing.TemplateEngines;
 public class DotLiquidWrapperTests
 {
+    protected virtual ITemplateEngine GetEngine()
+        => new DotLiquidWrapper();
+
     [Test]
     public void Render_SingleProperty_Successful()
     {
-        var engine = new DotLiquidWrapper();
+        var engine = GetEngine();
         var model = new Dictionary<string, object>()
             { { "Name", "World"} };
         var result = engine.Render("Hello {{model.Name}}", new { model });
@@ -23,7 +26,7 @@ public class DotLiquidWrapperTests
     [Test]
     public void Render_MultiProperty_Successful()
     {
-        var engine = new DotLiquidWrapper();
+        var engine = GetEngine();
         var model = new Dictionary<string, object>()
             { { "Name", "Albert"}, {"Age", 30 } };
         var result = engine.Render("Hello {{model.Name}}. You're {{model.Age}} years old.", new { model });
@@ -33,7 +36,7 @@ public class DotLiquidWrapperTests
     [Test]
     public void Render_NestedProperties_Successful()
     {
-        var engine = new DotLiquidWrapper();
+        var engine = GetEngine();
         var name = new Dictionary<string, object>()
             { { "First", "Albert"}, {"Last", "Einstein" } };
         var model = new Dictionary<string, object>()
@@ -45,7 +48,7 @@ public class DotLiquidWrapperTests
     [Test]
     public void Render_ArrayItems_Successful()
     {
-        var engine = new DotLiquidWrapper();
+        var engine = GetEngine();
         var albert = new Dictionary<string, object>()
             { { "Name", "Albert"}, {"Age", 30 } };
         var nikola = new Dictionary<string, object>()
@@ -58,7 +61,7 @@ public class DotLiquidWrapperTests
     [Test]
     public void Render_ArrayLoop_Successful()
     {
-        var engine = new DotLiquidWrapper();
+        var engine = GetEngine();
         var albert = new Dictionary<string, object>()
             { { "Name", "Albert"}, {"Age", 30 } };
         var nikola = new Dictionary<string, object>()
@@ -71,7 +74,7 @@ public class DotLiquidWrapperTests
     [Test]
     public void Render_Stream_Successful()
     {
-        var engine = new DotLiquidWrapper();
+        var engine = GetEngine();
         var model = new Dictionary<string, object>()
             { { "Name", "World"} };
         using var stream = new MemoryStream(Encoding.UTF8.GetBytes("Hello {{model.Name}}"));

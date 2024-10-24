@@ -49,9 +49,7 @@ public class Program
         var parserFactory = new FileBasedSourceParserFactory();
         var parser = parserFactory.GetSourceParser(sourceExtension);
 
-        var templateExtension = new FileInfo(opts.Template).Extension;
-        var engineFactory = new FileBasedTemplateEngineFactory();
-        var engine = engineFactory.GetTemplateEngine(templateExtension);
+        var engine = GetTemplateEngine(opts);
 
         var printer = new Printer(engine, parser);
         using var template = File.OpenRead(opts.Template);
@@ -63,9 +61,42 @@ public class Program
             File.WriteAllText(opts.Output, output);
     }
 
+    private static ITemplateEngine GetTemplateEngine(Options opts)
+    {
+        var engineFactory = new FileBasedTemplateEngineFactory();
+        if (opts.Engine is not null)
+            return engineFactory.GetTemplateEngineByTag(opts.Engine);
+        else
+        {
+            if (opts.Extensions is not null && opts.Extensions.Any())
+            {
+                foreach (var extensionAssociation in opts.Extensions)
+                {
+                    if (!string.IsNullOrWhiteSpace(extensionAssociation))
+                    {
+                        var split = extensionAssociation.Split(':');
+                        if (split.Length != 2)
+                            throw new Exception(extensionAssociation);
+                        (string extension, var engineTag) = (split[0], split[1]);
+                        var engineInstance = engineFactory.GetTemplateEngineByTag(engineTag);
+                        engineFactory.AddOrReplaceEngine(extension, engineInstance);
+                    }
+                }
+            }
+            var templateExtension = new FileInfo(opts.Template).Extension;
+            return engineFactory.GetTemplateEngineByExtension(templateExtension);
+        }
+    }
+
     static void HandleParseError(IEnumerable<Error> errs)
     {
-        // Handle errors here (e.g., show help message)
-        System.Console.WriteLine("Error parsing arguments.");
+        Console.WriteLine("Error parsing arguments.");
+        foreach (var error in errs)
+        {
+            if (error is UnknownOptionError unknown)
+                Console.WriteLine($"{unknown.Tag}: {unknown.Token}");
+            else
+                Console.WriteLine(error);
+        }
     }
 }
