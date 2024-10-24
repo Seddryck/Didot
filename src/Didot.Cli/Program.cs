@@ -46,9 +46,7 @@ public class Program
             return new MemoryStream(inputBytes);
         }
 
-        var parserFactory = new FileBasedSourceParserFactory();
-        var parser = parserFactory.GetSourceParser(sourceExtension);
-
+        var parser = GetSourceParser(opts);
         var engine = GetTemplateEngine(opts);
 
         var printer = new Printer(engine, parser);
@@ -61,16 +59,16 @@ public class Program
             File.WriteAllText(opts.Output, output);
     }
 
-    private static ITemplateEngine GetTemplateEngine(Options opts)
+    private static ISourceParser GetSourceParser(Options opts)
     {
-        var engineFactory = new FileBasedTemplateEngineFactory();
-        if (opts.Engine is not null)
-            return engineFactory.GetTemplateEngineByTag(opts.Engine);
+        var parserFactory = new FileBasedSourceParserFactory();
+        if (opts.Parser is not null)
+            return parserFactory.GetByTag(opts.Parser);
         else
         {
-            if (opts.Extensions is not null && opts.Extensions.Any())
+            if (opts.ParserExtensions is not null && opts.ParserExtensions.Any())
             {
-                foreach (var extensionAssociation in opts.Extensions)
+                foreach (var extensionAssociation in opts.ParserExtensions)
                 {
                     if (!string.IsNullOrWhiteSpace(extensionAssociation))
                     {
@@ -78,13 +76,40 @@ public class Program
                         if (split.Length != 2)
                             throw new Exception(extensionAssociation);
                         (string extension, var engineTag) = (split[0], split[1]);
-                        var engineInstance = engineFactory.GetTemplateEngineByTag(engineTag);
-                        engineFactory.AddOrReplaceEngine(extension, engineInstance);
+                        var instance = parserFactory.GetByTag(engineTag);
+                        parserFactory.AddOrReplace(extension, instance);
+                    }
+                }
+            }
+            var sourceExtension = new FileInfo(opts.Source!).Extension;
+            return parserFactory.GetByExtension(sourceExtension);
+        }
+    }
+
+    private static ITemplateEngine GetTemplateEngine(Options opts)
+    {
+        var engineFactory = new FileBasedTemplateEngineFactory();
+        if (opts.Engine is not null)
+            return engineFactory.GetByTag(opts.Engine);
+        else
+        {
+            if (opts.EngineExtensions is not null && opts.EngineExtensions.Any())
+            {
+                foreach (var extensionAssociation in opts.EngineExtensions)
+                {
+                    if (!string.IsNullOrWhiteSpace(extensionAssociation))
+                    {
+                        var split = extensionAssociation.Split(':');
+                        if (split.Length != 2)
+                            throw new Exception(extensionAssociation);
+                        (string extension, var engineTag) = (split[0], split[1]);
+                        var engineInstance = engineFactory.GetByTag(engineTag);
+                        engineFactory.AddOrReplace(extension, engineInstance);
                     }
                 }
             }
             var templateExtension = new FileInfo(opts.Template).Extension;
-            return engineFactory.GetTemplateEngineByExtension(templateExtension);
+            return engineFactory.GetByExtension(templateExtension);
         }
     }
 

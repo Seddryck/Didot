@@ -37,7 +37,7 @@ If an option accepts multiple values, the values should be separated by a semico
 ### Key-Value Pairs
 
 For key-value pairs, the key is followed by a colon (:), and then the value. Multiple key-value pairs, if allowed, should be separated by a semicolon (;).
-**Example**: `--Extensions=txt:handlebars;liquid:fluid`
+**Example**: `--ParserExtension=txt:handlebars;liquid:fluid`
 
 ## Didot Options Explained
 
@@ -58,6 +58,15 @@ Description: Specifies the template engine to use (scriban, fluid, dotliquid, ha
 Accept: single value. When omitted Didot will select the engine based on the extension of the template file.
 Example: `-efluid` or `--Engine=fluid`
 
+### Engine files' extension association option
+
+Shortcut: -x
+Long: --EngineExtension
+Description: Specifies additional or replacing association between a file extension and an engine for automatic detection
+Accept: multiple key-value pairs.
+Mandatory: no.
+Example: `-xtxt:handlebars;liquid:fluid` or `--EngineExtension=txt:handlebars;liquid:fluid`
+
 ### Source Option
 
 Shortcut: `-s`
@@ -75,6 +84,15 @@ Description: Specifies the parser to use (YAML, JSON, XML).
 Accept: single value.
 Mandatory: no expect if `--StdIn` is specified. When omitted Didot will select the parser based on the extension of the source file
 Example: `-pYAML` or `--Parser=YAML`
+
+### Parser files' extension association option
+
+Shortcut: -X
+Long: --ParserExtension
+Description: Specifies additional or replacing association between a file extension and a parser for automatic detection
+Accept: multiple key-value pairs.
+Mandatory: no.
+Example: `-xtxt:yaml;dat:json` or `--ParserExtension=txt:yaml;dat:json`
 
 ### StdIn Option
 
@@ -94,11 +112,3 @@ Accept: single value.
 Mandatory: no.
 Example: `-opath/to/output` or `--Output=path/to/output`
 
-### Extension option
-
-Shortcut: -x
-Long: --Extension
-Description: Specifies additional or replacing link between extensions and engine for automatic detection
-Accept: multiple key-value pairs.
-Mandatory: no.
-Example: `-xtxt:handlebars;liquid:fluid` or `--Extension=txt:handlebars;liquid:fluid`

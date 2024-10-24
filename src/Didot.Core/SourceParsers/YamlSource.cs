@@ -10,15 +10,15 @@ using System.IO;
 namespace Didot.Core.SourceParsers;
 public class YamlSource : ISourceParser
 {
-    private static IDeserializer GetDeserializer()
+    protected static IDeserializer GetDeserializer()
         => new DeserializerBuilder()
             .WithNamingConvention(CamelCaseNamingConvention.Instance)
             .Build();
 
-    public object Parse(string content)
+    public virtual object Parse(string content)
         => GetDeserializer().Deserialize<dynamic>(content);
 
-    public object Parse(Stream stream)
+    public virtual object Parse(Stream stream)
     {
         using (var reader = new StreamReader(stream))
         return GetDeserializer().Deserialize<dynamic>(reader);

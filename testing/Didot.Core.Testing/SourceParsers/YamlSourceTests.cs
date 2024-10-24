@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Didot.Core.SourceParsers;
 using NUnit.Framework;
 
-namespace Didot.Core.Testing.DataSourceEngines;
+namespace Didot.Core.Testing.SourceParsers;
 public class YamlSourceTests
 {
     [Test]

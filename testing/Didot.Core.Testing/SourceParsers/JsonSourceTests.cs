@@ -8,14 +8,14 @@ using System.Threading.Tasks;
 using Didot.Core.SourceParsers;
 using NUnit.Framework;
 
-namespace Didot.Core.Testing.DataSourceEngines;
-public class XmlSourceTests
+namespace Didot.Core.Testing.SourceParsers;
+public class JsonSourceTests
 {
     [Test]
     public void Parse_SingleProperty_Successful()
     {
-        var source = new XmlSource();
-        dynamic result = source.Parse("<Root><Name>World</Name></Root>");
+        var source = new JsonSource();
+        dynamic result = source.Parse("{\"Name\": \"World\"}");
         Assert.That(result, Is.AssignableTo<IDictionary<string, object>>());
         Assert.That(result, Does.ContainKey("Name"));
         Assert.That(result["Name"], Is.EqualTo("World"));
@@ -24,20 +24,20 @@ public class XmlSourceTests
     [Test]
     public void Parse_MultipleProperties_Successful()
     {
-        var source = new XmlSource();
-        dynamic result = source.Parse("<Root><Name>Albert</Name>\r\n<Age>30</Age></Root>");
+        var source = new JsonSource();
+        dynamic result = source.Parse("{\"Name\": \"Albert\", \"Age\": 30}");
         Assert.That(result, Is.AssignableTo<IDictionary<string, object>>());
         Assert.That(result, Does.ContainKey("Name"));
         Assert.That(result["Name"], Is.EqualTo("Albert"));
         Assert.That(result, Does.ContainKey("Age"));
-        Assert.That(result["Age"], Is.EqualTo("30"));
+        Assert.That(result["Age"], Is.EqualTo(30));
     }
 
     [Test]
     public void Parse_NestedProperties_Successful()
     {
-        var source = new XmlSource();
-        dynamic result = source.Parse("<Root><Name><First>Albert</First>\r\n<Last>Einstein</Last></Name>\r\n<Age>30</Age></Root>");
+        var source = new JsonSource();
+        dynamic result = source.Parse("{\"Name\":\r\n  {\"First\": \"Albert\",\r\n  \"Last\": \"Einstein\"\r\n}, \"Age\": 30}");
         Assert.That(result, Is.AssignableTo<IDictionary<string, object>>());
         Assert.That(result, Does.ContainKey("Name"));
         Assert.That(result["Name"], Is.AssignableTo<IDictionary<string, object>>());
@@ -46,26 +46,26 @@ public class XmlSourceTests
         Assert.That(result["Name"], Does.ContainKey("Last"));
         Assert.That(result["Name"]["Last"], Is.EqualTo("Einstein"));
         Assert.That(result, Does.ContainKey("Age"));
-        Assert.That(result["Age"], Is.EqualTo("30"));
+        Assert.That(result["Age"], Is.EqualTo(30));
     }
 
     [Test]
     public void Parse_Array_Successful()
     {
-        var source = new XmlSource();
-        dynamic result = source.Parse("<Root><Employee><Name>Albert</Name>\r\n<Age>30</Age></Employee>\r\n<Employee><Name>Nikola</Name>\r\n<Age>50</Age></Employee></Root>");
+        var source = new JsonSource();
+        dynamic result = source.Parse("[{\"Name\": \"Albert\",\r\n  \"Age\": 30},\r\n{\"Name\": \"Nikola\",\r\n  \"Age\": 50}]");
         Assert.That(result, Is.AssignableTo<List<object>>());
         Assert.That(result[0], Does.ContainKey("Name"));
         Assert.That(result[0]["Name"], Is.EqualTo("Albert"));
         Assert.That(result[0], Does.ContainKey("Age"));
-        Assert.That(result[0]["Age"], Is.EqualTo("30"));
+        Assert.That(result[0]["Age"], Is.EqualTo(30));
     }
 
     [Test]
     public void Parse_Stream_Successful()
     {
-        var source = new XmlSource();
-        using var stream = new MemoryStream(Encoding.UTF8.GetBytes("<Root><Name>World</Name></Root>"));
+        var source = new JsonSource();
+        using var stream = new MemoryStream(Encoding.UTF8.GetBytes("{\"Name\": \"World\"}"));
         dynamic result = source.Parse(stream);
         Assert.That(result, Is.AssignableTo<IDictionary<string, object>>());
         Assert.That(result, Does.ContainKey("Name"));

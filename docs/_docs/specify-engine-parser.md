@@ -4,6 +4,8 @@ tags: [cli-usage]
 ---
 ## Specify the data parser
 
+### Direct specification of data parser
+
 - `-p, --Parser`: Defines the parser to use when the source data is provided through the console. Accepted values are `yaml`, `json` or `xml`. This option is required only when the `--Source` argument is omitted or if the extension of the source file is not recognized to determine the parser.
 
 ```powershell
@@ -17,9 +19,32 @@ In this example:
 - `json` is the parser of input data from the source file.
 - `output.txt` is the file where the output will be rendered.
 
+### Add or replace extension associations for data parsers
+
+- `-X, --ParserExtension`: Defines the association of a file's extension with a parser. More than one association can be specified.
+
+```powershell
+didot -t template.txt -s data.json -X dat:Json;fm:FrontMatter -o output.txt
+```
+
+In this example:
+
+- `template.txt` is the template file.
+- `data.json` is the data JSON file.
+- `dat:Json;fm:FrontMatter` is associating JSON to the extension `.dat` and FrontMatter to the extension `.fm`.
+- `output.txt` is the file where the output will be rendered.
+
+By default following file's extension association are registered:
+
+- `.json` to JSON
+- `.yaml` to YAML
+- `.yml` to YAML
+- `.xml` to XML
+- `.md` to FrontMatterMarkdown
+
 ## Specify the template engine
 
-### Direct specification
+### Direct specification of template engine
 
 - `-e, --Engine`: Defines the template engine to use independantly of the template file extension. Accepted values are `scriban`, `dotliquid`, `fluid`, `handlebars`, `stringtemplate`, `smartformat`.
 
@@ -34,9 +59,9 @@ In this example:
 - `handlebars` is the template engine to use.
 - `output.txt` is the file where the output will be rendered.
 
-### Add or replace extension associations
+### Add or replace extension associations for template engines
 
-- `-x, --Extensions`: Defines the association of a file's extension with a template engine. More than one can be specified.
+- `-x, --EngineExtension`: Defines the association of a file's extension with a template engine. More than one can be specified.
 
 ```powershell
 didot -t template.txt -s data.json -x txt:handlebars;liquid:fluid -o output.txt

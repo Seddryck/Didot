@@ -23,8 +23,11 @@ public class Options
     [Option('e', "Engine", Required = false, HelpText = "Force a specific engine.")]
     public string? Engine { get; set; }
 
-    [Option('x', "Extension", Required = false, Separator = ';', HelpText = "Associate an extension to a specific engine.")]
-    public required IEnumerable<string> Extensions { get; set; }
+    [Option('x', "EngineExtension", Required = false, Separator = ';', HelpText = "Associate an extension to a specific engine.")]
+    public required IEnumerable<string> EngineExtensions { get; set; }
+
+    [Option('X', "ParserExtension", Required = false, Separator = ';', HelpText = "Associate an extension to a specific engine.")]
+    public required IEnumerable<string> ParserExtensions { get; set; }
 
     [Option('o', "Output", Required = false, HelpText = "Path to the generated file.")]
     public string? Output { get; set; }
