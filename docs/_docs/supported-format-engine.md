@@ -19,11 +19,17 @@ Didot utilizes some templating engines, which allow for powerful and flexible te
   - Supports customizable scripting with rich expressions and filters.
   - Can work with JSON and YAML data sources.
   - Typical Use Case: Config file generation, reports, email templates, or any templating scenario not tied to a specific web framework.
-- **Liquid**: Templates with the `.liquid` extension are parsed using a dotLiquid template engine. DotLiquid is a .NET port of the Liquid templating engine used by platforms like Shopify.
+- **DotLiquid**: Templates with the `.liquid` extension are parsed using a dotLiquid template engine. DotLiquid is a .NET port of the Liquid templating engine used by platforms like Shopify.
   - Secure (no access to system objects), making it ideal for user-generated templates.
   - Allows both dynamic and static templating.
   - Supports filters, tags, and various control flow structures.
   - Typical Use Case: SaaS applications, dynamic content rendering, email templates.
+- **Fluid**: Fully compatible with `.liquid` templates. The Fluid template engine is a fast and secure .NET-based port of the Liquid templating language.
+  - Optimized for performance, with careful memory management and faster parsing.
+  - Highly secure (does not expose system objects) and well-suited for user-generated content and environments requiring strict control over input and output.
+  - Rich templating features, supporting filters, tags, loops, and conditionals.
+  - Flexible and customizable, making it easy to extend the engine with custom filters or tags.
+  - Typical Use Case: Applications with complex data bindings, dynamic content generation in websites, CMS platforms, and document templating systems.
 - **Handlebars**: Templates with the `.hbs` extension are parsed using a Handlebars template engine. Handlebars C# port of the popular JavaScript Handlebars templating engine.
   - Simple syntax for generating HTML or text files from templates.
   - Support for helpers, partial templates, and block helpers.

@@ -20,6 +20,12 @@ public class Options
     [Option('p', "Parser", Required = false, HelpText = "The parser to use when reading from StdIn.")]
     public string? Parser { get; set; }
 
+    [Option('e', "Engine", Required = false, HelpText = "Force a specific engine.")]
+    public string? Engine { get; set; }
+
+    [Option('x', "Extension", Required = false, Separator = ';', HelpText = "Associate an extension to a specific engine.")]
+    public required IEnumerable<string> Extensions { get; set; }
+
     [Option('o', "Output", Required = false, HelpText = "Path to the generated file.")]
     public string? Output { get; set; }
 }

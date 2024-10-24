@@ -10,7 +10,7 @@ tags: [quick-start, installation]
 
 Example:
 
-   ```pwsh
+   ```powershell
    https://github.com/Seddryck/Didot/releases/download/v0.13.0/Didot-0.13.0-net7.0-win-x64.zip
    ```
 
