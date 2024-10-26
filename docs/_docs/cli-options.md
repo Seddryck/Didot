@@ -41,7 +41,7 @@ For key-value pairs, the key is followed by a colon (:), and then the value. Mul
 
 ## Didot Options Explained
 
-### Template Option
+### Template option
 
 Shortcut: `-t`
 Long: `--Template`
@@ -52,63 +52,64 @@ Example: `-tpath/to/template` or `--Template=path/to/template`
 
 ### Engine option
 
-Shortcut: -e
-Long: --Engine
-Description: Specifies the template engine to use (scriban, fluid, dotliquid, handlebars, smartformat, stringtemplate).
-Accept: single value. When omitted Didot will select the engine based on the extension of the template file.
-Example: `-efluid` or `--Engine=fluid`
+- Shortcut: `-e`
+- Long: `--Engine`
+- Description: Specifies the template engine to use (scriban, fluid, dotliquid, handlebars, smartformat, stringtemplate).
+- Accept: single value. When omitted Didot will select the engine based on the extension of the template file.
+- Example: `-efluid` or `--Engine=fluid`
 
 ### Engine files' extension association option
 
-Shortcut: -x
-Long: --EngineExtension
-Description: Specifies additional or replacing association between a file extension and an engine for automatic detection
-Accept: multiple key-value pairs.
-Mandatory: no.
-Example: `-xtxt:handlebars;liquid:fluid` or `--EngineExtension=txt:handlebars;liquid:fluid`
+- Shortcut: `-x`
+- Long: `--EngineExtension`
+- Description: Specifies additional or replacing association between a file extension and an engine for automatic detection
+- Accept: multiple key-value pairs.
+- Mandatory: no.
+- Example: `-xtxt:handlebars;liquid:fluid` or `--EngineExtension=txt:handlebars;liquid:fluid`
 
-### Source Option
+### Source option
 
-Shortcut: `-s`
-Long: `--Source`
-Description: Specifies the path to the source file. If omitted, input can be taken from StdIn.
-Accept: single value.
-Exclusive: can't be set with the parameter `--StdIn`
-Example: `-spath/to/source` or `--Source=path/to/source`
+- Shortcut: `-s`
+- Long: `--Source`
+- Accept: single value or multiple key-value pairs.
+- Description: 
+  - if single value is provided, it specifies the path to the source file. If omitted, input can be taken from StdIn.
+  - if multiple key-value pairs are provided, each of them specifies a part of the model and the key representing the tag in the model.
+- Exclusive: can't be set with the parameter `--StdIn`
+- Example: `-spath/to/source` or `--Source=path/to/source`
 
-### Parser Option
+### Parser option
 
-Shortcut: -p
-Long: --Parser
-Description: Specifies the parser to use (YAML, JSON, XML).
-Accept: single value.
-Mandatory: no expect if `--StdIn` is specified. When omitted Didot will select the parser based on the extension of the source file
-Example: `-pYAML` or `--Parser=YAML`
+- Shortcut: `-p`
+- Long: `--Parser`
+- Description: Specifies the parser to use (YAML, JSON, XML).
+- Accept: single value.
+- Mandatory: no expect if `--StdIn` is specified. When omitted Didot will select the parser based on the extension of the source file
+- Example: `-pYAML` or `--Parser=YAML`
 
 ### Parser files' extension association option
 
-Shortcut: -X
-Long: --ParserExtension
-Description: Specifies additional or replacing association between a file extension and a parser for automatic detection
-Accept: multiple key-value pairs.
-Mandatory: no.
-Example: `-xtxt:yaml;dat:json` or `--ParserExtension=txt:yaml;dat:json`
+- Shortcut: `-X`
+- Long: `--ParserExtension`
+- Description: Specifies additional or replacing association between a file extension and a parser for automatic detection
+- Accept: multiple key-value pairs.
+- Mandatory: no.
+- Example: `-xtxt:yaml;dat:json` or `--ParserExtension=txt:yaml;dat:json`
 
-### StdIn Option
+### StdIn option
 
-Shortcut: `-i`
-Long: --StdIn
-Description: Specifies the input to the source data as coming from the StdIn.
-Accept: switch value.
-Exclusive: can't be set with the parameter `--Source`
-Example: `-i` or `--StdIn`
+- Shortcut: `-i`
+- Long: `--StdIn`
+- Description: Specifies the input to the source data as coming from the StdIn.
+- Accept: switch value.
+- Exclusive: can't be set with the parameter `--Source`
+- Example: `-i` or `--StdIn`
 
-### Output Option
+### Output option
 
-Shortcut: `-o`
-Long: `--Output`
-Description: Specifies the path to the generated output file. If omitted, output is rendered to StdOut.
-Accept: single value.
-Mandatory: no.
-Example: `-opath/to/output` or `--Output=path/to/output`
-
+- Shortcut: `-o`
+- Long: `--Output`
+- Description: Specifies the path to the generated output file. If omitted, output is rendered to StdOut.
+- Accept: single value.
+- Mandatory: no.
+- Example: `-opath/to/output` or `--Output=path/to/output`

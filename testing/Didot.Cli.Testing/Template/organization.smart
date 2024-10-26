@@ -1,0 +1,5 @@
+{model.name.acronym} ({model.name.fullname})
+{model.buildings.[0].name} located at {model.buildings.[0].location}
+Other buildings:
+* {model.buildings.[1].name}
+* {model.buildings.[2].name}

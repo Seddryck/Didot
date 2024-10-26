@@ -15,7 +15,8 @@ namespace Didot.Cli.Testing;
 public class ProgramTests
 {
     private static readonly string[] Templates = { "scriban", "liquid", "hbs", "smart", "st" };
-    private static readonly string[] DataSets = { "yaml", "json", "xml" };
+    private static readonly string[] DataSets = { "yaml", "json", "xml", };
+    private static readonly string[] Cases = { "employees", "organization" };
 
     private TextWriter OriginalOutput { get; set; }
     private Stream MemoryStream { get; set; }
@@ -44,14 +45,15 @@ public class ProgramTests
     [Test, Combinatorial]
     public void Main_StdInStdOut_Successful(
             [ValueSource(nameof(Templates))] string engine,
-            [ValueSource(nameof(DataSets))] string data)
+            [ValueSource(nameof(DataSets))] string data,
+            [ValueSource(nameof(Cases))] string caseId)
     {
-        using var source = new StreamReader(Path.Combine("data", $"data-01.{data}"));
+        using var source = new StreamReader(Path.Combine("data", $"{caseId}.{data}"));
         Console.SetIn(source);
 
         var args = new string[]
         {
-            $"-ttemplate/template-01.{engine}",
+            $"-ttemplate/{caseId}.{engine}",
             $"-p{data}"
         };
         Program.Main(args);
@@ -60,7 +62,7 @@ public class ProgramTests
         using (var reader = new StreamReader(MemoryStream))
         {
             var consoleOutput = reader.ReadToEnd().Standardize();
-            var expected = File.ReadAllText(Path.Combine("Expectation", $"expectation-01.txt")).Standardize();
+            var expected = File.ReadAllText(Path.Combine("Expectation", $"{caseId}.txt")).Standardize();
             Assert.That(consoleOutput, Is.EqualTo(expected));
         }
     }
@@ -68,18 +70,19 @@ public class ProgramTests
     [Test, Combinatorial]
     public void Main_SourceFileOutputFile_Successful(
             [ValueSource(nameof(Templates))] string engine,
-            [ValueSource(nameof(DataSets))] string data)
-    {
+            [ValueSource(nameof(DataSets))] string data,
+            [ValueSource(nameof(Cases))] string caseId)
+    { 
         var args = new string[]
         {
-            $"-ttemplate/template-01.{engine}",
-            $"-sdata/data-01.{data}",
-            $"-ooutput-01-{engine}-{data}.txt"
+            $"-ttemplate/{caseId}.{engine}",
+            $"-sdata/{caseId}.{data}",
+            $"-ooutput-{caseId}-{engine}-{data}.txt"
         };
         Program.Main(args);
 
-        var output = File.ReadAllText($"output-01-{engine}-{data}.txt").Standardize();
-        var expected = File.ReadAllText(Path.Combine("Expectation", $"expectation-01.txt")).Standardize();
+        var output = File.ReadAllText($"output-{caseId}-{engine}-{data}.txt").Standardize();
+        var expected = File.ReadAllText(Path.Combine("Expectation", $"{caseId}.txt")).Standardize();
         Assert.That(output, Is.EqualTo(expected));
     }
 
@@ -88,7 +91,7 @@ public class ProgramTests
     {
         var args = new string[]
         {
-            $"-ttemplate/template-01.hbs",
+            $"-ttemplate/employees.hbs",
             $"-ofailure.txt"
         };
         Program.Main(args);
@@ -124,8 +127,8 @@ public class ProgramTests
     {
         var args = new string[]
         {
-            $"-ttemplate/template-01.liquid",
-            $"-sdata/data-01.json",
+            $"-ttemplate/employees.liquid",
+            $"-sdata/employees.json",
             $"-efluid"
         };
         Program.Main(args);
@@ -134,7 +137,7 @@ public class ProgramTests
         using (var reader = new StreamReader(MemoryStream))
         {
             var consoleOutput = reader.ReadToEnd().Standardize();
-            var expected = File.ReadAllText(Path.Combine("Expectation", $"expectation-01.txt")).Standardize();
+            var expected = File.ReadAllText(Path.Combine("Expectation", $"employees.txt")).Standardize();
             Assert.That(consoleOutput, Is.EqualTo(expected));
         }
     }
@@ -147,12 +150,12 @@ public class ProgramTests
     {
         string extension = "txt";
         string engineTag = "handlebars";
-        using var source = new StreamReader(Path.Combine("data", $"data-01.json"));
+        using var source = new StreamReader(Path.Combine("data", $"employees.json"));
         Console.SetIn(source);
 
         var args = new string[]
         {
-            $"-ttemplate/template-01.{extension}",
+            $"-ttemplate/employees.{extension}",
             $"{token}{extension}{delimiter}{engineTag}",
             $"-pjson"
         };
@@ -162,7 +165,7 @@ public class ProgramTests
         using (var reader = new StreamReader(MemoryStream))
         {
             var consoleOutput = reader.ReadToEnd().Standardize();
-            var expected = File.ReadAllText(Path.Combine("Expectation", $"expectation-01.txt")).Standardize();
+            var expected = File.ReadAllText(Path.Combine("Expectation", $"employees.txt")).Standardize();
             Assert.That(consoleOutput, Is.EqualTo(expected));
         }
     }
@@ -171,12 +174,12 @@ public class ProgramTests
     [TestCase("liquid", "fluid")]
     public void Main_ReplaceExistingEngineExtension_Success(string extension, string engineTag)
     {
-        using var source = new StreamReader(Path.Combine("data", $"data-01.json"));
+        using var source = new StreamReader(Path.Combine("data", $"employees.json"));
         Console.SetIn(source);
 
         var args = new string[]
         {
-            $"-ttemplate/template-01.{extension}",
+            $"-ttemplate/employees.{extension}",
             $"-x{extension}:{engineTag}",
             $"-pjson"
         };
@@ -186,7 +189,7 @@ public class ProgramTests
         using (var reader = new StreamReader(MemoryStream))
         {
             var consoleOutput = reader.ReadToEnd().Standardize();
-            var expected = File.ReadAllText(Path.Combine("Expectation", $"expectation-01.txt")).Standardize();
+            var expected = File.ReadAllText(Path.Combine("Expectation", $"employees.txt")).Standardize();
             Assert.That(consoleOutput, Is.EqualTo(expected));
         }
     }
@@ -199,7 +202,7 @@ public class ProgramTests
     {
         var extensions = new string[] { "txt", "liquid" };
         var engineTags = new string[] { "handlebars", "fluid" };
-        using var source = new StreamReader(Path.Combine("data", $"data-01.json"));
+        using var source = new StreamReader(Path.Combine("data", $"employees.json"));
         Console.SetIn(source);
 
         var extensionArgs = $"{token}";
@@ -208,7 +211,7 @@ public class ProgramTests
 
         var args = new string[]
         {
-            $"-ttemplate/template-01.{extensions[0]}",
+            $"-ttemplate/employees.{extensions[0]}",
             extensionArgs,
             $"-pjson"
         };
@@ -218,7 +221,7 @@ public class ProgramTests
         using (var reader = new StreamReader(MemoryStream))
         {
             var consoleOutput = reader.ReadToEnd().Standardize();
-            var expected = File.ReadAllText(Path.Combine("Expectation", $"expectation-01.txt")).Standardize();
+            var expected = File.ReadAllText(Path.Combine("Expectation", $"employees.txt")).Standardize();
             Assert.That(consoleOutput, Is.EqualTo(expected));
         }
     }
@@ -234,8 +237,8 @@ public class ProgramTests
 
         var args = new string[]
         {
-            $"-ttemplate/template-01.hbs",
-            $"-sdata/data-01.{extension}",
+            $"-ttemplate/employees.hbs",
+            $"-sdata/employees.{extension}",
             $"{token}{extension}{delimiter}{engineTag}",
         };
         Program.Main(args);
@@ -244,7 +247,7 @@ public class ProgramTests
         using (var reader = new StreamReader(MemoryStream))
         {
             var consoleOutput = reader.ReadToEnd().Standardize();
-            var expected = File.ReadAllText(Path.Combine("Expectation", $"expectation-01.txt")).Standardize();
+            var expected = File.ReadAllText(Path.Combine("Expectation", $"employees.txt")).Standardize();
             Assert.That(consoleOutput, Is.EqualTo(expected));
         }
     }
@@ -255,8 +258,8 @@ public class ProgramTests
     {
         var args = new string[]
         {
-            $"-ttemplate/template-01.hbs",
-            $"-sdata/data-01.md",
+            $"-ttemplate/employees.hbs",
+            $"-sdata/employees.md",
             $"-X{extension}:{engineTag}",
             $"-pFrontMatter"
         };
@@ -266,7 +269,7 @@ public class ProgramTests
         using (var reader = new StreamReader(MemoryStream))
         {
             var consoleOutput = reader.ReadToEnd().Standardize();
-            var expected = File.ReadAllText(Path.Combine("Expectation", $"expectation-01.txt")).Standardize();
+            var expected = File.ReadAllText(Path.Combine("Expectation", $"employees.txt")).Standardize();
             Assert.That(consoleOutput, Is.EqualTo(expected));
         }
     }
@@ -286,8 +289,8 @@ public class ProgramTests
 
         var args = new string[]
         {
-            $"-ttemplate/template-01.hbs",
-            $"-sdata/data-01.{extensions[1]}",
+            $"-ttemplate/employees.hbs",
+            $"-sdata/employees.{extensions[1]}",
             extensionArgs,
             $"-pjson"
         };
@@ -297,7 +300,39 @@ public class ProgramTests
         using (var reader = new StreamReader(MemoryStream))
         {
             var consoleOutput = reader.ReadToEnd().Standardize();
-            var expected = File.ReadAllText(Path.Combine("Expectation", $"expectation-01.txt")).Standardize();
+            var expected = File.ReadAllText(Path.Combine("Expectation", $"employees.txt")).Standardize();
+            Assert.That(consoleOutput, Is.EqualTo(expected));
+        }
+    }
+
+    [Test]
+    [TestCase("-s", ':', ';')]
+    [TestCase("-s ", ':', ';')]
+    [TestCase("--Source=", ':', ';')]
+    public void Main_ManySources_Success(string token, char delimiter, char separator)
+    {
+        var sources = new KeyValuePair<string, string>[]
+        {
+            new("organization", "data/organization.json"),
+            new("employees", "data/employees.yaml")
+        };
+
+        var extensionArgs = $"{token}";
+        foreach (var source in sources)
+            extensionArgs += $"{source.Key}{delimiter}{source.Value}{separator}";
+
+        var args = new string[]
+        {
+            $"-ttemplate/full_organization.liquid",
+            extensionArgs,
+        };
+        Program.Main(args);
+
+        MemoryStream.Position = 0;
+        using (var reader = new StreamReader(MemoryStream))
+        {
+            var consoleOutput = reader.ReadToEnd().Standardize();
+            var expected = File.ReadAllText(Path.Combine("Expectation", $"full_organization.txt")).Standardize();
             Assert.That(consoleOutput, Is.EqualTo(expected));
         }
     }

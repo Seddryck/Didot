@@ -17,8 +17,8 @@ public class PrinterTests
         parser.Setup(p => p.Parse(It.IsAny<string>())).Returns(new Dictionary<string, object>() { { "Name", "World" } });
         var engine = new Mock<ITemplateEngine>();
         engine.Setup(e => e.Render(It.IsAny<string>(), It.IsAny<Dictionary<string, object>>())).Returns("Hello World");
-        var printer = new Printer(engine.Object, parser.Object);
-        printer.Render("Hello {{model.Name}}", "Name: World");
+        var printer = new Printer(engine.Object);
+        printer.Render("Hello {{model.Name}}", "Name: World", parser.Object);
         parser.Verify(p => p.Parse("Name: World"), Times.Once);
         engine.Verify(e => e.Render("Hello {{model.Name}}", It.IsAny<object>()), Times.Once);
     }
@@ -31,8 +31,8 @@ public class PrinterTests
         parser.Setup(p => p.Parse(It.IsAny<Stream>())).Returns(new Dictionary<string, object>() { { "Name", "World" } });
         var engine = new Mock<ITemplateEngine>();
         engine.Setup(e => e.Render(It.IsAny<string>(), It.IsAny<Dictionary<string, object>>())).Returns("Hello World");
-        var printer = new Printer(engine.Object, parser.Object);
-        printer.Render("Hello {{model.Name}}", stream);
+        var printer = new Printer(engine.Object);
+        printer.Render("Hello {{model.Name}}", stream, parser.Object);
         parser.Verify(p => p.Parse(stream), Times.Once);
         engine.Verify(e => e.Render("Hello {{model.Name}}", It.IsAny<object>()), Times.Once);
     }
@@ -46,8 +46,8 @@ public class PrinterTests
         parser.Setup(p => p.Parse(It.IsAny<Stream>())).Returns(new Dictionary<string, object>() { { "Name", "World" } });
         var engine = new Mock<ITemplateEngine>();
         engine.Setup(e => e.Render(It.IsAny<string>(), It.IsAny<Dictionary<string, object>>())).Returns("Hello World");
-        var printer = new Printer(engine.Object, parser.Object);
-        printer.Render(streamTemplate, streamData);
+        var printer = new Printer(engine.Object);
+        printer.Render(streamTemplate, streamData, parser.Object);
         parser.Verify(p => p.Parse(streamData), Times.Once);
         engine.Verify(e => e.Render(streamTemplate, It.IsAny<object>()), Times.Once);
     }
@@ -60,8 +60,8 @@ public class PrinterTests
         parser.Setup(p => p.Parse(It.IsAny<Stream>())).Returns(new Dictionary<string, object>() { { "Name", "World" } });
         var engine = new Mock<ITemplateEngine>();
         engine.Setup(e => e.Render(It.IsAny<string>(), It.IsAny<Dictionary<string, object>>())).Returns("Hello World");
-        var printer = new Printer(engine.Object, parser.Object);
-        printer.Render(streamTemplate, "Name: World");
+        var printer = new Printer(engine.Object);
+        printer.Render(streamTemplate, "Name: World", parser.Object);
         parser.Verify(p => p.Parse("Name: World"), Times.Once);
         engine.Verify(e => e.Render(streamTemplate, It.IsAny<object>()), Times.Once);
     }

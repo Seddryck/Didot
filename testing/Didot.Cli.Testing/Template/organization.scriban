@@ -1,0 +1,9 @@
+{{ model.name.acronym }} ({{ model.name.fullname }})
+{{ for building in model.buildings -}}
+  {{- if for.index == 0 -}}
+    {{~ building.name }} located at {{ building.location }}
+    {{~ "Other buildings:" }}
+  {{- else }}
+    {{~ "*" }} {{ building.name }}
+  {{- end -}}
+{{- end -}}

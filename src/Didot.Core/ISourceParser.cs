@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Didot.Core;
+
 public interface ISourceParser
 {
     object Parse(string content);
