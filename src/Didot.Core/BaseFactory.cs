@@ -28,6 +28,12 @@ public abstract class BaseFactory<T>
             items.Add(extension, item);
     }
 
+    public virtual void AddOrReplace(IEnumerable<KeyValuePair<string, T>> keyValues)
+        => keyValues.ToList().ForEach(kv => AddOrReplace(kv.Key, kv.Value));
+
+    public virtual void AddOrReplace(IEnumerable<KeyValuePair<string, string>> keyValues)
+        => keyValues.ToList().ForEach(kv => AddOrReplace(kv.Key, GetByTag(kv.Value)));
+
     protected virtual string NormalizeExtension(string extension)
     {
         extension = extension.Trim().ToLowerInvariant();

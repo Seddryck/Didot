@@ -1,0 +1,9 @@
+{{ model.name.acronym }} ({{ model.name.fullname }})
+{%- for building in model.buildings -%}
+  {%- if forloop.first -%}
+    {{- building.name }} located at {{ building.location }}
+    {{--}}Other buildings:
+  {%- else -%}
+    {{--}}* {{ building.name }}
+  {%- endif -%}
+{%- endfor -%}

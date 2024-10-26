@@ -11,8 +11,8 @@ public class Options
     [Option('t', "Template", Required = true, HelpText = "Path to the template file.")]
     public required string Template { get; set; }
 
-    [Option('s', "Source", Required = false, HelpText = "Path to the source file.", SetName = "Input")]
-    public string? Source { get; set; }
+    [Option('s', "Source", Required = false, Separator = ';', HelpText = "Path to the source file.", SetName = "Input")]
+    public IEnumerable<string>? Sources { get; set; }
 
     [Option('i', "StdIn", Required = false, HelpText = "Indicates that the input will come from stdin.", SetName = "Input")]
     public bool StdIn { get; set; }

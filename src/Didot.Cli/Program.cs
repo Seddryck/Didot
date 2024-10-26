@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Text;
 using CommandLine;
 using CommandLine.Text;
@@ -19,7 +20,7 @@ public class Program
 
     static void RunWithOptions(Options opts)
     {
-        if (string.IsNullOrEmpty(opts.Source) && string.IsNullOrEmpty(opts.Parser))
+        if ((opts.Sources is null || !opts.Sources.Any()) && string.IsNullOrEmpty(opts.Parser))
         {
             Console.WriteLine("Error: Missing input source. You must provide either the --parser option when reading from StdIn or the --source option for a file. At least one of these options is required.");
             return;
@@ -31,27 +32,68 @@ public class Program
             return;
         }
 
+
+        var split = (string input) =>
+        {
+            var parts = input.Split(':');
+            if (parts.Length > 2)
+                throw new ArgumentException(nameof(input));
+            if (parts.Length == 1)
+                return new KeyValuePair<string, string>(string.Empty, parts[0]);
+            return new KeyValuePair<string, string>(parts[0].Trim(), parts[1].Trim());
+        };
+
+        var parserFactory = new FileBasedSourceParserFactory();
+        parserFactory.AddOrReplace(opts.ParserExtensions
+                        ?.Where(x => !string.IsNullOrEmpty(x))
+                        ?.Select(x => split(x))
+                        ?? []);
+
+        var engineFactory = new FileBasedTemplateEngineFactory();
+        engineFactory.AddOrReplace(opts.EngineExtensions
+                        ?.Where(x => !string.IsNullOrEmpty(x))
+                        ?.Select(x => split(x))
+                        ?? []);
+
         var sourceExtension = string.IsNullOrEmpty(opts.Parser)
-                                ? new FileInfo(opts.Source!).Extension
+                                ? new FileInfo(opts.Sources!.First()).Extension
                                 : $".{opts.Parser!.ToLowerInvariant()}";
 
-        using var source = string.IsNullOrEmpty(opts.Source)
-                                ? copyInStream()
-                                : File.OpenRead(opts.Source);
-
-        static Stream copyInStream()
+        var sources = new Dictionary<string, ISource>();
+        foreach (var source in opts.Sources?.Where(x => !string.IsNullOrEmpty(x)).DefaultIfEmpty(null) ?? [null])
         {
-            string consoleInput = Console.In.ReadToEnd();
-            byte[] inputBytes = Encoding.UTF8.GetBytes(consoleInput);
-            return new MemoryStream(inputBytes);
+            KeyValuePair<string, string>? sourceTag = string.IsNullOrEmpty(source) ? null : split(source);
+            var sourceStream = sourceTag is null
+                                    ? copyInStream()
+                                    : File.OpenRead(sourceTag.Value.Value);
+
+            static Stream copyInStream()
+            {
+                string consoleInput = Console.In.ReadToEnd();
+                byte[] inputBytes = Encoding.UTF8.GetBytes(consoleInput);
+                return new MemoryStream(inputBytes);
+            }
+
+            var parser = GetSourceParser(parserFactory, sourceTag.HasValue ? sourceTag.Value.Value : null, opts);
+            sources.Add(sourceTag.HasValue ? sourceTag.Value.Key : string.Empty
+                , new Source(sourceStream, parser));
         }
+        var engine = GetTemplateEngine(engineFactory, opts);
 
-        var parser = GetSourceParser(opts);
-        var engine = GetTemplateEngine(opts);
-
-        var printer = new Printer(engine, parser);
-        using var template = File.OpenRead(opts.Template);
-        var output = printer.Render(template, source);
+        var printer = new Printer(engine);
+        var output = string.Empty;
+        try
+        {
+            using var template = File.OpenRead(opts.Template);
+            output = printer.Render(template, sources);
+        }
+        catch (Exception )
+        { throw; }
+        finally
+        {
+            foreach (var source in sources)
+                source.Value.Content.Dispose();
+        }
 
         if (string.IsNullOrEmpty(opts.Output))
             Console.Out.WriteLine(output);
@@ -59,57 +101,26 @@ public class Program
             File.WriteAllText(opts.Output, output);
     }
 
-    private static ISourceParser GetSourceParser(Options opts)
+
+    private static ISourceParser GetSourceParser(FileBasedSourceParserFactory factory, string? sourceFile, Options opts)
     {
-        var parserFactory = new FileBasedSourceParserFactory();
         if (opts.Parser is not null)
-            return parserFactory.GetByTag(opts.Parser);
+            return factory.GetByTag(opts.Parser);
         else
         {
-            if (opts.ParserExtensions is not null && opts.ParserExtensions.Any())
-            {
-                foreach (var extensionAssociation in opts.ParserExtensions)
-                {
-                    if (!string.IsNullOrWhiteSpace(extensionAssociation))
-                    {
-                        var split = extensionAssociation.Split(':');
-                        if (split.Length != 2)
-                            throw new Exception(extensionAssociation);
-                        (string extension, var engineTag) = (split[0], split[1]);
-                        var instance = parserFactory.GetByTag(engineTag);
-                        parserFactory.AddOrReplace(extension, instance);
-                    }
-                }
-            }
-            var sourceExtension = new FileInfo(opts.Source!).Extension;
-            return parserFactory.GetByExtension(sourceExtension);
+            var sourceExtension = new FileInfo(sourceFile!).Extension;
+            return factory.GetByExtension(sourceExtension);
         }
     }
 
-    private static ITemplateEngine GetTemplateEngine(Options opts)
+    private static ITemplateEngine GetTemplateEngine(FileBasedTemplateEngineFactory factory, Options opts)
     {
-        var engineFactory = new FileBasedTemplateEngineFactory();
         if (opts.Engine is not null)
-            return engineFactory.GetByTag(opts.Engine);
+            return factory.GetByTag(opts.Engine);
         else
         {
-            if (opts.EngineExtensions is not null && opts.EngineExtensions.Any())
-            {
-                foreach (var extensionAssociation in opts.EngineExtensions)
-                {
-                    if (!string.IsNullOrWhiteSpace(extensionAssociation))
-                    {
-                        var split = extensionAssociation.Split(':');
-                        if (split.Length != 2)
-                            throw new Exception(extensionAssociation);
-                        (string extension, var engineTag) = (split[0], split[1]);
-                        var engineInstance = engineFactory.GetByTag(engineTag);
-                        engineFactory.AddOrReplace(extension, engineInstance);
-                    }
-                }
-            }
             var templateExtension = new FileInfo(opts.Template).Extension;
-            return engineFactory.GetByExtension(templateExtension);
+            return factory.GetByExtension(templateExtension);
         }
     }
 

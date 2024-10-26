@@ -1,0 +1,24 @@
+<organization>
+    <name>
+        <fullname>National Aeronautics and Space Administration</fullname>
+        <acronym>NASA</acronym>
+    </name>
+    <founded>1958-07-29</founded>
+    <buildings>
+        <building>
+            <name>NASA Headquarters</name>
+            <type>Administration and Policy</type>
+            <location>300 E Street SW, Washington, DC 20546</location>
+        </building>
+        <building>
+            <name>Johnson Space Center</name>
+            <type>Human Spaceflight Training, Research, and Mission Control</type>
+            <location>2101 NASA Parkway, Houston, TX 77058</location>
+        </building>
+        <building>
+            <name>Kennedy Space Center</name>
+            <type>Launch Operations and Ground Support</type>
+            <location>Space Commerce Way, Merritt Island, FL 32899</location>
+        </building>
+    </buildings>
+</organization>

@@ -6,9 +6,9 @@ tags: [cli-usage]
 
 ### Direct specification of data parser
 
-- `-p, --Parser`: Defines the parser to use when the source data is provided through the console. Accepted values are `yaml`, `json` or `xml`. This option is required only when the `--Source` argument is omitted or if the extension of the source file is not recognized to determine the parser.
+- `-p, --Parser`: Defines the parser to use when the source data is provided through the console. Accepted values are `yaml`, `json`, `xml`, `FrontMatter` or `FrontMatterMarkdown`. This option is required only when the `--Source` argument is omitted or if the extension of the source file is not recognized to determine the parser. For [multiple sources](../multiple-sources), this option applies to all files, regardless of their extensions or any pre-assigned engine associations.
 
-```powershell
+```bash
 didot -t template.hbs -s data.txt -p json -o output.txt
 ```
 
@@ -23,7 +23,7 @@ In this example:
 
 - `-X, --ParserExtension`: Defines the association of a file's extension with a parser. More than one association can be specified.
 
-```powershell
+```bash
 didot -t template.txt -s data.json -X dat:Json;fm:FrontMatter -o output.txt
 ```
 

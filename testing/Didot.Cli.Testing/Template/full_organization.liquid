@@ -1,0 +1,13 @@
+{{ model.organization.name.acronym }} ({{ model.organization.name.fullname }})
+{%- for building in model.organization.buildings -%}
+  {%- if forloop.first -%}
+    {{- building.name }} located at {{ building.location }}
+    {{--}}Other buildings:
+  {%- else -%}
+    {{--}}* {{ building.name }}
+  {%- endif -%}
+{%- endfor -%}
+Employees:
+{% for employee in model.employees -%}
+    {{--}}* {{ employee.name.first }} {{ employee.name.last }} is {{ employee.age }} years old.
+{% endfor %}
