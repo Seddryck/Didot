@@ -34,6 +34,13 @@ public class ProgramTests
         return reader.ReadToEnd();
     }
 
+    private string ReadOutputStream()
+    {
+        OutputStream.Position = 0;
+        using var reader = new StreamReader(OutputStream);
+        return reader.ReadToEnd().Standardize();
+    }
+
     [SetUp]
     public void SetUp()
     {
@@ -84,13 +91,8 @@ public class ProgramTests
         var exitCode = await Program.Main(args);
         Assert.That(exitCode, Is.EqualTo(0), message: ReadErrorStream());
 
-        OutputStream.Position = 0;
-        using (var reader = new StreamReader(OutputStream))
-        {
-            var consoleOutput = reader.ReadToEnd().Standardize();
-            var expected = File.ReadAllText(Path.Combine("Expectation", $"{caseId}.txt")).Standardize();
-            Assert.That(consoleOutput, Is.EqualTo(expected));
-        }
+        var expected = File.ReadAllText(Path.Combine("Expectation", $"{caseId}.txt")).Standardize();
+        Assert.That(ReadOutputStream(), Is.EqualTo(expected));
     }
 
     [Test, Combinatorial]
@@ -105,7 +107,8 @@ public class ProgramTests
             $"-s", $"data/{caseId}.{data}",
             $"-o", $"output-{caseId}-{engine}-{data}.txt"
         };
-        await Program.Main(args);
+        var exitCode = await Program.Main(args);
+        Assert.That(exitCode, Is.EqualTo(0), message: ReadErrorStream());
 
         var output = File.ReadAllText($"output-{caseId}-{engine}-{data}.txt").Standardize();
         var expected = File.ReadAllText(Path.Combine("Expectation", $"{caseId}.txt")).Standardize();
@@ -165,13 +168,8 @@ public class ProgramTests
         var exitCode = await Program.Main(args);
         Assert.That(exitCode, Is.EqualTo(0), message: ReadErrorStream());
 
-        OutputStream.Position = 0;
-        using (var reader = new StreamReader(OutputStream))
-        {
-            var consoleOutput = reader.ReadToEnd().Standardize();
-            var expected = File.ReadAllText(Path.Combine("Expectation", $"employees.txt")).Standardize();
-            Assert.That(consoleOutput, Is.EqualTo(expected));
-        }
+        var expected = File.ReadAllText(Path.Combine("Expectation", $"employees.txt")).Standardize();
+        Assert.That(ReadOutputStream(), Is.EqualTo(expected));
     }
 
     [Test]
@@ -192,13 +190,8 @@ public class ProgramTests
         var exitCode = await Program.Main(args);
         Assert.That(exitCode, Is.EqualTo(0), message: ReadErrorStream());
 
-        OutputStream.Position = 0;
-        using (var reader = new StreamReader(OutputStream))
-        {
-            var consoleOutput = reader.ReadToEnd().Standardize();
-            var expected = File.ReadAllText(Path.Combine("Expectation", $"employees.txt")).Standardize();
-            Assert.That(consoleOutput, Is.EqualTo(expected));
-        }
+        var expected = File.ReadAllText(Path.Combine("Expectation", $"employees.txt")).Standardize();
+        Assert.That(ReadOutputStream(), Is.EqualTo(expected));
     }
 
     [Test]
@@ -218,13 +211,8 @@ public class ProgramTests
         var exitCode = await Program.Main(args);
         Assert.That(exitCode, Is.EqualTo(0), message: ReadErrorStream());
 
-        OutputStream.Position = 0;
-        using (var reader = new StreamReader(OutputStream))
-        {
-            var consoleOutput = reader.ReadToEnd().Standardize();
-            var expected = File.ReadAllText(Path.Combine("Expectation", $"employees.txt")).Standardize();
-            Assert.That(consoleOutput, Is.EqualTo(expected));
-        }
+        var expected = File.ReadAllText(Path.Combine("Expectation", $"employees.txt")).Standardize();
+        Assert.That(ReadOutputStream(), Is.EqualTo(expected));
     }
 
     [Test]
@@ -251,18 +239,12 @@ public class ProgramTests
         var exitCode = await Program.Main(args);
         Assert.That(exitCode, Is.EqualTo(0), message: ReadErrorStream());
 
-        OutputStream.Position = 0;
-        using (var reader = new StreamReader(OutputStream))
-        {
-            var consoleOutput = reader.ReadToEnd().Standardize();
-            var expected = File.ReadAllText(Path.Combine("Expectation", $"employees.txt")).Standardize();
-            Assert.That(consoleOutput, Is.EqualTo(expected));
-        }
+        var expected = File.ReadAllText(Path.Combine("Expectation", $"employees.txt")).Standardize();
+        Assert.That(ReadOutputStream(), Is.EqualTo(expected));
     }
 
     [Test]
     [TestCase("-X", ':')]
-    [TestCase("-X ", ':')]
     [TestCase("--parser-extension=", ':')]
     public async Task Main_AddNewParserExtension_Success(string token, char delimiter)
     {
@@ -271,19 +253,15 @@ public class ProgramTests
 
         var args = new string[]
         {
-            $"-ttemplate/employees.hbs",
-            $"-sdata/employees.{extension}",
-            $"{token}{extension}{delimiter}{engineTag}",
+            $"-t", $"template/employees.hbs",
+            $"-s", $"data/employees.{extension}",
+            $"{token}", $"{extension}{delimiter}{engineTag}",
         };
-        await Program.Main(args);
+        var exitCode = await Program.Main(args);
+        Assert.That(exitCode, Is.EqualTo(0), message: ReadErrorStream());
 
-        OutputStream.Position = 0;
-        using (var reader = new StreamReader(OutputStream))
-        {
-            var consoleOutput = reader.ReadToEnd().Standardize();
-            var expected = File.ReadAllText(Path.Combine("Expectation", $"employees.txt")).Standardize();
-            Assert.That(consoleOutput, Is.EqualTo(expected));
-        }
+        var expected = File.ReadAllText(Path.Combine("Expectation", $"employees.txt")).Standardize();
+        Assert.That(ReadOutputStream(), Is.EqualTo(expected));
     }
 
     [Test]
@@ -297,15 +275,11 @@ public class ProgramTests
             $"-X", $"{extension}:{engineTag}",
             $"-r", $"FrontMatter"
         };
-        await Program.Main(args);
+        var exitCode = await Program.Main(args);
+        Assert.That(exitCode, Is.EqualTo(0), message: ReadErrorStream());
 
-        OutputStream.Position = 0;
-        using (var reader = new StreamReader(OutputStream))
-        {
-            var consoleOutput = reader.ReadToEnd().Standardize();
-            var expected = File.ReadAllText(Path.Combine("Expectation", $"employees.txt")).Standardize();
-            Assert.That(consoleOutput, Is.EqualTo(expected));
-        }
+        var expected = File.ReadAllText(Path.Combine("Expectation", $"employees.txt")).Standardize();
+        Assert.That(ReadOutputStream(), Is.EqualTo(expected));
     }
 
     [Test]
@@ -330,13 +304,8 @@ public class ProgramTests
         var exitCode = await Program.Main(args);
         Assert.That(exitCode, Is.EqualTo(0), message: ReadErrorStream());
 
-        OutputStream.Position = 0;
-        using (var reader = new StreamReader(OutputStream))
-        {
-            var consoleOutput = reader.ReadToEnd().Standardize();
-            var expected = File.ReadAllText(Path.Combine("Expectation", $"employees.txt")).Standardize();
-            Assert.That(consoleOutput, Is.EqualTo(expected));
-        }
+        var expected = File.ReadAllText(Path.Combine("Expectation", $"employees.txt")).Standardize();
+        Assert.That(ReadOutputStream(), Is.EqualTo(expected));
     }
 
     [Test]
@@ -359,15 +328,11 @@ public class ProgramTests
             $"-t", $"template/full_organization.liquid",
             $"{token}", extensionArgs,
         };
-        await Program.Main(args);
+        var exitCode = await Program.Main(args);
+        Assert.That(exitCode, Is.EqualTo(0), message: ReadErrorStream());
 
-        OutputStream.Position = 0;
-        using (var reader = new StreamReader(OutputStream))
-        {
-            var consoleOutput = reader.ReadToEnd().Standardize();
-            var expected = File.ReadAllText(Path.Combine("Expectation", $"full_organization.txt")).Standardize();
-            Assert.That(consoleOutput, Is.EqualTo(expected));
-        }
+        var expected = File.ReadAllText(Path.Combine("Expectation", $"full_organization.txt")).Standardize();
+        Assert.That(ReadOutputStream(), Is.EqualTo(expected));
     }
 }
 

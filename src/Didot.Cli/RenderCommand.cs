@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.CommandLine;
-using System.CommandLine.Invocation;
-using System.CommandLine.Parsing;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -10,14 +7,12 @@ using System.Threading.Tasks;
 using Didot.Core;
 using Didot.Core.SourceParsers;
 using Didot.Core.TemplateEngines;
-using HandlebarsDotNet;
-using SmartFormat.Core.Output;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+using Microsoft.Extensions.Logging;
 
 namespace Didot.Cli;
 public class RenderCommand : RootCommand
 {
-    public RenderCommand(RenderOptions options)
+    public RenderCommand(RenderOptions options, ILogger<RenderCommand>? logger = null)
         : base("Didot Command Line Interface")
     {
         options.EngineExtensions.SetDefaultValue(new Dictionary<string, string>());
@@ -69,7 +64,7 @@ public class RenderCommand : RootCommand
             catch { }
         });
 
-        this.SetHandler(Execute
+        this.SetHandler(new RenderCommandHandler(logger).Execute
             , options.Template
             , options.Engine
             , options.EngineExtensions
@@ -77,93 +72,5 @@ public class RenderCommand : RootCommand
             , options.Parser
             , options.ParserExtensions
             , options.Output);
-    }
-
-    public virtual void Execute(
-        string template
-        , string engine
-        , IDictionary<string, string> engineExtensions
-        , IDictionary<string, string> sources
-        , string parser
-        , IDictionary<string, string> parserExtensions
-        , string output
-    )
-    {
-        var parserFactory = GetSourceParserFactory(parserExtensions);
-        var engineFactory = GetTemplateEngineFactory(engineExtensions);
-        var allSources = GetSources(sources, parserFactory, parser);
-
-        var templateEngine = GetTemplateEngine(engineFactory, engine, template);
-        var result = GetRenderedOutput(templateEngine, template, allSources);
-
-        if (string.IsNullOrEmpty(output))
-            Console.Out.WriteLine(result);
-        else
-            File.WriteAllText(output, result);
-    }
-
-    protected virtual FileBasedSourceParserFactory GetSourceParserFactory(IDictionary<string, string> keyValues)
-    {
-        var factory = new FileBasedSourceParserFactory();
-        factory.AddOrReplace(keyValues);
-        return factory;
-    }
-
-    protected virtual FileBasedTemplateEngineFactory GetTemplateEngineFactory(IDictionary<string, string> keyValues)
-    {
-        var factory = new FileBasedTemplateEngineFactory();
-        factory.AddOrReplace(keyValues);
-        return factory;
-    }
-
-    protected virtual Dictionary<string, ISource> GetSources(IDictionary<string, string> sources, FileBasedSourceParserFactory factory, string parserTag)
-    {
-        var result = new Dictionary<string, ISource>();
-        if (sources.Any())
-        {
-            foreach (var source in sources)
-            {
-                var sourceStream = File.OpenRead(source.Value);
-                var parser = string.IsNullOrEmpty(parserTag)
-                                ? factory.GetByExtension(new FileInfo(source.Value).Extension)
-                                : factory.GetByTag(parserTag);
-                result.Add(source.Key, new Source(sourceStream, parser));
-            }
-        }
-        else
-        {
-            var consoleInput = Console.In.ReadToEnd();
-            var inputBytes = Encoding.UTF8.GetBytes(consoleInput);
-            result.Add(string.Empty, new Source(new MemoryStream(inputBytes), factory.GetByTag(parserTag)));
-        }
-        return result;
-    }
-
-    private static ITemplateEngine GetTemplateEngine(FileBasedTemplateEngineFactory factory, string engineTag, string template)
-    {
-        if (!string.IsNullOrEmpty(engineTag))
-            return factory.GetByTag(engineTag);
-        else
-        {
-            var templateExtension = new FileInfo(template).Extension;
-            return factory.GetByExtension(templateExtension);
-        }
-    }
-
-    protected virtual string GetRenderedOutput(ITemplateEngine engine, string template, IDictionary<string, ISource> sources)
-    {
-        try
-        {
-            var printer = new Printer(engine);
-            using var templateStream = File.OpenRead(template);
-            return printer.Render(templateStream, sources);
-        }
-        catch (Exception)
-        { throw; }
-        finally
-        {
-            foreach (var source in sources)
-                source.Value.Content.Dispose();
-        }
     }
 }
