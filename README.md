@@ -234,12 +234,12 @@ In this example:
 
 ### Template option
 
-Shortcut: `-t`
-Long: `--template`
-Description: Specifies the path to the template file.
-Accept: single value.
-Mandatory: yes.
-Example: `-t path/to/template` or `--template=path/to/template`
+- Shortcut: `-t`
+- Long: `--template`
+- Description: Specifies the path to the template file.
+- Accept: single value.
+- Mandatory: yes.
+- Example: `-t path/to/template` or `--template=path/to/template`
 
 ### Engine option
 
@@ -323,17 +323,17 @@ In this example:
 
 <sub>CMD:</sub>
 ```cmd
-type "data.json" | didot --StdIn -t template.hbs -r json
+type "data.json" | didot --stdin -t template.hbs -r json
 ```
 
 <sub>PowerShell:</sub>
 ```powershell
-Get-Content data.json | didot --StdIn -t template.hbs -r json
+Get-Content data.json | didot --stdin -t template.hbs -r json
 ```
 
 <sub>Bash:</sub>
 ```bash
-cat data.json | didot --StdIn -t template.hbs -r json
+cat data.json | didot --stdin -t template.hbs -r json
 ```
 
 In this example:
