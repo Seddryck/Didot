@@ -4,9 +4,9 @@ tags: [quick-start, cli-usage]
 ---
 The command to run Didot is simply `didot`. When executing it, you need to provide three required arguments:
 
-- `-t, --Template` (required): Specifies the path to the Scriban, Liquid, Handlebars, StringTemplate or SmartFormat template file.
-- `-s, --Source`: Specifies the path to the source data file, which can be in YAML, JSON, or XML format. If this argument is not provided, the data will be read from the console input. In such cases, the `-p, --Parser` option becomes mandatory.
-- `-o, --Output`: Specifies the path to the output file where the generated content will be saved. If not provided, the output will be displayed directly in the console.
+- `-t, --template` (required): Specifies the path to the Scriban, Liquid, Handlebars, StringTemplate or SmartFormat template file.
+- `-s, --source`: Specifies the path to the source data file, which can be in YAML, JSON, or XML format. If this argument is not provided, the data will be read from the console input. In such cases, the `-r, --parser` option becomes mandatory.
+- `-o, --output`: Specifies the path to the output file where the generated content will be saved. If not provided, the output will be displayed directly in the console.
 
 **Example:**
 
