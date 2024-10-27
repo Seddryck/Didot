@@ -101,9 +101,9 @@ public class ProgramTests
     {
         var args = new string[]
         {
-            $"-ttemplate/{caseId}.{engine}",
-            $"-sdata/{caseId}.{data}",
-            $"-ooutput-{caseId}-{engine}-{data}.txt"
+            $"-t", $"template/{caseId}.{engine}",
+            $"-s", $"data/{caseId}.{data}",
+            $"-o", $"output-{caseId}-{engine}-{data}.txt"
         };
         await Program.Main(args);
 
