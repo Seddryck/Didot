@@ -178,6 +178,8 @@ To run the executable from any location in the command line, you need to add its
 - **YAML**: Files with the `.yaml` or `.yml` extension are parsed using a YAML source parser.
 - **JSON**: Files with the `.json` extension are parsed using a JSON source parser.
 - **XML**: Files with the `.xml` extension are parsed using an XML source parser.
+- **FrontMatterMarkdown**: Files with the `.md` extension are parsed using an YAML parser for the FrontMatter and the Markdown content is added in the entry *content*.
+- **FrontMatter**: using an YAML parser for the FrontMatter, the Markdown content is not appended to the result.
 
 ### Supported Templating Engines:
 
@@ -212,11 +214,96 @@ Didot utilizes some templating engines, which allow for powerful and flexible te
 
 The command to run Didot is simply `didot`. When executing it, you need to provide three required arguments:
 
-- `-t, --Template` (required): Specifies the path to the Scriban, Liquid, Handlebars, StringTemplate or SmartFormat template file.
-- `-s, --Source`: Specifies the path to the source data file, which can be in YAML, JSON, or XML format. If this argument is not provided, the data will be read from the console input. In such cases, the `-p, --Parser` option becomes mandatory.
-- `-i, --StdIn`: Specifies that the input is coming from the console. This option is required only when the --Source argument is omitted.
-- `-p, --Parser`: Defines the parser to use when the source data is provided through the console. Accepted values are `yaml`, `json` or `xml`. This option is required only when the `--Source` argument is omitted or if the extension of the source file is not recognized to determine the parser.
-- `-o, --Output`: Specifies the path to the output file where the generated content will be saved. If not provided, the output will be displayed directly in the console.
+- `-t, --template` (required): Specifies the path to the Scriban, Liquid, Handlebars, StringTemplate or SmartFormat template file.
+- `-s, --source`: Specifies the path to the source data file, which can be in YAML, JSON, or XML format. If this argument is not provided, the data will be read from the console input. In such cases, the `-r, --parser` option becomes mandatory.
+- `-o, --output`: Specifies the path to the output file where the generated content will be saved. If not provided, the output will be displayed directly in the console.
+
+**Example:**
+
+```bash
+didot -t template.scriban -s data.yaml -o page.html
+```
+
+In this example:
+
+- `template.scriban` is the Scriban template file.
+- `data.yaml` is the source file containing the structured data in YAML format.
+- `page.html` is the output file that will contain the generated content.
+
+### List of options
+
+### Template option
+
+- Shortcut: `-t`
+- Long: `--template`
+- Description: Specifies the path to the template file.
+- Accept: single value.
+- Mandatory: yes.
+- Example: `-t path/to/template` or `--template=path/to/template`
+
+### Engine option
+
+- Shortcut: `-e`
+- Long: `--engine`
+- Description: Specifies the template engine to use (scriban, fluid, dotliquid, handlebars, smartformat, stringtemplate).
+- Accept: single value. When omitted Didot will select the engine based on the extension of the template file.
+- Example: `-e fluid` or `--engine=fluid`
+
+### Engine files' extension association option
+
+- Shortcut: `-x`
+- Long: `--engine-extension`
+- Description: Specifies additional or replacing association between a file extension and an engine for automatic detection
+- Accept: multiple key-value pairs.
+- Mandatory: no.
+- Example: `-x txt:handlebars;liquid:fluid` or `--engine-extension=.txt:handlebars;liquid:fluid`
+
+### Source option
+
+- Shortcut: `-s`
+- Long: `--source`
+- Accept: single value or multiple key-value pairs.
+- Description:
+  - if single value is provided, it specifies the path to the source file. If omitted, input can be taken from StdIn.
+  - if multiple key-value pairs are provided, each of them specifies a part of the model and the key representing the tag in the model.
+- Exclusive: can't be set with the parameter `--StdIn`
+- Example: `-s path/to/source` or `--source=path/to/source` or `--source=foo:path/to/source1;bar:path/to/source1`
+
+### Parser option
+
+- Shortcut: `-r`
+- Long: `--parser`
+- Description: Specifies the parser to use (YAML, JSON, XML).
+- Accept: single value.
+- Mandatory: no expect if `--stdin` is specified. When omitted Didot will select the parser based on the extension of the source file
+- Example: `-r YAML` or `--parser=YAML`
+
+### Parser files' extension association option
+
+- Shortcut: `-X`
+- Long: `--parser-extension`
+- Description: Specifies additional or replacing association between a file extension and a parser for automatic detection
+- Accept: multiple key-value pairs.
+- Mandatory: no.
+- Example: `-X txt:yaml;dat:json` or `--parser-extension=txt:yaml;dat:json`
+
+### StdIn option
+
+- Shortcut: `-i`
+- Long: `--stdin`
+- Description: Specifies the input to the source data as coming from the StdIn.
+- Accept: switch value.
+- Exclusive: can't be set to true with the parameter `--source` and must specified to false when `--source` is not provided.
+- Example: `-i` or `--stdin` or `--stdin false`
+
+### Output option
+
+- Shortcut: `-o`
+- Long: `--output`
+- Description: Specifies the path to the generated output file. If omitted, output is rendered to StdOut.
+- Accept: single value.
+- Mandatory: no.
+- Example: `-o path/to/output` or `--output=path/to/output`
 
 #### Example:
 
@@ -228,31 +315,32 @@ didot -t template.scriban -s data.yaml -o page.html
 
 In this example:
 
-* `template.scriban` is the Scriban template file.
-* `data.yaml` is the source file containing the structured data in YAML format.
-* `page.html` is the output file that will contain the generated content.
+- `template.scriban` is the Scriban template file.
+- `data.yaml` is the source file containing the structured data in YAML format.
+- `page.html` is the output file that will contain the generated content.
 
 ##### With data from the console:
 
 <sub>CMD:</sub>
 ```cmd
-type data.json | didot --StdIn -t template.hbs -p json
+type "data.json" | didot --stdin -t template.hbs -r json
 ```
 
 <sub>PowerShell:</sub>
 ```powershell
-Get-Content data.json | didot --StdIn -t template.hbs -p json
+Get-Content data.json | didot --stdin -t template.hbs -r json
 ```
 
 <sub>Bash:</sub>
 ```bash
-cat data.json | didot --StdIn -t template.hbs -p json
+cat data.json | didot --stdin -t template.hbs -r json
 ```
 
 In this example:
 
-* `template.hbs` is the Handlebars template file.
-* `json` is the parser of input data.
-* the output is redirected to the console.
+- The input data is coming from the console
+- - `template.hbs` is the Handlebars template file.
+- `json` is the parser of input data.
+- the output is redirected to the console.
 
 Make sure that the template file and source file are correctly formatted and aligned with your data model to produce the desired result.

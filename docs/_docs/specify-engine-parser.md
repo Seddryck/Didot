@@ -6,10 +6,10 @@ tags: [cli-usage]
 
 ### Direct specification of data parser
 
-- `-p, --Parser`: Defines the parser to use when the source data is provided through the console. Accepted values are `yaml`, `json`, `xml`, `FrontMatter` or `FrontMatterMarkdown`. This option is required only when the `--Source` argument is omitted or if the extension of the source file is not recognized to determine the parser. For [multiple sources](../multiple-sources), this option applies to all files, regardless of their extensions or any pre-assigned engine associations.
+- `-r, --parser`: Defines the parser to use when the source data is provided through the console. Accepted values are `yaml`, `json`, `xml`, `FrontMatter` or `FrontMatterMarkdown`. This option is required only when the `--source` argument is omitted or if the extension of the source file is not recognized to determine the parser. For [multiple sources](../multiple-sources), this option applies to all files, regardless of their extensions or any pre-assigned engine associations.
 
 ```bash
-didot -t template.hbs -s data.txt -p json -o output.txt
+didot -t template.hbs -s data.txt -r json -o output.txt
 ```
 
 In this example:
@@ -21,7 +21,7 @@ In this example:
 
 ### Add or replace extension associations for data parsers
 
-- `-X, --ParserExtension`: Defines the association of a file's extension with a parser. More than one association can be specified.
+- `-X, --parser-extension`: Defines the association of a file's extension with a parser. More than one association can be specified.
 
 ```bash
 didot -t template.txt -s data.json -X dat:Json;fm:FrontMatter -o output.txt
@@ -46,7 +46,7 @@ By default following file's extension association are registered:
 
 ### Direct specification of template engine
 
-- `-e, --Engine`: Defines the template engine to use independantly of the template file extension. Accepted values are `scriban`, `dotliquid`, `fluid`, `handlebars`, `stringtemplate`, `smartformat`.
+- `-e, --engine`: Defines the template engine to use independantly of the template file extension. Accepted values are `scriban`, `dotliquid`, `fluid`, `handlebars`, `stringtemplate`, `smartformat`.
 
 ```powershell
 didot -t template.txt -s data.json -e handlebars -o output.txt
@@ -61,7 +61,7 @@ In this example:
 
 ### Add or replace extension associations for template engines
 
-- `-x, --EngineExtension`: Defines the association of a file's extension with a template engine. More than one can be specified.
+- `-x, --engine-extension`: Defines the association of a file's extension with a template engine. More than one can be specified.
 
 ```powershell
 didot -t template.txt -s data.json -x txt:handlebars;liquid:fluid -o output.txt

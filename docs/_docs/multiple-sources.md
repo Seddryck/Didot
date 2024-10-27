@@ -7,7 +7,7 @@ Didot supports multiple data sources directly from the console, allowing you to 
 ## Syntax
 
 ```bash
---Source=key:path/to/source1.yaml;key2:path/to/source2.json
+--source=key:path/to/source1.yaml;key2:path/to/source2.json
 ```
 
 Each key represents a child name under model, allowing you to organize and access data parts with descriptive keys.
