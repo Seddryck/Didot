@@ -15,7 +15,8 @@ Transform your structured YAML, JSON or XML data into beautiful, fully-customize
 **Social media:** [![website](https://img.shields.io/badge/website-seddryck.github.io/Didot-fe762d.svg)](https://seddryck.github.io/Didot)
 [![twitter badge](https://img.shields.io/badge/twitter%20Didot-@Seddryck-blue.svg?style=flat&logo=twitter)](https://twitter.com/Seddryck)
 
-**Releases:** [![nuget](https://img.shields.io/nuget/v/Didot-cli.svg)](https://www.nuget.org/packages/Didot-cli/) ![Docker Image Version](https://img.shields.io/docker/v/seddryck/didot?label=docker%20hub&color=0db7ed) [![GitHub Release Date](https://img.shields.io/github/release-date/seddryck/Didot.svg)](https://github.com/Seddryck/Didot/releases/latest) [![licence badge](https://img.shields.io/badge/License-Apache%202.0-yellow.svg)](https://github.com/Seddryck/Didot/blob/master/LICENSE) 
+**Releases:** [![GitHub releases](https://img.shields.io/github/v/release/seddryck/didot?label=GitHub%20releases)](https://github.com/seddryck/didot/releases/latest) 
+[![nuget](https://img.shields.io/nuget/v/Didot-cli.svg)](https://www.nuget.org/packages/Didot-cli/) [![Docker Image Version](https://img.shields.io/docker/v/seddryck/didot?label=docker%20hub&color=0db7ed)](https://hub.docker.com/repository/docker/seddryck/didot/) [![GitHub Release Date](https://img.shields.io/github/release-date/seddryck/Didot.svg)](https://github.com/Seddryck/Didot/releases/latest) [![licence badge](https://img.shields.io/badge/License-Apache%202.0-yellow.svg)](https://github.com/Seddryck/Didot/blob/master/LICENSE) 
 
 **Dev. activity:** [![GitHub last commit](https://img.shields.io/github/last-commit/Seddryck/Didot.svg)](https://github.com/Seddryck/Didot/commits)
 ![Still maintained](https://img.shields.io/maintenance/yes/2024.svg)
@@ -339,7 +340,7 @@ cat data.json | didot --stdin -t template.hbs -r json
 In this example:
 
 - The input data is coming from the console
-- - `template.hbs` is the Handlebars template file.
+- `template.hbs` is the Handlebars template file.
 - `json` is the parser of input data.
 - the output is redirected to the console.
 
