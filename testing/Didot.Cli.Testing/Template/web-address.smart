@@ -1,0 +1,27 @@
+﻿# {model.Hostname}
+
+## Address
+
+- Scheme: {model.Scheme}
+- Host: {model.Hostname}
+- Port: No port found.
+
+## Paths
+
+{model.Paths:list:|
+| Index | Path                |
+|-------|---------------------|
+{model.Paths:{index}|| /{}}|
+|No paths found.}
+
+## Query Strings
+
+{model.QueryStrings:list:|
+| Parameter      | Value         |
+|----------------|---------------|
+{model.QueryStrings:{Key}| {Value}}|
+|No query strings found.}
+
+## Section
+
+No section found.

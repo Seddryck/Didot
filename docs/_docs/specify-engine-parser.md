@@ -6,7 +6,7 @@ tags: [cli-usage]
 
 ### Direct specification of data parser
 
-- `-r, --parser`: Defines the parser to use when the source data is provided through the console. Accepted values are `yaml`, `json`, `xml`, `FrontMatter` or `FrontMatterMarkdown`. This option is required only when the `--source` argument is omitted or if the extension of the source file is not recognized to determine the parser. For [multiple sources](../multiple-sources), this option applies to all files, regardless of their extensions or any pre-assigned engine associations.
+- `-r, --parser`: Defines the parser to use when the source data is provided through the console. Accepted values are `yaml`, `json`, `xml`, `url`, `FrontMatter` or `FrontMatterMarkdown`. This option is required only when the `--source` argument is omitted or if the extension of the source file is not recognized to determine the parser. For [multiple sources](../multiple-sources), this option applies to all files, regardless of their extensions or any pre-assigned engine associations.
 
 ```bash
 didot -t template.hbs -s data.txt -r json -o output.txt

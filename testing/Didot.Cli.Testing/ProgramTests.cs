@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Didot.Core.TemplateEngines;
+using DotLiquid.Tags;
 using HandlebarsDotNet;
 using NUnit.Framework;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -332,6 +333,25 @@ public class ProgramTests
         Assert.That(exitCode, Is.EqualTo(0), message: ReadErrorStream());
 
         var expected = File.ReadAllText(Path.Combine("Expectation", $"full_organization.txt")).Standardize();
+        Assert.That(ReadOutputStream(), Is.EqualTo(expected));
+    }
+
+    [Test]
+    public async Task Main_UrlParser_Success(
+            [ValueSource(nameof(Templates))] string engine)
+    {
+        if (engine == "smart")
+            Assert.Ignore("SmartFormat is too complex for this rendering.");
+
+        var args = new string[]
+        {
+            $"-t", $"template/web-address.{engine}",
+            $"-s", $"data/web-address.url"
+        };
+        var exitCode = await Program.Main(args);
+        Assert.That(exitCode, Is.EqualTo(0), message: ReadErrorStream());
+
+        var expected = File.ReadAllText(Path.Combine("Expectation", $"web-address.md")).Standardize();
         Assert.That(ReadOutputStream(), Is.EqualTo(expected));
     }
 }

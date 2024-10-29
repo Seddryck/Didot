@@ -1,6 +1,7 @@
 ﻿using System;
 using System.CommandLine;
 using System.Diagnostics;
+using System.Reflection;
 using System.Text;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -41,7 +42,7 @@ public class Program
             .Build();
 
         var logger = host.Services.GetRequiredService<ILogger<Program>>();
-        logger.LogInformation("Didot Command Line Interface");
+        logger.LogInformation($"Didot Command Line Interface: version {Assembly.GetExecutingAssembly().GetName().Version}");
 
         var renderCommand = host.Services.GetRequiredService<RootCommand>();
         return await renderCommand.InvokeAsync(args);
