@@ -9,6 +9,7 @@ tags: [quick-start, cli-usage]
 - **YAML**: Files with the `.yaml` or `.yml` extension are parsed using a YAML source parser.
 - **JSON**: Files with the `.json` extension are parsed using a JSON source parser.
 - **XML**: Files with the `.xml` extension are parsed using an XML source parser.
+- **URL**: Files with the `.url` extension are parsed using an URL source parser.
 - **FrontMatterMarkdown**: Files with the `.md` extension are parsed using YAML parser for the FrontMatter located between two lines of 3 dashes (`---`). The markdown part is added to the key *Content* (overidden any pre-existing value of *Content*).
 - **FrontMatter**: Similar to *FrontMatterMarkdown* but doesn't parse the markdown content.
 

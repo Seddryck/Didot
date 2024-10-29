@@ -1,0 +1,43 @@
+﻿# {{model.Hostname}}
+
+## Address
+
+- Scheme: {{model.Scheme}}
+- Host: {{model.Hostname}}
+- Port: {{ #if model.Port ~}}
+{{model.Port}}
+{{else~}}
+No port found.
+{{/if}}
+
+## Paths
+
+{{#if model.Paths}}
+| Index | Path                |
+|-------|---------------------|
+{{#each model.Paths}}
+| {{[Math.Add] @index 1}} | /{{this}} |
+{{/each}}
+{{else}}
+No paths found.
+{{/if}}
+
+## Query Strings
+
+{{#if model.QueryStrings}}
+| Parameter      | Value         |
+|----------------|---------------|
+{{#each model.QueryStrings}}
+| {{@key}} | {{this}} |
+{{/each}}
+{{else}}
+No query strings found.
+{{/if}}
+
+## Section
+
+{{#if model.Section}}
+{{model.Section}}
+{{else}}
+No section found.
+{{/if}}

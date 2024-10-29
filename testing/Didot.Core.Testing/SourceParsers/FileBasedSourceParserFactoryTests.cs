@@ -14,6 +14,7 @@ public class FileBasedSourceParserFactoryTests
     [TestCase(".yaml", typeof(YamlSource))]
     [TestCase(".yml", typeof(YamlSource))]
     [TestCase(".xml", typeof(XmlSource))]
+    [TestCase(".url", typeof(UrlSource))]
     [TestCase(".md", typeof(FrontmatterMarkdownSource))]
     public void GetSourceParser_Extension_CorrectParser(string extension, Type expected)
     {
