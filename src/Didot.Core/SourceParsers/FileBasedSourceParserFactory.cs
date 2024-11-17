@@ -15,6 +15,7 @@ public class FileBasedSourceParserFactory : BaseFactory<ISourceParser>
         items.Add(".json", new JsonSource());
         items.Add(".yaml", new YamlSource());
         items.Add(".yml", new YamlSource());
+        items.Add(".csv", new CsvSource());
         items.Add(".xml", new XmlSource());
         items.Add(".url", new UrlSource());
         items.Add(".md", new FrontmatterMarkdownSource());

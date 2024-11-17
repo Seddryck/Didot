@@ -20,3 +20,7 @@
   - use-stdin-stdout
   - specify-engine-parser
   - multiple-sources
+
+- title: Parsers
+  docs:
+  - csv-parser
