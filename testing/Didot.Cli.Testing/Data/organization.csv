@@ -1,0 +1,4 @@
+name.fullname,name.acronym,founded,buildings[].name,buildings[].type,buildings[].location
+National Aeronautics and Space Administration,NASA,1958-07-29,NASA Headquarters,Administration and Policy,"300 E Street SW, Washington, DC 20546"
+National Aeronautics and Space Administration,NASA,1958-07-29,Johnson Space Center,"Human Spaceflight Training, Research, and Mission Control","2101 NASA Parkway, Houston, TX 77058"
+National Aeronautics and Space Administration,NASA,1958-07-29,Kennedy Space Center,"Launch Operations and Ground Support","Space Commerce Way, Merritt Island, FL 32899"

@@ -30,6 +30,12 @@
     <ProjectReference Include="..\..\src\Didot.Cli\Didot.Cli.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <None Update="Data\employees.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Data\organization.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Data\organization.md">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

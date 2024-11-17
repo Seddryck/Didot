@@ -29,9 +29,11 @@ pre.highlight {
 .highlight .nc { font-weight: bold } /* Name.Class */
 .highlight .ni { font-weight: bold } /* Name.Entity */
 .highlight .ne { font-weight: bold } /* Name.Exception */
+.highlight .nl { color: #df994a } /* Name.Label */
 .highlight .nn { font-weight: bold } /* Name.Namespace */
-.highlight .nt { font-weight: bold } /* Name.Tag */
+.highlight .nt { font-weight: bold; color: #9999ff} /* Name.Tag */
 .highlight .nf { font-weight: bold; color: #6cbea6 } /* Name. */
+.highlight .nx { font-weight: bold; color: #6cbea6 } /* Name. */
 .highlight .ow { font-weight: bold } /* Operator.Word */
 .highlight .sb { font-style: italic } /* Literal.String.Backtick */
 .highlight .sc { font-style: italic } /* Literal.String.Char */
