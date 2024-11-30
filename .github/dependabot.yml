@@ -30,3 +30,15 @@ updates:
       Microsoft.CodeAnalysis.CSharp:
           patterns:
             - "Microsoft.CodeAnalysis.CSharp"
+      Fluid.Core:
+          patterns:
+            - "Fluid.Core"
+      DotLiquid:
+          patterns:
+            - "DotLiquid"
+      PocketCsvReader:
+          patterns:
+            - "PocketCsvReader"
+      Handlebars:
+          patterns:
+            - "Handlebars*"
