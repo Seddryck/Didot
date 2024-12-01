@@ -6,7 +6,7 @@ $projects = @(
   "src/Didot.Core/Didot.Core.csproj",
   "src/Didot.Cli/Didot.Cli.csproj"
 )
-$frameworks = @("net7.0", "net8.0")
+$frameworks = @("net8.0", "net9.0")
 $runtimes = ("win-x64", "linux-x64")
 
 foreach ($project in $projects) {
