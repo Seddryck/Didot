@@ -42,3 +42,9 @@ updates:
       Handlebars:
           patterns:
             - "Handlebars*"
+      Scriban:
+          patterns:
+            - "Scriban"
+      YamlDotNet:
+          patterns:
+            - "YamlDotNet"
