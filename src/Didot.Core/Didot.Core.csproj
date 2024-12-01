@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -16,6 +16,9 @@
     <PackageReference Include="Scriban" Version="5.10.0" />
     <PackageReference Include="SmartFormat.NET" Version="3.5.1" />
     <PackageReference Include="YamlDotNet" Version="16.2.1" />
+  </ItemGroup>
+  <ItemGroup>
+      <PackageReference Include="System.Private.Uri" Version="4.3.2" />
   </ItemGroup>
 
 </Project>
