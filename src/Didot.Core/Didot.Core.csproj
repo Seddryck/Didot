@@ -15,7 +15,7 @@
     <PackageReference Include="PocketCsvReader" Version="2.8.0" />
     <PackageReference Include="Scriban" Version="5.10.0" />
     <PackageReference Include="SmartFormat.NET" Version="3.5.1" />
-    <PackageReference Include="YamlDotNet" Version="16.1.3" />
+    <PackageReference Include="YamlDotNet" Version="16.2.1" />
   </ItemGroup>
 
 </Project>
