@@ -9,6 +9,15 @@ using System.IO;
 namespace Didot.Core.SourceParsers;
 public class CsvSource : ISourceParser
 {
+    private CsvReader CsvReader { get; }
+
+    public CsvDialectDescriptor Dialect { get => CsvReader.Dialect; }
+
+    public CsvSource()
+        => CsvReader = new CsvReader(new CsvProfile(true));
+
+    public CsvSource(CsvReader csvReader)
+        => CsvReader = csvReader;
 
     public virtual object Parse(string content)
     {
@@ -20,7 +29,7 @@ public class CsvSource : ISourceParser
     {
         var list = new List<object>();
 
-        using var reader = new CsvReader(new CsvProfile(true)).ToDataReader(stream);
+        using var reader = CsvReader.ToDataReader(stream);
         var seenRecords = new Dictionary<string, Dictionary<string, object>>();
 
         while (reader.Read())

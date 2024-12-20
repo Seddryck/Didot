@@ -11,7 +11,7 @@ public class FileBasedTemplateEngineFactory : BaseFactory<ITemplateEngine>
 {
     protected override string ClassToken => "Wrapper";
 
-    protected override void Initialize()
+    protected override void Initialize(IDictionary<string, string> parameters)
     {
         items.Clear();
         items.Add(".scriban", new ScribanWrapper());

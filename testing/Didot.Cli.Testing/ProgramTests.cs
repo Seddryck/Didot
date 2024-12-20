@@ -116,6 +116,32 @@ public class ProgramTests
         Assert.That(output, Is.EqualTo(expected));
     }
 
+    [TestCase("hbs", "tsv", "organization", "\t")]
+    [TestCase("hbs", "tsv", "organization", "Tab")]
+    [TestCase("hbs", "tsv", "organization", "TAB")]
+    public async Task Main_SourceFileOutputFileWithParameters_Successful(
+            string engine,
+            string data,
+            string caseId,
+            string delimiter)
+            
+    {
+        var args = new string[]
+        {
+            $"-t", $"template/{caseId}.{engine}",
+            $"-s", $"data/{caseId}.{data}",
+            $"-X", "tsv:csv",
+            $"-P", $"tsv@delimiter:{delimiter};tsv@commentChar:#",
+            $"-o", $"output-{caseId}-{engine}-{data}.txt"
+        };
+        var exitCode = await Program.Main(args);
+        Assert.That(exitCode, Is.EqualTo(0), message: ReadErrorStream());
+
+        var output = File.ReadAllText($"output-{caseId}-{engine}-{data}.txt").Standardize();
+        var expected = File.ReadAllText(Path.Combine("Expectation", $"{caseId}.txt")).Standardize();
+        Assert.That(output, Is.EqualTo(expected));
+    }
+
     [Test]
     public async Task Main_MissingStdInAndSource_Failure()
     {

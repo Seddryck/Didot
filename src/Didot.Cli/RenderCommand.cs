@@ -17,6 +17,7 @@ public class RenderCommand : RootCommand
     {
         options.EngineExtensions.SetDefaultValue(new Dictionary<string, string>());
         options.ParserExtensions.SetDefaultValue(new Dictionary<string, string>());
+        options.ParserParams.SetDefaultValue(new Dictionary<string, string>());
         options.Sources.SetDefaultValue(new Dictionary<string, string>());
 
         AddOption(options.Template);
@@ -26,6 +27,7 @@ public class RenderCommand : RootCommand
         AddOption(options.StdIn);
         AddOption(options.Parser);
         AddOption(options.ParserExtensions);
+        AddOption(options.ParserParams);
         AddOption(options.Output);
 
         AddValidator(result =>
@@ -71,6 +73,7 @@ public class RenderCommand : RootCommand
             , options.Sources
             , options.Parser
             , options.ParserExtensions
+            , options.ParserParams
             , options.Output);
     }
 }
