@@ -7,8 +7,7 @@ version: 2
 updates:
   - package-ecosystem: "nuget" 
     directories:
-      - "src/Didot.*/" 
-      - "testing/Didot.*/" 
+      - "*/Didot.*/" 
     schedule:
       interval: "daily"
     labels:
@@ -50,3 +49,6 @@ updates:
       YamlDotNet:
           patterns:
             - "YamlDotNet"
+      Newtonsoft.Json:
+          patterns:
+            - "Newtonsoft.Json"
