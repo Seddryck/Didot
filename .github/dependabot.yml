@@ -22,6 +22,9 @@ updates:
       Microsoft.NET.Test.Sdk:
           patterns:
             - "Microsoft.NET.Test.Sdk"
+      Microsoft.Extensions:
+          patterns:
+            - "Microsoft.Extensions.*"
       Moq:
           patterns:
             - "Moq"
