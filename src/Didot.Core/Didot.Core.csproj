@@ -14,7 +14,7 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="PocketCsvReader" Version="2.12.0" />
     <PackageReference Include="Scriban" Version="5.12.1" />
-    <PackageReference Include="SmartFormat.NET" Version="3.5.1" />
+    <PackageReference Include="SmartFormat.NET" Version="3.5.2" />
     <PackageReference Include="YamlDotNet" Version="16.2.1" />
   </ItemGroup>
   <ItemGroup>
