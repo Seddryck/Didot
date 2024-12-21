@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.CommandLine;
 using System.CommandLine.Parsing;
+using System.Runtime.CompilerServices;
+using Didot.Core;
 
 namespace Didot.Cli;
 public class RenderOptions
@@ -74,6 +76,16 @@ public class RenderOptions
         AllowMultipleArgumentsPerToken = true
     };
 
+    public Option<Dictionary<string, string>> ParserParams { get; } = new Option<Dictionary<string, string>>(
+            new[] { "-P", "--parser-parameter" },
+            description: "Provide key-value parameters for parsers, such as configuration or dialect settings.",
+            parseArgument: result => ParseKeyValuePairs(result, ':', ';')
+    )
+    {
+        Arity = ArgumentArity.ZeroOrMore,
+        AllowMultipleArgumentsPerToken = true
+    };
+
     public Option<string> Output { get; } = new Option<string>(
         new[] { "-o", "--output" },
         description: "Path to the generated file."
@@ -103,7 +115,10 @@ public class RenderOptions
                     }
                 }
                 else if (keyValue.Length == 2)
-                    dictionary[normalizeKey?.Invoke(keyValue[0]) ?? keyValue[0]] = keyValue[1].Trim();
+                {
+                    var value = keyValue[1].Length > 0 && keyValue[1].Trim().Length == 0 ? keyValue[1] : keyValue[1].Trim();
+                    dictionary[normalizeKey?.Invoke(keyValue[0]) ?? keyValue[0]] = value;
+                }
                 else
                 {
                     result.ErrorMessage = $"Invalid key-value pair: {pair}";
@@ -114,11 +129,6 @@ public class RenderOptions
         return dictionary;
     }
 
-    private static string NormalizeExtension(string extension)
-    {
-        extension = extension.Trim().ToLowerInvariant();
-        if (extension.StartsWith('.'))
-            return extension;
-        return $".{extension}";
-    }
+    private static string NormalizeExtension(string value)
+        => value.NormalizeExtension();
 }

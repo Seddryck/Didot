@@ -24,6 +24,7 @@ public class RenderCommandHandler
         , IDictionary<string, string> sources
         , string parser
         , IDictionary<string, string> parserExtensions
+        , IDictionary<string, string> parserParams
         , string output
     )
     {
@@ -33,7 +34,10 @@ public class RenderCommandHandler
         try
         {
             Logger?.LogInformation("Configured {ParserExtensionCount} parser associations to file extensions.", parserExtensions.Count());
-            var parserFactory = GetSourceParserFactory(parserExtensions);
+            Logger?.LogInformation("Configured {ParserExtensionCount} parser parameters.", parserParams.Count());
+            foreach (var param in parserParams)
+                Logger?.LogInformation("Parser parameter: {ParserParamKey}={ParserParamValue}.", param.Key, param.Value);
+            var parserFactory = GetSourceParserFactory(parserExtensions, parserParams);
 
             Logger?.LogInformation("Configured {EnginerExtensionCount} template engine associations to file extensions.", engineExtensions.Count());
             var engineFactory = GetTemplateEngineFactory(engineExtensions);
@@ -71,10 +75,11 @@ public class RenderCommandHandler
         }
     }
 
-    protected virtual FileBasedSourceParserFactory GetSourceParserFactory(IDictionary<string, string> keyValues)
+    protected virtual FileBasedSourceParserFactory GetSourceParserFactory(IDictionary<string, string> extensions, IDictionary<string, string> parameters)
     {
-        var factory = new FileBasedSourceParserFactory();
-        factory.AddOrReplace(keyValues);
+        var factory = new FileBasedSourceParserFactory(parameters);
+        factory.AddOrReplace(extensions);
+        
         return factory;
     }
 

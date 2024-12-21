@@ -18,7 +18,7 @@ public class FileBasedSourceParserFactoryTests
     [TestCase(".md", typeof(FrontmatterMarkdownSource))]
     public void GetSourceParser_Extension_CorrectParser(string extension, Type expected)
     {
-        var factory = new FileBasedSourceParserFactory();
+        var factory = new FileBasedSourceParserFactory(new Dictionary<string, string>());
         var parser = factory.GetByExtension(extension);
         Assert.That(parser, Is.TypeOf(expected));
     }
@@ -27,14 +27,14 @@ public class FileBasedSourceParserFactoryTests
     [TestCase(".toml")]
     public void GetSourceParser_NotSupportedExtension_Exception(string extension)
     {
-        var factory = new FileBasedSourceParserFactory();
+        var factory = new FileBasedSourceParserFactory(new Dictionary<string, string>());
         Assert.Throws<NotSupportedException>(() => factory.GetByExtension(extension));
     }
 
     [Test]
     public void GetSourceParser_AddedSourceParser_Exception()
     {
-        var factory = new FileBasedSourceParserFactory();
+        var factory = new FileBasedSourceParserFactory(new Dictionary<string, string>());
         factory.AddOrReplace(".frontmatter", new FrontmatterSource());
         var parser = factory.GetByExtension(".frontmatter");
         Assert.That(parser, Is.TypeOf<FrontmatterSource>());
@@ -48,7 +48,7 @@ public class FileBasedSourceParserFactoryTests
     [TestCase("Frontmatter", typeof(FrontmatterSource))]
     public void GetSourceParser_ByTag_Successful(string tag, Type expected)
     {
-        var factory = new FileBasedSourceParserFactory();
+        var factory = new FileBasedSourceParserFactory(new Dictionary<string, string>());
         var parser = factory.GetByTag(tag);
         Assert.That(parser, Is.TypeOf(expected));
     }

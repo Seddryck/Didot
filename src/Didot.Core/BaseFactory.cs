@@ -3,29 +3,29 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Didot.Core.SourceParsers;
 
-namespace Didot.Core.SourceParsers;
+namespace Didot.Core;
 public abstract class BaseFactory<T>
 {
     protected Dictionary<string, T> items = new();
 
     protected abstract string ClassToken {get;}
 
-    public BaseFactory()
-    {
-        Initialize();
-    }
+    protected BaseFactory()
+        => Initialize(new Dictionary<string, string>());
 
-    protected abstract void Initialize();
+    protected BaseFactory(IDictionary<string, string> parameters)
+        => Initialize(parameters);
+
+    protected abstract void Initialize(IDictionary<string, string> parameters);
 
     public virtual void AddOrReplace(string extension, T item)
     {
-        extension = NormalizeExtension(extension);
+        extension = extension.NormalizeExtension();
 
-        if (items.ContainsKey(extension))
+        if (!items.TryAdd(extension, item))
             items[extension] = item;
-        else
-            items.Add(extension, item);
     }
 
     public virtual void AddOrReplace(IEnumerable<KeyValuePair<string, T>> keyValues)
@@ -34,23 +34,15 @@ public abstract class BaseFactory<T>
     public virtual void AddOrReplace(IEnumerable<KeyValuePair<string, string>> keyValues)
         => keyValues.ToList().ForEach(kv => AddOrReplace(kv.Key, GetByTag(kv.Value)));
 
-    protected virtual string NormalizeExtension(string extension)
-    {
-        extension = extension.Trim().ToLowerInvariant();
-        if (!extension.StartsWith('.'))
-            extension = $".{extension}";
-        return extension;
-    }
-
     public T GetByExtension(string extension)
     {
-        extension = NormalizeExtension(extension);
+        extension = extension.NormalizeExtension(); ;
         if (items.TryGetValue(extension, out var engine))
             return engine;
         throw new NotSupportedException(nameof(extension));
     }
 
-    public Dictionary<string, Type> ListByTags()
+    protected Dictionary<string, Type> ListByTags()
     {
         var asm = typeof(T).Assembly;
         var types = asm.GetTypes()
@@ -68,11 +60,14 @@ public abstract class BaseFactory<T>
         return dict;
     }
 
-    public T GetByTag(string tag)
+    public virtual T GetByTag(string tag)
     {
         tag = tag.Trim().ToLowerInvariant();
         if (!ListByTags().TryGetValue(tag, out var engineType))
             throw new Exception(tag);
-        return (T)Activator.CreateInstance(engineType)!;
+
+        var engine = items.Values.FirstOrDefault(x => x is not null && x.GetType() == engineType)
+            ?? (T)Activator.CreateInstance(engineType)!;
+        return engine;
     }
 }
