@@ -11,7 +11,7 @@ public class CsvSource : ISourceParser
 {
     private CsvReader CsvReader { get; }
 
-    public CsvDialectDescriptor Dialect { get => CsvReader.Dialect; }
+    public DialectDescriptor Dialect { get => CsvReader.Dialect; }
 
     public CsvSource()
         => CsvReader = new CsvReader(new CsvProfile(true));

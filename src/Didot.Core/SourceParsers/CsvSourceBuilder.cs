@@ -31,8 +31,10 @@ internal class CsvSourceBuilder : BaseSourceBuilder<CsvSource>
         Actions.Add("nullSequence", (nullSequence) => _dialect.WithNullSequence(nullSequence));
         Actions.Add("skipInitialSpace", (skipInitialSpace) => _dialect.WithSkipInitialSpace(skipInitialSpace.ToBoolean()));
         Actions.Add("commentChar", (commentChar) => _dialect.WithCommentChar(MapEnumToChar<CommentChar>(commentChar)));
+        Actions.Add("commentRows", (commentRows) => _dialect.WithCommentRows(commentRows.ToArrayInt()));
         Actions.Add("header", (header) => _dialect.WithHeader(header.ToBoolean()));
-        Actions.Add("caseSensitiveHeader", (caseSensitiveHeader) => _dialect.WithCaseSensitiveHeader(caseSensitiveHeader.ToBoolean()));
+        Actions.Add("headerRows", (headerRows) => _dialect.WithHeaderRows(headerRows.ToArrayInt()));
+        Actions.Add("headerJoin", (headerJoin) => _dialect.WithHeaderJoin(headerJoin));
     }
 
     public override ISourceParser Build(IDictionary<string, string> parameters, string extension)

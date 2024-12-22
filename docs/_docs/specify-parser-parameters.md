@@ -27,8 +27,11 @@ The following parameters are accepted by Didot to define the behavior of a CSV p
 - `doubleQuote`: Whether double quotes are used to escape quotes within quoted fields.
 - `escapeChar`: Character used for escaping.
 - `header`: Indicates if the first row contains headers.
+- `headerRows`: Indexes of rows to consider like headers.
+- `headerJoin`: concatenor between two headers from different rows.
 - `skipInitialSpace`: Whether spaces after delimiters are skipped.
 - `commentChar`: Character used to denote comments.
+- `commentRows`: Indexes of rows to consider like comments
 
 More information about these parameters can found in [the documentation of PocketCsvReader](https://seddryck.github.io/PocketCsvReader/docs/csv-dialect-descriptor/)
 
