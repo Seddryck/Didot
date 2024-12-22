@@ -52,7 +52,7 @@ public class CsvSourceBuilderTests
     [TestCase("commentChar", '#')]
     public void Build_SingleParameterChar_Successful(string parameter, char delimiter)
     {
-        var property = typeof(CsvDialectDescriptor).GetProperty(parameter,
+        var property = typeof(DialectDescriptor).GetProperty(parameter,
                             System.Reflection.BindingFlags.Public
                             | System.Reflection.BindingFlags.Instance
                             | System.Reflection.BindingFlags.IgnoreCase)!;
@@ -75,7 +75,7 @@ public class CsvSourceBuilderTests
     [TestCase("commentChar", '#', "Hash")]
     public void Build_SingleParameterCharSynonym_Successful(string parameter, char delimiter, string alias)
     {
-        var property = typeof(CsvDialectDescriptor).GetProperty(parameter,
+        var property = typeof(DialectDescriptor).GetProperty(parameter,
                             System.Reflection.BindingFlags.Public
                             | System.Reflection.BindingFlags.Instance
                             | System.Reflection.BindingFlags.IgnoreCase)!;
@@ -93,9 +93,10 @@ public class CsvSourceBuilderTests
 
     [Test]
     [TestCase("lineTerminator", "\r\n")]
+    [TestCase("headerJoin", ".")]
     public void Build_SingleParameterString_Successful(string parameter, string value)
     {
-        var property = typeof(CsvDialectDescriptor).GetProperty(parameter,
+        var property = typeof(DialectDescriptor).GetProperty(parameter,
                             System.Reflection.BindingFlags.Public
                             | System.Reflection.BindingFlags.Instance
                             | System.Reflection.BindingFlags.IgnoreCase)!;
@@ -117,7 +118,7 @@ public class CsvSourceBuilderTests
     [TestCase("lineTerminator", "\n", "LineFeed")]
     public void Build_SingleParameterStringSynonym_Successful(string parameter, string value, string alias)
     {
-        var property = typeof(CsvDialectDescriptor).GetProperty(parameter,
+        var property = typeof(DialectDescriptor).GetProperty(parameter,
                             System.Reflection.BindingFlags.Public
                             | System.Reflection.BindingFlags.Instance
                             | System.Reflection.BindingFlags.IgnoreCase)!;
@@ -139,7 +140,7 @@ public class CsvSourceBuilderTests
     [TestCase("header", true)]
     public void Build_SingleParameterBoolean_Successful(string parameter, bool value)
     {
-        var property = typeof(CsvDialectDescriptor).GetProperty(parameter,
+        var property = typeof(DialectDescriptor).GetProperty(parameter,
                             System.Reflection.BindingFlags.Public
                             | System.Reflection.BindingFlags.Instance
                             | System.Reflection.BindingFlags.IgnoreCase)!;
@@ -161,7 +162,7 @@ public class CsvSourceBuilderTests
     [TestCase("header", true)]
     public void Build_SingleParameterBooleanNumeric_Successful(string parameter, bool value)
     {
-        var property = typeof(CsvDialectDescriptor).GetProperty(parameter,
+        var property = typeof(DialectDescriptor).GetProperty(parameter,
                             System.Reflection.BindingFlags.Public
                             | System.Reflection.BindingFlags.Instance
                             | System.Reflection.BindingFlags.IgnoreCase)!;
@@ -175,5 +176,26 @@ public class CsvSourceBuilderTests
         Assert.That(parser, Is.AssignableTo<CsvSource>());
         var dialect = ((CsvSource)parser).Dialect;
         Assert.That(property.GetValue(dialect)!, Is.EqualTo(value));
+    }
+
+    [Test]
+    [TestCase("commentRows", 1,2,3)]
+    [TestCase("headerRows", 1,2)]
+    public void Build_SingleParameterArrayInt_Successful(string parameter, params int[] values)
+    {
+        var property = typeof(DialectDescriptor).GetProperty(parameter,
+                            System.Reflection.BindingFlags.Public
+                            | System.Reflection.BindingFlags.Instance
+                            | System.Reflection.BindingFlags.IgnoreCase)!;
+
+        var builder = new CsvSourceBuilder();
+        var parameters = new Dictionary<string, string>()
+        {
+            { $"csv@{parameter}", $"[{string.Join(',', values)}]" }
+        };
+        var parser = builder.Build(parameters, ".csv");
+        Assert.That(parser, Is.AssignableTo<CsvSource>());
+        var dialect = ((CsvSource)parser).Dialect;
+        Assert.That(property.GetValue(dialect)!, Is.EqualTo(values));
     }
 }
