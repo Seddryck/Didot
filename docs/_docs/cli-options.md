@@ -104,6 +104,15 @@ Example: `-t path/to/template` or `--template=path/to/template`
 - Mandatory: no.
 - Example: `-X txt:yaml;dat:json` or `--parser-extension=txt:yaml;dat:json`
 
+### Parser's parameters option
+
+- Shortcut: `-P`
+- Long: `--parser-parameter`
+- Description: Specifies parameters tuning the behaviour of the parser
+- Accept: multiple key-value pairs, prefixed by the file's extension followed by an arobas (`@`).
+- Mandatory: no.
+- Example: `-P csv@delimiter=^;csv@commentChar=#`
+
 ### StdIn option
 
 - Shortcut: `-i`
