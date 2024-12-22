@@ -2,7 +2,7 @@
 
 ![Logo](https://raw.githubusercontent.com/Seddryck/Didot/main/assets/didot-logo-256.png)
 
-Transform your structured YAML, JSON or XML data into beautiful, fully-customized HTML pages or plain text in seconds with Didot. This command-line tool allows you to seamlessly generate renders from data files using your preferred templates. Whether you're building static sites, documentation, or reporting tools, Didot makes it easy to turn raw data into polished, web-ready content.
+Transform your structured YAML, JSON, XML, CSV or FrontMatter data into beautiful, fully-customized HTML pages or plain text in seconds with Didot. This command-line tool seamlessly generates renders from data files using your preferred templates through Scriban, Handlebars, DotLiquid, Fluid, StringTemplate or SmartFormat. Whether you're building static sites, documentation, or reporting tools, Didot makes it easy to turn raw data into polished, web-ready content.
 
 [About][] | [Installing][] | [Quickstart][]
 
@@ -179,6 +179,7 @@ To run the executable from any location in the command line, you need to add its
 - **YAML**: Files with the `.yaml` or `.yml` extension are parsed using a YAML source parser.
 - **JSON**: Files with the `.json` extension are parsed using a JSON source parser.
 - **XML**: Files with the `.xml` extension are parsed using an XML source parser.
+- **CSV**: Files with the `.csv` extension are parsed using an CSV source parser. The CSV dialect can be described using the `-P` option (see below).
 - **FrontMatterMarkdown**: Files with the `.md` extension are parsed using an YAML parser for the FrontMatter and the Markdown content is added in the entry *content*.
 - **FrontMatter**: using an YAML parser for the FrontMatter, the Markdown content is not appended to the result.
 
@@ -287,6 +288,15 @@ In this example:
 - Accept: multiple key-value pairs.
 - Mandatory: no.
 - Example: `-X txt:yaml;dat:json` or `--parser-extension=txt:yaml;dat:json`
+
+### Parser's parameter option
+
+- Shortcut: `-P`
+- Long: `--parser-parameter`
+- Description: Specifies parameters tuning the behavior of the parser
+- Accept: multiple key-value pairs, prefixed by the file's extension followed by an arobas (`@`).
+- Mandatory: no.
+- Example: `-P csv@delimiter=^;csv@commentChar=#`
 
 ### StdIn option
 
