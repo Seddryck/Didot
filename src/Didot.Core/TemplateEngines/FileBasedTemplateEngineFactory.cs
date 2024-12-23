@@ -20,5 +20,7 @@ public class FileBasedTemplateEngineFactory : BaseFactory<ITemplateEngine>
         items.Add(".smart", new SmartFormatWrapper());
         items.Add(".st", new StringTemplateWrapper());
         items.Add(".stg", new StringTemplateWrapper());
+        items.Add(".morestachio", new MorestachioWrapper());
+        items.Add(".mustache", new MorestachioWrapper());
     }
 }

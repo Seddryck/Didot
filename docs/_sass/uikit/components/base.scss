@@ -35,7 +35,7 @@ $base-mark-color:                                $global-color !default;
 $base-quote-font-style:                          italic !default;
 $base-small-font-size:                           80% !default;
 
-$base-margin-vertical:                           $global-margin !default;
+$base-margin-vertical:                           5px;
 
 $base-heading-font-family:                       $global-font-family !default;
 $base-heading-font-weight:                       normal !default;
@@ -50,6 +50,7 @@ $base-h3-font-size:                              $global-large-font-size !defaul
 $base-h3-line-height:                            1.4 !default;
 $base-h4-font-size:                              $global-medium-font-size !default;
 $base-h4-line-height:                            1.4 !default;
+$base-h4-margin-top:                             30px !default;
 $base-h5-font-size:                              $global-font-size !default;
 $base-h5-line-height:                            1.4 !default;
 $base-h6-font-size:                              $global-small-font-size !default;
@@ -359,6 +360,7 @@ h3, .uk-h3 {
 h4, .uk-h4 {
     font-size: $base-h4-font-size;
     line-height: $base-h4-line-height;
+    margin-top: $base-h4-margin-top;
     @if(mixin-exists(hook-base-h4)) {@include hook-base-h4();}
 }
 
