@@ -16,8 +16,8 @@ namespace Didot.Cli.Testing;
 
 public class ProgramTests
 {
-    private static readonly string[] Templates = { "scriban", "liquid", "hbs", "smart", "st" };
-    private static readonly string[] DataSets = { "yaml", "json", "xml", "csv"};
+    private static readonly string[] Templates = { "scriban", "liquid", "hbs", "smart", "st", "morestachio" };
+    private static readonly string[] DataSets = { "yaml", "json", "xml", "csv" };
     private static readonly string[] Cases = { "employees", "organization" };
 
     private TextWriter OriginalOutput { get; set; }
@@ -80,6 +80,9 @@ public class ProgramTests
             [ValueSource(nameof(DataSets))] string data,
             [ValueSource(nameof(Cases))] string caseId)
     {
+        if (engine == "morestachio" && data == "yaml")
+            Assert.Ignore("Morestachio doesn't support Yaml data sources at this moment.");
+
         using var source = new StreamReader(Path.Combine("data", $"{caseId}.{data}"));
         Console.SetIn(source);
 
@@ -102,6 +105,9 @@ public class ProgramTests
             [ValueSource(nameof(DataSets))] string data,
             [ValueSource(nameof(Cases))] string caseId)
     {
+        if (engine == "morestachio" && data == "yaml")
+            Assert.Ignore("Morestachio doesn't support Yaml data sources at this moment.");
+
         var args = new string[]
         {
             $"-t", $"template/{caseId}.{engine}",
@@ -124,7 +130,7 @@ public class ProgramTests
             string data,
             string caseId,
             string delimiter)
-            
+
     {
         var args = new string[]
         {

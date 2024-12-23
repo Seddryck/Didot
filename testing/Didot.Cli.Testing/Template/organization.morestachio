@@ -1,0 +1,10 @@
+{{ model.name.acronym}} ({{ model.name.fullname}})
+{{#each model.buildings}}
+{{--| #if $first |--}}
+{{name}} located at {{location}}
+Other buildings:
+{{--| #else}}
+* {{name}}
+{{--| /else |--}}
+{{--| /if |--}}
+{{--| /each |--}}
