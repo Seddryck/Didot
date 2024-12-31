@@ -28,6 +28,9 @@ updates:
       Moq:
           patterns:
             - "Moq"
+      Coverlet:
+          patterns:
+            - "coverlet.*"
       DotNet.ReproducibleBuilds:
           patterns:
             - "DotNet.ReproducibleBuilds"
