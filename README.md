@@ -19,7 +19,7 @@ Transform your structured YAML, JSON, XML, CSV or FrontMatter data into beautifu
 [![nuget](https://img.shields.io/nuget/v/Didot-cli.svg)](https://www.nuget.org/packages/Didot-cli/) [![Docker Image Version](https://img.shields.io/docker/v/seddryck/didot?label=docker%20hub&color=0db7ed)](https://hub.docker.com/repository/docker/seddryck/didot/) [![GitHub Release Date](https://img.shields.io/github/release-date/seddryck/Didot.svg)](https://github.com/Seddryck/Didot/releases/latest) [![licence badge](https://img.shields.io/badge/License-Apache%202.0-yellow.svg)](https://github.com/Seddryck/Didot/blob/master/LICENSE) 
 
 **Dev. activity:** [![GitHub last commit](https://img.shields.io/github/last-commit/Seddryck/Didot.svg)](https://github.com/Seddryck/Didot/commits)
-![Still maintained](https://img.shields.io/maintenance/yes/2024.svg)
+![Still maintained](https://img.shields.io/maintenance/yes/2025.svg)
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/y/Seddryck/Didot)
 
 **Continuous integration builds:** [![Build status](https://ci.appveyor.com/api/projects/status/na3dklqjsuv1lbfv?svg=true)](https://ci.appveyor.com/project/Seddryck/Didot/)
