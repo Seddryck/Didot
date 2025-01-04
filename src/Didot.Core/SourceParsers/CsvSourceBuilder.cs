@@ -45,7 +45,7 @@ internal class CsvSourceBuilder : BaseSourceBuilder<CsvSource>
                 action(kv.Value);
 
         var builder = new CsvReaderBuilder();
-        var csvReader = builder.WithDialectDescriptor((_) => _dialect).Build();
+        var csvReader = builder.WithDialect((_) => _dialect).Build();
         return new CsvSource(csvReader);
     }
 
