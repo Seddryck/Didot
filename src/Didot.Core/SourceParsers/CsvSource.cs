@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using PocketCsvReader;
 using System.IO;
+using PocketCsvReader.Configuration;
 
 namespace Didot.Core.SourceParsers;
 public class CsvSource : ISourceParser
@@ -14,7 +15,9 @@ public class CsvSource : ISourceParser
     public DialectDescriptor Dialect { get => CsvReader.Dialect; }
 
     public CsvSource()
-        => CsvReader = new CsvReader(new CsvProfile(true));
+        => CsvReader = new CsvReaderBuilder()
+                            .WithDialect((d) => d.WithHeader(true))
+                            .Build();
 
     public CsvSource(CsvReader csvReader)
         => CsvReader = csvReader;
