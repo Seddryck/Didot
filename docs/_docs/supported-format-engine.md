@@ -76,6 +76,6 @@ Templates with the `.st` and `.stg` extension are parsed using the StringTemplat
 Templates with the `.morestachio` extension are parsed using the Morestachio engine. Morestachio is a lightweight, powerful, flavorful, templating engine for C# and other .net-based languages. Its a fork of Mustachio.
 
 - Simple syntax for generating HTML or text files from templates.
-- Mustache adheres to the philosophy of being "logic-less," meaning templates contain no conditionals, loops, or other logic constructs, focusing solely on rendering data passed to them.
+- Morestachio provides a wide range of processing operations in the template itself like loops, conditional rendering, partials and data processing methods but also allows direct interopt to C# code directly from the template with prepared formatters.
 - Typical Use Case: Email templates, reports, and content generation.
   
