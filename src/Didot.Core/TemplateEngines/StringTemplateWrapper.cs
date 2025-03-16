@@ -22,7 +22,7 @@ public class StringTemplateWrapper : ITemplateEngine
         var templateInstance = new Template(template);
         var extractedModel = model.GetType().GetProperty("model")?.GetValue(model) ?? model;
         templateInstance.Add("model", extractedModel);
-        foreach (var (key, value) in Mappers ?? new Dictionary<string, IDictionary<string, object>>())
+        foreach (var (key, value) in Mappers)
             templateInstance.Group.DefineDictionary(key, value);
         return templateInstance.Render();
     }

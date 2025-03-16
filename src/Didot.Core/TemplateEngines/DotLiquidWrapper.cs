@@ -12,7 +12,7 @@ public class DotLiquidWrapper : ITemplateEngine
     private Dictionary<string, IDictionary<string, object>> Mappers { get; } = [];
 
     public void AddMappings(string mapKey, IDictionary<string, object> mappings)
-    { 
+    {
         if (!Mappers.TryAdd(mapKey, mappings))
             Mappers[mapKey] = mappings;
     }
@@ -22,14 +22,8 @@ public class DotLiquidWrapper : ITemplateEngine
         var templateInstance = Template.Parse(source);
         var hash = Hash.FromAnonymousObject(model);
 
-        // Ajouter les dictionnaires comme variables accessibles
-        if (Mappers != null)
-        {
-            foreach (var (dictName, dictValues) in Mappers)
-            {
-                hash[dictName] = dictValues;
-            }
-        }
+        foreach (var (dictName, dictValues) in Mappers)
+            hash[dictName] = dictValues;
 
         return templateInstance.Render(hash);
     }
