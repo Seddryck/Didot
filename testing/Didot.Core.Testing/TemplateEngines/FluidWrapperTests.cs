@@ -12,4 +12,18 @@ public class FluidWrapperTests : DotLiquidWrapperTests
 {
     protected override ITemplateEngine GetEngine()
         => new FluidWrapper();
+
+    [Test]
+    public override void Render_Dictionary_Successful()
+    {
+        var engine = GetEngine();
+        var model = new Dictionary<string, object>()
+            { { "Name", "Alice"}, {"Lang", "fr" } };
+        var dict = new Dictionary<string, object>()
+            { { "fr", "Bonjour"}, {"en", "Hello" }, {"es", "Hola"} };
+        engine.AddMappings("greetings", dict);
+        using var stream = new MemoryStream(Encoding.UTF8.GetBytes("Greetings: {{ model.Lang | greetings }} {{ model.Name }}"));
+        var result = engine.Render(stream, new { model });
+        Assert.That(result, Is.EqualTo("Greetings: Bonjour Alice"));
+    }
 }

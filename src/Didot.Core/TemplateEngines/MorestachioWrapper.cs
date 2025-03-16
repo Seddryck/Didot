@@ -10,6 +10,11 @@ using Morestachio.Rendering;
 namespace Didot.Core.TemplateEngines;
 public class MorestachioWrapper : ITemplateEngine
 {
+    private Dictionary<string, IDictionary<string, object>> Mappers { get; } = [];
+
+    public void AddMappings(string mapKey, IDictionary<string, object> mappings)
+        => throw new NotImplementedException();
+
     public string Render(string template, object model)
     {
         if (string.IsNullOrWhiteSpace(template))

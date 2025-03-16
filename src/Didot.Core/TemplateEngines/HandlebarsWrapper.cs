@@ -6,11 +6,18 @@ using System.Text;
 using System.Threading.Tasks;
 using HandlebarsDotNet;
 using HandlebarsDotNet.Helpers;
-using HandlebarsDotNet.Helpers.Enums;
 
 namespace Didot.Core.TemplateEngines;
 public class HandlebarsWrapper : ITemplateEngine
 {
+    private Dictionary<string, IDictionary<string, object>> Mappers { get; } = [];
+
+    public void AddMappings(string mapKey, IDictionary<string, object> mappings)
+    {
+        if (!Mappers.TryAdd(mapKey, mappings))
+            Mappers[mapKey] = mappings;
+    }
+
     public string Render(string template, object model)
     {
         var handlebarsContext = CreateContext();
@@ -34,6 +41,18 @@ public class HandlebarsWrapper : ITemplateEngine
     {
         var handlebarsContext = Handlebars.Create();
         HandlebarsHelpers.Register(handlebarsContext);
+
+        foreach (var (dictName, dictValues) in Mappers)
+        {
+            handlebarsContext.RegisterHelper(dictName, (output, context, args) =>
+            {
+                if (args.Length == 1 && args[0] is string key && dictValues.TryGetValue(key, out var value))
+                {
+                    output.Write(value.ToString());
+                }
+            });
+        }
+
         return handlebarsContext;
     }
 }
