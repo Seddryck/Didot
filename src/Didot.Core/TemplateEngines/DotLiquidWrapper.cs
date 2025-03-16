@@ -9,10 +9,22 @@ using DotLiquid;
 namespace Didot.Core.TemplateEngines;
 public class DotLiquidWrapper : ITemplateEngine
 {
-    public string Render(string template, object model)
+    private Dictionary<string, IDictionary<string, object>> Mappers { get; } = [];
+
+    public void AddMappings(string mapKey, IDictionary<string, object> mappings)
     {
-        var templateInstance = Template.Parse(template);
+        if (!Mappers.TryAdd(mapKey, mappings))
+            Mappers[mapKey] = mappings;
+    }
+
+    public string Render(string source, object model)
+    {
+        var templateInstance = Template.Parse(source);
         var hash = Hash.FromAnonymousObject(model);
+
+        foreach (var (dictName, dictValues) in Mappers)
+            hash[dictName] = dictValues;
+
         return templateInstance.Render(hash);
     }
 

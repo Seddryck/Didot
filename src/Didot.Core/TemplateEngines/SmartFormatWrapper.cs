@@ -9,6 +9,11 @@ using SmartFormat;
 namespace Didot.Core.TemplateEngines;
 public class SmartFormatWrapper : ITemplateEngine
 {
+    private Dictionary<string, IDictionary<string, object>> Mappers { get; } = [];
+
+    public void AddMappings(string mapKey, IDictionary<string, object> mappings)
+        => throw new NotImplementedException();
+
     public string Render(string template, object model)
         => Smart.Format(template, model);
 

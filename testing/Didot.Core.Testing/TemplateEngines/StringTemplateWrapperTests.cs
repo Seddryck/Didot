@@ -79,4 +79,18 @@ public class StringTemplateWrapperTests
         var result = engine.Render(stream, new { model });
         Assert.That(result, Is.EqualTo("Hello World"));
     }
+
+    [Test]
+    public void Render_Dictionary_Successful()
+    {
+        var engine = new StringTemplateWrapper();
+        var model = new Dictionary<string, object>()
+            { { "Name", "Alice"}, {"Lang", "fr" } };
+        var dict = new Dictionary<string, object>()
+            { { "fr", "Bonjour"}, {"en", "Hello" }, {"es", "Hola"} };
+        engine.AddMappings("greetings", dict);
+        using var stream = new MemoryStream(Encoding.UTF8.GetBytes("Greetings: <greetings.(model.Lang)> <model.Name>"));
+        var result = engine.Render(stream, new { model });
+        Assert.That(result, Is.EqualTo("Greetings: Bonjour Alice"));
+    }
 }
