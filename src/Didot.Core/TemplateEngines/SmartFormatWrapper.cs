@@ -11,6 +11,8 @@ public class SmartFormatWrapper : ITemplateEngine
 {
     private Dictionary<string, IDictionary<string, object>> Mappers { get; } = [];
 
+    public void AddFormatter(string name, Func<object?, string> function)
+        => throw new NotImplementedException();
     public void AddMappings(string mapKey, IDictionary<string, object> mappings)
         => throw new NotImplementedException();
 

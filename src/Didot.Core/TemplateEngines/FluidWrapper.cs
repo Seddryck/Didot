@@ -13,6 +13,13 @@ public class FluidWrapper : ITemplateEngine
     private static readonly FluidParser Parser = new();
 
     private Dictionary<string, IDictionary<string, object>> Mappers { get; } = [];
+    private Dictionary<string, Func<object?, string>> Formatters { get; } = [];
+
+    public void AddFormatter(string name, Func<object?, string> function)
+    {
+        if (!Formatters.TryAdd(name, function))
+            Formatters[name] = function;
+    }
 
     public void AddMappings(string mapKey, IDictionary<string, object> mappings)
     {
@@ -36,6 +43,14 @@ public class FluidWrapper : ITemplateEngine
                     return new StringValue(value?.ToString() ?? string.Empty);
                 }
                 return NilValue.Instance;
+            });
+        }
+
+        foreach (var (funcName, function) in Formatters)
+        {
+            context.Options.Filters.AddFilter(funcName, (input, arguments, ctx) =>
+            {
+                return new StringValue(function(input.ToObjectValue()));
             });
         }
 
