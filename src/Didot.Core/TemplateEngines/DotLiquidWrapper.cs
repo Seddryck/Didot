@@ -10,6 +10,10 @@ namespace Didot.Core.TemplateEngines;
 public class DotLiquidWrapper : ITemplateEngine
 {
     private Dictionary<string, IDictionary<string, object>> Mappers { get; } = [];
+    private Dictionary<string, Func<object?, string>> Formatters { get; } = [];
+
+    public void AddFormatter(string name, Func<object?, string> function)
+        => throw new NotImplementedException();
 
     public void AddMappings(string mapKey, IDictionary<string, object> mappings)
     {
