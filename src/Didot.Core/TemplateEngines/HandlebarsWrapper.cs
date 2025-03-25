@@ -11,11 +11,18 @@ namespace Didot.Core.TemplateEngines;
 public class HandlebarsWrapper : ITemplateEngine
 {
     private Dictionary<string, IDictionary<string, object>> Mappers { get; } = [];
+    private Dictionary<string, Func<object?, string>> Formatters { get; } = [];
 
     public void AddMappings(string mapKey, IDictionary<string, object> mappings)
     {
         if (!Mappers.TryAdd(mapKey, mappings))
             Mappers[mapKey] = mappings;
+    }
+
+    public void AddFormatter(string name, Func<object?, string> function)
+    {
+        if (!Formatters.TryAdd(name, function))
+            Formatters[name] = function;
     }
 
     public string Render(string template, object model)
@@ -49,6 +56,17 @@ public class HandlebarsWrapper : ITemplateEngine
                 if (args.Length == 1 && args[0] is string key && dictValues.TryGetValue(key, out var value))
                 {
                     output.Write(value.ToString());
+                }
+            });
+        }
+
+        foreach (var (funcName, function) in Formatters)
+        {
+            handlebarsContext.RegisterHelper(funcName, (output, context, args) =>
+            {
+                if (args.Length == 1)
+                {
+                    output.Write(function(args[0]));
                 }
             });
         }

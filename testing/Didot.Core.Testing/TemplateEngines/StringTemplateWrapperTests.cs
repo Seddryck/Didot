@@ -93,4 +93,16 @@ public class StringTemplateWrapperTests
         var result = engine.Render(stream, new { model });
         Assert.That(result, Is.EqualTo("Greetings: Bonjour Alice"));
     }
+
+    [Test]
+    public void Render_Formatter_Successful()
+    {
+        var engine = new StringTemplateWrapper();
+        var model = new Dictionary<string, object>()
+            { { "Name", "Alice"} };
+        engine.AddFormatter("upper", (x) => (((string?)x)?.ToUpper() ?? string.Empty) + "!");
+        using var stream = new MemoryStream(Encoding.UTF8.GetBytes("Greetings: <model.Name; format=\"upper\">"));
+        var result = engine.Render(stream, new { model });
+        Assert.That(result, Is.EqualTo("Greetings: ALICE!"));
+    }
 }

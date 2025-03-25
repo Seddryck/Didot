@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Didot.Core.TemplateEngines;
 using NUnit.Framework;
+using Scriban;
+using Scriban.Runtime;
 
 namespace Didot.Core.Testing.TemplateEngines;
 public class ScribanWrapperTests
@@ -77,5 +79,17 @@ public class ScribanWrapperTests
         using var stream = new MemoryStream(Encoding.UTF8.GetBytes("Hello {{model.Name}}"));
         var result = engine.Render(stream, new { model });
         Assert.That(result, Is.EqualTo("Hello World"));
+    }
+
+    [Test]
+    public void Render_Formatter_Successful()
+    {
+        var engine = new ScribanWrapper();
+        var model = new Dictionary<string, object>()
+            { { "Name", "Alice"} };
+        engine.AddFormatter("upper", (x) => (((string?)x)?.ToUpper() ?? string.Empty) + "!");
+        using var stream = new MemoryStream(Encoding.UTF8.GetBytes("Greetings: {{model.Name | upper}}"));
+        var result = engine.Render(stream, new { model });
+        Assert.That(result, Is.EqualTo("Greetings: ALICE!"));
     }
 }
