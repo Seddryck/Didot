@@ -7,32 +7,34 @@ using System.Threading.Tasks;
 using DotLiquid;
 
 namespace Didot.Core.TemplateEngines;
-public class DotLiquidWrapper : ITemplateEngine
+public class DotLiquidWrapper : BaseTemplateEngine
 {
-    private Dictionary<string, IDictionary<string, object>> Mappers { get; } = [];
-    private Dictionary<string, Func<object?, string>> Formatters { get; } = [];
+    public DotLiquidWrapper()
+        : base()
+    { }
 
-    public void AddFormatter(string name, Func<object?, string> function)
+    public DotLiquidWrapper(TemplateConfiguration configuration)
+        : base(configuration)
+    { }
+
+    public override void AddFormatter(string name, Func<object?, string> function)
         => throw new NotImplementedException();
 
-    public void AddMappings(string mapKey, IDictionary<string, object> mappings)
-    {
-        if (!Mappers.TryAdd(mapKey, mappings))
-            Mappers[mapKey] = mappings;
-    }
-
-    public string Render(string source, object model)
+    public override string Render(string source, object model)
     {
         var templateInstance = Template.Parse(source);
         var hash = Hash.FromAnonymousObject(model);
 
-        foreach (var (dictName, dictValues) in Mappers)
+        foreach (var (dictName, dictValues) in Mappings)
             hash[dictName] = dictValues;
+
+        if (Configuration.HtmlEncode)
+            throw new NotImplementedException();
 
         return templateInstance.Render(hash);
     }
 
-    public string Render(Stream stream, object model)
+    public override string Render(Stream stream, object model)
     {
         using var reader = new StreamReader(stream);
         var template = reader.ReadToEnd();

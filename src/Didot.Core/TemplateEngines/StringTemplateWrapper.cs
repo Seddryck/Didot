@@ -10,29 +10,25 @@ using Antlr4.StringTemplate;
 using Morestachio.Rendering;
 
 namespace Didot.Core.TemplateEngines;
-public class StringTemplateWrapper : ITemplateEngine
+public class StringTemplateWrapper : BaseTemplateEngine
 {
-    private Dictionary<string, IDictionary<string, object>> Mappers { get; } = [];
-    private Dictionary<string, Func<object?, string>> Formatters { get; } = [];
+    public StringTemplateWrapper()
+        : base()
+    { }
 
-    public void AddFormatter(string name, Func<object?, string> function)
+    public StringTemplateWrapper(TemplateConfiguration configuration)
+        : base(configuration)
+    { }
+
+    public override string Render(string template, object model)
     {
-        if (!Formatters.TryAdd(name, function))
-            Formatters[name] = function;
-    }
+        if (Configuration.HtmlEncode)
+            throw new NotImplementedException();
 
-    public void AddMappings(string mapKey, IDictionary<string, object> mappings)
-    {
-        if (!Mappers.TryAdd(mapKey, mappings))
-            Mappers[mapKey] = mappings;
-    }
-
-    public string Render(string template, object model)
-    { 
         var templateInstance = new Template(template);
         var extractedModel = model.GetType().GetProperty("model")?.GetValue(model) ?? model;
         templateInstance.Add("model", extractedModel);
-        foreach (var (key, value) in Mappers)
+        foreach (var (key, value) in Mappings)
             templateInstance.Group.DefineDictionary(key, value);
 
         if (Formatters.Count>0)
@@ -49,7 +45,7 @@ public class StringTemplateWrapper : ITemplateEngine
         return templateInstance.Render();
     }
 
-    public string Render(Stream stream, object model)
+    public override string Render(Stream stream, object model)
     {
         using var reader = new StreamReader(stream);
         var template = reader.ReadToEnd();
