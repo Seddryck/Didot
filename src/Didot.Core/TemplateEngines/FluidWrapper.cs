@@ -2,39 +2,33 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Fluid;
 using Fluid.Values;
 using SmartFormat.Core.Extensions;
 
 namespace Didot.Core.TemplateEngines;
-public class FluidWrapper : ITemplateEngine
+public class FluidWrapper : BaseTemplateEngine
 {
     private static readonly FluidParser Parser = new();
 
-    private Dictionary<string, IDictionary<string, object>> Mappers { get; } = [];
-    private Dictionary<string, Func<object?, string>> Formatters { get; } = [];
+    public FluidWrapper()
+        : base()
+    { }
 
-    public void AddFormatter(string name, Func<object?, string> function)
-    {
-        if (!Formatters.TryAdd(name, function))
-            Formatters[name] = function;
-    }
+    public FluidWrapper(TemplateConfiguration configuration)
+        : base(configuration)
+    { }
 
-    public void AddMappings(string mapKey, IDictionary<string, object> mappings)
-    {
-        if (!Mappers.TryAdd(mapKey, mappings))
-            Mappers[mapKey] = mappings;
-    }
-
-
-    public string Render(string source, object model)
+    public override string Render(string source, object model)
     {
         var template = Parser.Parse(source);
+
         var context = new TemplateContext(model);
 
-        // Register Mappers as Fluid filters
-        foreach (var (dictName, dictValues) in Mappers)
+        // Register Mappings as Fluid filters
+        foreach (var (dictName, dictValues) in Mappings)
         {
             context.Options.Filters.AddFilter(dictName, (input, arguments, ctx) =>
             {
@@ -54,10 +48,13 @@ public class FluidWrapper : ITemplateEngine
             });
         }
 
-        return template.Render(context);
+        if (Configuration.HtmlEncode)
+            return template.Render(context, HtmlEncoder.Default);
+        else
+            return template.Render(context);
     }
 
-    public string Render(Stream stream, object model)
+    public override string Render(Stream stream, object model)
     {
         using var reader = new StreamReader(stream);
         var template = reader.ReadToEnd();

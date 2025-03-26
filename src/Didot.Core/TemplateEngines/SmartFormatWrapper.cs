@@ -7,19 +7,25 @@ using System.Threading.Tasks;
 using SmartFormat;
 
 namespace Didot.Core.TemplateEngines;
-public class SmartFormatWrapper : ITemplateEngine
+public class SmartFormatWrapper : BaseTemplateEngine
 {
-    private Dictionary<string, IDictionary<string, object>> Mappers { get; } = [];
+    public SmartFormatWrapper()
+        : base()
+    { }
 
-    public void AddFormatter(string name, Func<object?, string> function)
+    public SmartFormatWrapper(TemplateConfiguration configuration)
+        : base(configuration)
+    { }
+
+    public override void AddFormatter(string name, Func<object?, string> function)
         => throw new NotImplementedException();
-    public void AddMappings(string mapKey, IDictionary<string, object> mappings)
+    public override void AddMappings(string mapKey, IDictionary<string, object> mappings)
         => throw new NotImplementedException();
 
-    public string Render(string template, object model)
+    public override string Render(string template, object model)
         => Smart.Format(template, model);
 
-    public string Render(Stream stream, object model)
+    public override string Render(Stream stream, object model)
     {
         using var reader = new StreamReader(stream);
         var template = reader.ReadToEnd();

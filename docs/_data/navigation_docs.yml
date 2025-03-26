@@ -22,6 +22,12 @@
   - specify-parser-parameters
   - multiple-sources
 
+- title: Features
+  docs:
+  - configuration
+  - feature-formatter
+  - feature-mappings
+
 - title: Parsers
   docs:
   - csv-parser

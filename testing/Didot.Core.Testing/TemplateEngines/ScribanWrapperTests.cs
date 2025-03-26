@@ -10,86 +10,50 @@ using Scriban;
 using Scriban.Runtime;
 
 namespace Didot.Core.Testing.TemplateEngines;
-public class ScribanWrapperTests
+public class ScribanWrapperTests : BaseTemplateWrapperTests
 {
-    [Test]
-    public void Render_SingleProperty_Successful()
-    {
-        var engine = new ScribanWrapper();
-        var model = new Dictionary<string, object>()
-            { { "Name", "World"} };
-        var result = engine.Render("Hello {{model.Name}}", new { model });
-        Assert.That(result, Is.EqualTo("Hello World"));
-    }
+    protected override ITemplateEngine GetEngine()
+        => new ScribanWrapper();
+    protected override ITemplateEngine GetEngine(TemplateConfiguration config)
+        => new ScribanWrapper(config);
 
     [Test]
-    public void Render_MultiProperty_Successful()
-    {
-        var engine = new ScribanWrapper();
-        var model = new Dictionary<string, object>()
-            { { "Name", "Albert"}, {"Age", 30 } };
-        var result = engine.Render("Hello {{model.Name}}. You're {{model.Age}} years old.", new { model });
-        Assert.That(result, Is.EqualTo("Hello Albert. You're 30 years old."));
-    }
+    public override void Render_SingleProperty_Successful()
+        => Render_SingleProperty_Successful("Hello {{model.Name}}");
 
     [Test]
-    public void Render_NestedProperties_Successful()
-    {
-        var engine = new ScribanWrapper();
-        var name = new Dictionary<string, object>()
-            { { "First", "Albert"}, {"Last", "Einstein" } };
-        var model = new Dictionary<string, object>()
-            { { "Name", name}, {"Age", 30 } };
-        var result = engine.Render("Hello {{model.Name.First}} {{model.Name.Last}}. Your age is {{model.Age}} years old.", new { model });
-        Assert.That(result, Is.EqualTo("Hello Albert Einstein. Your age is 30 years old."));
-    }
+    public override void RenderWithoutEncode_QuotedProperty_Successful()
+        => RenderWithoutEncode_QuotedProperty_Successful("Hello {{model.Name}}");
 
     [Test]
-    public void Render_Array_Successful()
-    {
-        var engine = new ScribanWrapper();
-        var albert = new Dictionary<string, object>()
-            { { "Name", "Albert"}, {"Age", 30 } };
-        var nikola = new Dictionary<string, object>()
-            { { "Name", "Nikola"}, {"Age", 50 } };
-        var model = new[] { albert, nikola };
-        var result = engine.Render("Hello {{model[0].Name}}. Your colleague is {{model[1].Age}} years old.", new { model });
-        Assert.That(result, Is.EqualTo("Hello Albert. Your colleague is 50 years old."));
-    }
+    public override void RenderWithEncode_QuotedProperty_Successful()
+        => RenderWithEncode_QuotedProperty_Successful("Hello {{model.Name}}");
 
     [Test]
-    public void Render_ArrayLoop_Successful()
-    {
-        var engine = new ScribanWrapper();
-        var albert = new Dictionary<string, object>()
-            { { "Name", "Albert"}, {"Age", 30 } };
-        var nikola = new Dictionary<string, object>()
-            { { "Name", "Nikola"}, {"Age", 50 } };
-        var model = new[] { albert, nikola };
-        var result = engine.Render("Hello {{ for item in model; item.Name; if !for.last; \", \"; end; end }}!", new { model });
-        Assert.That(result, Is.EqualTo("Hello Albert, Nikola!"));
-    }
+    public override void Render_MultiProperty_Successful()
+        => Render_MultiProperty_Successful("Hello {{model.Name}}. You're {{model.Age}} years old.");
 
     [Test]
-    public void Render_Stream_Successful()
-    {
-        var engine = new ScribanWrapper();
-        var model = new Dictionary<string, object>()
-            { { "Name", "World"} };
-        using var stream = new MemoryStream(Encoding.UTF8.GetBytes("Hello {{model.Name}}"));
-        var result = engine.Render(stream, new { model });
-        Assert.That(result, Is.EqualTo("Hello World"));
-    }
+    public override void Render_NestedProperties_Successful()
+        => Render_NestedProperties_Successful("Hello {{model.Name.First}} {{model.Name.Last}}. Your age is {{model.Age}} years old.");
 
     [Test]
-    public void Render_Formatter_Successful()
-    {
-        var engine = new ScribanWrapper();
-        var model = new Dictionary<string, object>()
-            { { "Name", "Alice"} };
-        engine.AddFormatter("upper", (x) => (((string?)x)?.ToUpper() ?? string.Empty) + "!");
-        using var stream = new MemoryStream(Encoding.UTF8.GetBytes("Greetings: {{model.Name | upper}}"));
-        var result = engine.Render(stream, new { model });
-        Assert.That(result, Is.EqualTo("Greetings: ALICE!"));
-    }
+    public override void Render_ArrayItems_Successful()
+        => Render_ArrayItems_Successful("Hello {{model[0].Name}}. Your colleague is {{model[1].Age}} years old.");
+
+    [Test]
+    public override void Render_ArrayLoop_Successful()
+        => Render_ArrayLoop_Successful("Hello {{ for item in model; item.Name; if !for.last; \", \"; end; end }}!");
+
+    [Test]
+    public override void Render_Stream_Successful()
+        => Render_Stream_Successful("Hello {{model.Name}}");
+
+    [Test]
+    public override void Render_Dictionary_Successful()
+        => Render_Dictionary_Successful("Greetings: {{ model.Lang | greetings }} {{ model.Name }}");
+
+    [Test]
+    public override void Render_Formatter_Successful()
+        => Render_Formatter_Successful("Greetings: {{model.Name | upper}}");
 }

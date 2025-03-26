@@ -8,31 +8,24 @@ using HandlebarsDotNet;
 using HandlebarsDotNet.Helpers;
 
 namespace Didot.Core.TemplateEngines;
-public class HandlebarsWrapper : ITemplateEngine
+public class HandlebarsWrapper : BaseTemplateEngine
 {
-    private Dictionary<string, IDictionary<string, object>> Mappers { get; } = [];
-    private Dictionary<string, Func<object?, string>> Formatters { get; } = [];
+    public HandlebarsWrapper()
+        : base()
+    { }
 
-    public void AddMappings(string mapKey, IDictionary<string, object> mappings)
-    {
-        if (!Mappers.TryAdd(mapKey, mappings))
-            Mappers[mapKey] = mappings;
-    }
+    public HandlebarsWrapper(TemplateConfiguration configuration)
+        : base(configuration)
+    { }
 
-    public void AddFormatter(string name, Func<object?, string> function)
-    {
-        if (!Formatters.TryAdd(name, function))
-            Formatters[name] = function;
-    }
-
-    public string Render(string template, object model)
+    public override string Render(string template, object model)
     {
         var handlebarsContext = CreateContext();
         var templateInstance = handlebarsContext.Compile(template);
         return templateInstance(model);
     }
 
-    public string Render(Stream stream, object model)
+    public override string Render(Stream stream, object model)
     {
         var handlebarsContext = CreateContext();
 
@@ -46,10 +39,11 @@ public class HandlebarsWrapper : ITemplateEngine
 
     private IHandlebars CreateContext()
     {
-        var handlebarsContext = Handlebars.Create();
+        var config = new HandlebarsConfiguration { NoEscape = !Configuration.HtmlEncode };
+        var handlebarsContext = Handlebars.Create(config);
         HandlebarsHelpers.Register(handlebarsContext);
 
-        foreach (var (dictName, dictValues) in Mappers)
+        foreach (var (dictName, dictValues) in Mappings)
         {
             handlebarsContext.RegisterHelper(dictName, (output, context, args) =>
             {
