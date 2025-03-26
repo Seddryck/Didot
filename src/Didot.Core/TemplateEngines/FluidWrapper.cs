@@ -12,7 +12,7 @@ namespace Didot.Core.TemplateEngines;
 public class FluidWrapper : BaseTemplateEngine
 {
     private static readonly FluidParser Parser = new();
-
+    
     public FluidWrapper()
         : base()
     { }

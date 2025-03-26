@@ -18,11 +18,6 @@ public class MorestachioWrapper : BaseTemplateEngine
         : base(configuration)
     { }
 
-    //public override void AddFormatter(string name, Func<object?, string> function)
-    //    => throw new NotImplementedException();
-    //public override void AddMappings(string mapKey, IDictionary<string, object> mappings)
-    //    => throw new NotImplementedException();
-
     public override string Render(string template, object model)
     {
         if (string.IsNullOrWhiteSpace(template))
