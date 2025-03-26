@@ -24,7 +24,7 @@ Once registered, a formatter can be applied to values in templates by referencin
 ```csharp
 var factory = new FileBasedTemplateEngineFactory();
 var engine = factory.GetByTag(tag);
-engine.AddMappings("currency", (object value) => $"{value}€");
+engine.AddFormatter("currency", (object value) => $"{value}€");
 ```
 
 Assume the model contains a property *Price*, and a formatter named *currency* has been registered to format numbers as currency. The following examples demonstrate how to apply formatters across different template engines:
