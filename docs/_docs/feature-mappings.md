@@ -22,7 +22,7 @@ Once registered, mappings can be applied directly in templates by referencing th
 ```csharp
 var factory = new FileBasedTemplateEngineFactory();
 var engine = factory.GetByTag(tag);
-engine.AddMappings("greetings", new Dictionary() { {"french", "Bonjour"}, {"english", "Hi"}, {"spanish", "Ola"} })
+engine.AddMappings("greetings", new Dictionary<object, string>() { {"french", "Bonjour"}, {"english", "Hi"}, {"spanish", "Ola"} })
 ```
 
 Assume the model contains a property *Language*, and a dictionary named *greetings* has been registered to provide translations. The following examples demonstrate how to apply mappings across different template engines:
