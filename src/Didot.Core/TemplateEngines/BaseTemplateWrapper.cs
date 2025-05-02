@@ -18,6 +18,8 @@ public abstract class BaseTemplateEngine : ITemplateEngine
 
     protected Dictionary<string, IDictionary<string, object>> Mappings { get; } = [];
     protected Dictionary<string, Func<object?, string>> Formatters { get; } = [];
+    protected Dictionary<string, Func<string>> Functions { get; } = [];
+    protected Dictionary<string, Func<string>> Partials { get; } = [];
 
     public virtual void AddMappings(string mapKey, IDictionary<string, object> mappings)
     {
@@ -29,6 +31,18 @@ public abstract class BaseTemplateEngine : ITemplateEngine
     {
         if (!Formatters.TryAdd(name, function))
             Formatters[name] = function;
+    }
+
+    public virtual void AddFunction(string name, Func<string> template)
+    {
+        if (!Functions.TryAdd(name, template))
+            Functions[name] = template;
+    }
+
+    public virtual void AddPartial(string name, Func<string> template)
+    {
+        if (!Partials.TryAdd(name, template))
+            Partials[name] = template;
     }
 
     public abstract string Render(string template, object model);

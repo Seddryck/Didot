@@ -19,6 +19,10 @@ public class DotLiquidWrapper : BaseTemplateEngine
 
     public override void AddFormatter(string name, Func<object?, string> function)
         => throw new NotImplementedException();
+    public override void AddFunction(string name, Func<string> template)
+        => throw new NotImplementedException();
+    public override void AddPartial(string name, Func<string> template)
+        => throw new NotImplementedException();
 
     public override string Render(string source, object model)
     {

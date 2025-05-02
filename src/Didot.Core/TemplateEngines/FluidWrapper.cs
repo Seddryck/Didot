@@ -6,6 +6,8 @@ using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Fluid;
 using Fluid.Values;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Primitives;
 using SmartFormat.Core.Extensions;
 
 namespace Didot.Core.TemplateEngines;
@@ -20,6 +22,12 @@ public class FluidWrapper : BaseTemplateEngine
     public FluidWrapper(TemplateConfiguration configuration)
         : base(configuration)
     { }
+
+    public override void AddFunction(string name, Func<string> template)
+        => throw new NotImplementedException();
+
+    public override void AddPartial(string name, Func<string> template)
+        => throw new NotImplementedException();
 
     public override string Render(string source, object model)
     {

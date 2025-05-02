@@ -17,6 +17,11 @@ public class MorestachioWrapper : BaseTemplateEngine
     public MorestachioWrapper(TemplateConfiguration configuration)
         : base(configuration)
     { }
+    public override void AddFunction(string name, Func<string> template)
+        => throw new NotImplementedException();
+
+    public override void AddPartial(string name, Func<string> template)
+        => throw new NotImplementedException();
 
     public override string Render(string template, object model)
     {

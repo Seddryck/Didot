@@ -21,6 +21,10 @@ public class SmartFormatWrapper : BaseTemplateEngine
         => throw new NotImplementedException();
     public override void AddMappings(string mapKey, IDictionary<string, object> mappings)
         => throw new NotImplementedException();
+    public override void AddPartial(string name, Func<string> template)
+        => throw new NotImplementedException();
+    public override void AddFunction(string name, Func<string> template)
+        => throw new NotImplementedException();
 
     public override string Render(string template, object model)
         => Smart.Format(template, model);

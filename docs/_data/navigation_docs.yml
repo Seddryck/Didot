@@ -27,6 +27,8 @@
   - configuration
   - feature-formatter
   - feature-mappings
+  - feature-partial
+  - feature-function
 
 - title: Parsers
   docs:

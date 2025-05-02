@@ -137,4 +137,35 @@ public abstract class BaseTemplateWrapperTests
         var result = engine.Render(stream, new { model });
         Assert.That(result, Is.EqualTo("Greetings: ALICE!"));
     }
+
+    [Test]
+    public abstract void Render_NamedTemplateFunction_Successful();
+    public abstract void Render_NamedTemplateRename_Successful();
+    
+    protected void Render_NamedTemplate_Successful(string template, KeyValuePair<string, string> namedTemplate)
+    {
+        var engine = GetEngine();
+        var name = new Dictionary<string, object>()
+            { { "First", "Albert"}, {"Last", "Einstein" } };
+        var model = new Dictionary<string, object>()
+            { { "Name", name } };
+        engine.AddFunction(namedTemplate.Key, () => namedTemplate.Value);
+        using var stream = new MemoryStream(Encoding.UTF8.GetBytes(template));
+        var result = engine.Render(stream, new { model });
+        Assert.That(result, Is.EqualTo("Greetings: Mr. Einstein Albert!"));
+    }
+
+    public abstract void Render_Partial_Successful();
+    protected void Render_Partial_Successful(string template, KeyValuePair<string, string> includedTemplate)
+    {
+        var engine = GetEngine();
+        var name = new Dictionary<string, object>()
+            { { "First", "Albert"}, {"Last", "Einstein" } };
+        var model = new Dictionary<string, object>()
+            { { "Name", name } };
+        engine.AddPartial(includedTemplate.Key, () => includedTemplate.Value);
+        using var stream = new MemoryStream(Encoding.UTF8.GetBytes(template));
+        var result = engine.Render(stream, new { model });
+        Assert.That(result, Is.EqualTo("Welcome, Albert Einstein!"));
+    }
 }

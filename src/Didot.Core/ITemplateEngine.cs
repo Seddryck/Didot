@@ -9,6 +9,8 @@ public interface ITemplateEngine
 {
     void AddMappings(string mapKey, IDictionary<string, object> mappings);
     void AddFormatter(string name, Func<object?, string> function);
+    void AddFunction(string name, Func<string> template);
+    void AddPartial(string name, Func<string> template);
     string Render(string template, object model);
     string Render(Stream template, object model);
 }
