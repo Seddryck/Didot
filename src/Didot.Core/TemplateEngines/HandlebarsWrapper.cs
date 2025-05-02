@@ -34,7 +34,7 @@ public class HandlebarsWrapper : BaseTemplateEngine
         using var reader = new StreamReader(stream);
         var templateInstance = handlebarsContext.Compile(reader);
 
-        foreach (var include in Includes)
+        foreach (var include in Partials)
             handlebarsContext.RegisterTemplate(include.Key, include.Value.Invoke());
 
         using var writer = new StringWriter(); // StringWriter as TextWriter for output

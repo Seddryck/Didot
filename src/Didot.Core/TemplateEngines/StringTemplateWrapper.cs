@@ -42,7 +42,7 @@ public class StringTemplateWrapper : BaseTemplateEngine
             templateInstance.Group.RegisterRenderer(typeof(object), new RendererWrapper(renderer));
         }
 
-        foreach (var namedTemplate in NamedTemplates)
+        foreach (var namedTemplate in Functions)
         {
             var content = namedTemplate.Value.Invoke();
             if (TryParseTemplate(content, out var name, out var arguments, out var text))
@@ -55,7 +55,7 @@ public class StringTemplateWrapper : BaseTemplateEngine
                 templateInstance.Group.DefineTemplate(namedTemplate.Key, content);
         }
 
-        foreach (var include in Includes)
+        foreach (var include in Partials)
             templateInstance.Group.DefineTemplate(include.Key, include.Value.Invoke());
 
         return templateInstance.Render();

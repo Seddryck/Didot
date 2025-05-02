@@ -41,17 +41,17 @@ public class ScribanWrapper : BaseTemplateEngine
         foreach (var (funcName, dict) in Mappings)
             scriptObject.Import(funcName, (string value) => map(dict, value));
 
-        if (NamedTemplates.Count > 0)
+        if (Functions.Count > 0)
         {
             var include = string.Empty;
-            foreach (var name in NamedTemplates.Keys)
+            foreach (var name in Functions.Keys)
                 include += $"{{{{ include '{name}' ~}}}}\r\n";
 
             template = include + template;
         }
 
         var context = Configuration.HtmlEncode ? new HtmlEncodeTemplateContext() : new TemplateContext();
-        var merged = NamedTemplates.Concat(Includes).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+        var merged = Functions.Concat(Partials).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
         var templateLoader = new InlineIncludeTemplateLoader(merged);
         context.TemplateLoader = templateLoader;
         context.PushGlobal(scriptObject);
