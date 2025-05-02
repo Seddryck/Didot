@@ -54,4 +54,16 @@ public class SmartFormatWrapperTests : BaseTemplateWrapperTests
     [Test]
     public override void Render_Formatter_Successful()
         => Assert.Ignore("SmartFormat wrapper does not support formatter");
+
+    [Test]
+    public override void Render_NamedTemplateFunction_Successful()
+        => Assert.Ignore("SmartFormat wrapper does not support named templates");
+
+    [Test]
+    public override void Render_Partial_Successful()
+        => Assert.Ignore("SmartFormat wrapper does not support partials");
+
+    [Test]
+    public override void Render_NamedTemplateRename_Successful()
+        => Assert.Ignore("SmartFormat wrapper does not support named templates");
 }

@@ -55,4 +55,17 @@ public class HandlebarsWrapperTests : BaseTemplateWrapperTests
     [Test]
     public override void Render_Formatter_Successful()
         => Render_Formatter_Successful("Greetings: {{upper model.Name}}");
+
+    [Test]
+    public override void Render_NamedTemplateFunction_Successful()
+        => Assert.Ignore("Handlebars wrapper does not support named templates");
+
+    [Test]
+    public override void Render_Partial_Successful()
+        => Render_Partial_Successful("{{> Greetings }}, {{model.Name.First}} {{model.Name.Last}}!",
+            new KeyValuePair<string, string>("Greetings", "Welcome"));
+
+    [Test]
+    public override void Render_NamedTemplateRename_Successful()
+        => Assert.Ignore("Handlebars wrapper does not support named templates");
 }

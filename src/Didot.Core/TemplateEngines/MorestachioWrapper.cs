@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Morestachio;
+using Morestachio.Framework;
 using Morestachio.Rendering;
 
 namespace Didot.Core.TemplateEngines;
@@ -17,6 +18,11 @@ public class MorestachioWrapper : BaseTemplateEngine
     public MorestachioWrapper(TemplateConfiguration configuration)
         : base(configuration)
     { }
+    public override void AddFunction(string name, Func<string> template)
+        => throw new NotImplementedException();
+
+    public override void AddPartial(string name, Func<string> template)
+        => throw new NotImplementedException();
 
     public override string Render(string template, object model)
     {

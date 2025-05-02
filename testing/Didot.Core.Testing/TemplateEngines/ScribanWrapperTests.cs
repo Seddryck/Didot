@@ -56,4 +56,18 @@ public class ScribanWrapperTests : BaseTemplateWrapperTests
     [Test]
     public override void Render_Formatter_Successful()
         => Render_Formatter_Successful("Greetings: {{model.Name | upper}}");
+
+    [Test]
+    public override void Render_NamedTemplateFunction_Successful()
+        => Render_NamedTemplate_Successful("Greetings: {{ Hello(model.Name.First, model.Name.Last) }}!",
+            new KeyValuePair<string, string>("Hello", "{{ func Hello(firstName, lastName) -}}\r\n\tMr. {{ lastName }} {{ firstName -}}\r\n{{ end }}"));
+
+    [Test]
+    public override void Render_Partial_Successful()
+        => Render_Partial_Successful("{{ include 'Hello' }}, {{ model.Name.First }} {{ model.Name.Last}}!",
+            new KeyValuePair<string, string>("Hello", "Welcome"));
+
+    [Test]
+    public override void Render_NamedTemplateRename_Successful()
+        => Assert.Ignore("Scriban wrapper does not support fully named templates");
 }

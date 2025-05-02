@@ -54,4 +54,16 @@ public class MorestachioWrapperTests : BaseTemplateWrapperTests
     [Test]
     public override void Render_Formatter_Successful()
         => Render_Formatter_Successful("Greetings: {{model.Name.upper()}}");
+
+    [Test]
+    public override void Render_NamedTemplateFunction_Successful()
+        => Assert.Ignore("Morestachio wrapper does not support named templates");
+
+    [Test]
+    public override void Render_Partial_Successful()
+        => Assert.Ignore("Morestachio wrapper does not support partials");
+
+    [Test]
+    public override void Render_NamedTemplateRename_Successful()
+        => Assert.Ignore("Morestachio wrapper does not support named templates");
 }

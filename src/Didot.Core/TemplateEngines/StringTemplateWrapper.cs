@@ -41,7 +41,23 @@ public class StringTemplateWrapper : BaseTemplateEngine
             };
             templateInstance.Group.RegisterRenderer(typeof(object), new RendererWrapper(renderer));
         }
-        
+
+        foreach (var namedTemplate in NamedTemplates)
+        {
+            var content = namedTemplate.Value.Invoke();
+            if (TryParseTemplate(content, out var name, out var arguments, out var text))
+            {
+                templateInstance.Group.DefineTemplate(namedTemplate.Key, text, arguments);
+                if (name != namedTemplate.Key)
+                    templateInstance.Group.DefineTemplate(name, text, arguments);
+            }
+            else
+                templateInstance.Group.DefineTemplate(namedTemplate.Key, content);
+        }
+
+        foreach (var include in Includes)
+            templateInstance.Group.DefineTemplate(include.Key, include.Value.Invoke());
+
         return templateInstance.Render();
     }
 
@@ -61,5 +77,20 @@ public class StringTemplateWrapper : BaseTemplateEngine
 
         public override string ToString(object? obj, string formatString, CultureInfo culture)
             => Renderer(obj, formatString);
+    }
+    private static bool TryParseTemplate(string value, out string? name, out string[]? arguments, out string? template)
+    {
+        var end = value.IndexOf("::=");
+        if (end < 0)
+        {
+            (name, arguments, template) = (null, null, value);
+            return false;
+        }
+
+        var tokens = value[..end].Split('(');
+        (name, arguments, template) = (tokens[0].Trim()
+            , tokens[1].Trim()[..^1].Split(',').Select(x => x.Trim()).ToArray()
+            , value[(end + 3)..]);
+        return true;
     }
 }

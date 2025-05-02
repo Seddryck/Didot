@@ -17,6 +17,8 @@ public class HandlebarsWrapper : BaseTemplateEngine
     public HandlebarsWrapper(TemplateConfiguration configuration)
         : base(configuration)
     { }
+    public override void AddFunction(string name, Func<string> template)
+        => throw new NotImplementedException();
 
     public override string Render(string template, object model)
     {
@@ -31,6 +33,9 @@ public class HandlebarsWrapper : BaseTemplateEngine
 
         using var reader = new StreamReader(stream);
         var templateInstance = handlebarsContext.Compile(reader);
+
+        foreach (var include in Includes)
+            handlebarsContext.RegisterTemplate(include.Key, include.Value.Invoke());
 
         using var writer = new StringWriter(); // StringWriter as TextWriter for output
         templateInstance(writer, model);
