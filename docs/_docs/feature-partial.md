@@ -10,7 +10,7 @@ When a template includes a partial, the templating engine:
 
 1. Looks up the partial by its name
 2. Loads or renders its content
-3. Injects the rendered result into the main template at the include point
+3. Injects the rendered result into the main template at the point of inclusion
 
 ## Registering a Partial
 
@@ -30,6 +30,10 @@ engine.AddPartial("greetings", () => "Welcome");
 ```
 
 In this case, at each occurrence of the partial *greetings*, it will output the text *Welcome*.
+
+```text
+Welcome, Albert Einstein!
+```
 
 ### Scriban
 

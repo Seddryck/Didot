@@ -20,9 +20,6 @@ public class ScribanWrapper : BaseTemplateEngine
         : base(configuration)
     { }
 
-    //public override void AddFunction(string name, Func<string> template)
-    //    => throw new NotImplementedException();
-
     public override string Render(string template, object model)
     {
         var scriptObject = new ScriptObject();
@@ -60,17 +57,7 @@ public class ScribanWrapper : BaseTemplateEngine
         context.PushGlobal(scriptObject);
 
         var templateInstance = Template.Parse(template);
-        try
-        {
-            return templateInstance.Render(context);
-        }
-        catch (Exception ex)
-        {
-
-            Console.WriteLine(ex.ToString());
-            throw;
-        }
-        
+        return templateInstance.Render(context);
     }
 
     public override string Render(Stream stream, object model)
@@ -100,7 +87,12 @@ public class ScribanWrapper : BaseTemplateEngine
             => templateName;
 
         public string Load(TemplateContext context, SourceSpan callerSpan, string templatePath)
-            => _namedTemplates[templatePath].Invoke();
+        {
+            if (!_namedTemplates.TryGetValue(templatePath, out var tplFactory))
+                throw new FileNotFoundException($"Named template '{templatePath}' not registered.");
+
+            return tplFactory();
+        }
     }
 
     private static bool TryParseTemplate(string value, out string? name, out string[]? arguments, out string? template)
@@ -113,7 +105,7 @@ public class ScribanWrapper : BaseTemplateEngine
             return false;
         }
 
-        var tokens = value[start .. end].Split([' ', '('], StringSplitOptions.RemoveEmptyEntries);
+        var tokens = value[start..end].Split([' ', '('], StringSplitOptions.RemoveEmptyEntries);
         (name, arguments, template) = (tokens[1].Trim()
             , tokens[2].Trim()[..^1].Split(',').Select(x => x.Trim()).ToArray()
             , value[(end + 3)..]);

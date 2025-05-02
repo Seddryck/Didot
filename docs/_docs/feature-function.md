@@ -21,9 +21,13 @@ var engine = factory.GetByTag(tag);
 engine.AddFunction("Hello", () => "function definition");
 ```
 
-## Using Partials in Templates
+## Using Functions in Templates
 
-Once registered, functions can be applied directly in templates by referencing the function name and passing values to the parameters.
+Once registered, functions can be applied directly in templates by referencing the function name and passing values to the parameters. All examples below will have the same output:
+
+```text
+Greetings: Mr. Einstein Albert!
+```
 
 ### Scriban
 
