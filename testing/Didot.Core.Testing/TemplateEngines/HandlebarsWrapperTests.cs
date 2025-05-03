@@ -39,6 +39,14 @@ public class HandlebarsWrapperTests : BaseTemplateWrapperTests
         => Render_MultiProperty_Successful("Hello {{model.Name}}. You're {{model.Age}} years old.");
 
     [Test]
+    public override void Render_MultiPropertyWrapAsModel_Successful()
+        => Render_MultiPropertyWrapAsModel_Successful("Hello {{model.Name}}. You're {{model.Age}} years old.");
+
+    [Test]
+    public override void Render_MultiPropertyWithoutWrapAsModel_Successful()
+        => Render_MultiPropertyWithoutWrapAsModel_Successful("Hello {{Name}}. You're {{Age}} years old.");
+
+    [Test]
     public override void Render_NestedProperties_Successful()
         => Render_NestedProperties_Successful("{{#with model}}Hello {{#with Name}}{{First}} {{Last}}{{/with}}. Your age is {{Age}} years old.{{/with}}");
 

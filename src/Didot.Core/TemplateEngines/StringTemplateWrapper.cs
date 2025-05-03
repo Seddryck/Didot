@@ -33,12 +33,21 @@ public class StringTemplateWrapper : BaseTemplateEngine
     public override string Render(string template, object model)
     {
         var templateInstance = new Template(template, Options.Delimiters.Left, Options.Delimiters.Right);
-        var extractedModel = model.GetType().GetProperty("model")?.GetValue(model) ?? model;
-        templateInstance.Add("model", extractedModel);
+        if (!Configuration.WrapAsModel && model is IDictionary<string, object?> dict)
+        {
+            foreach (var (key, value) in dict)
+                templateInstance.Add(key, value);
+        }
+        else
+        {
+            var extractedModel = model.GetType().GetProperty("model")?.GetValue(model) ?? model;
+            templateInstance.Add("model", extractedModel);
+        }
+
         foreach (var (key, value) in Mappings)
             templateInstance.Group.DefineDictionary(key, value);
 
-        if (Formatters.Count>0)
+        if (Formatters.Count > 0)
         {
             var renderer = (object? value, string name) =>
             {

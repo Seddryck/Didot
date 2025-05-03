@@ -33,6 +33,13 @@ public class FluidWrapper : BaseTemplateEngine
     {
         var template = Parser.Parse(source);
 
+        if (Configuration.WrapAsModel)
+        {
+            var isAlreadyWrapped = model.GetType().GetProperty("model") != null;
+            if (!isAlreadyWrapped)
+                model = new { model };
+        }
+
         var context = new TemplateContext(model);
 
         // Register Mappings as Fluid filters

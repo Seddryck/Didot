@@ -27,7 +27,19 @@ public class DotLiquidWrapper : BaseTemplateEngine
     public override string Render(string source, object model)
     {
         var templateInstance = Template.Parse(source);
-        var hash = Hash.FromAnonymousObject(model);
+
+        Hash hash;
+        if (!Configuration.WrapAsModel && model is IDictionary<string, object?> dict)
+        {
+            hash = Hash.FromDictionary(dict);
+        }
+        else
+        {
+            var isAlreadyWrapped = model.GetType().GetProperty("model") != null;
+            if (!isAlreadyWrapped)
+                model = new { model };
+            hash = Hash.FromAnonymousObject(model);
+        }
 
         foreach (var (dictName, dictValues) in Mappings)
             hash[dictName] = dictValues;

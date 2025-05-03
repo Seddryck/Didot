@@ -67,6 +67,29 @@ public class TemplateEngineBuilderTests
         Assert.That(engine.Configuration.HtmlEncode, Is.False);
     }
 
+
+    [Test]
+    public void Build_UseStringTemplateWithOptionAndConfigurationWrapAsModel_Expected()
+    {
+        var engine = new TemplateEngineBuilder()
+            .UseStringTemplate(options => options.WithAngleBracketExpressions())
+            .WithConfiguration(config => config.WithWrapAsModel())
+            .Build();
+        Assert.That(engine, Is.TypeOf<StringTemplateWrapper>());
+        Assert.That(engine.Configuration.WrapAsModel, Is.True);
+    }
+
+    [Test]
+    public void Build_UseStringTemplateWithOptionAndConfigurationNoWrapAsModel_Expected()
+    {
+        var engine = new TemplateEngineBuilder()
+            .UseStringTemplate(options => options.WithAngleBracketExpressions())
+            .WithConfiguration(config => config.WithoutWrapAsModel())
+            .Build();
+        Assert.That(engine, Is.TypeOf<StringTemplateWrapper>());
+        Assert.That(engine.Configuration.WrapAsModel, Is.False);
+    }
+
     [Test]
     public void Build_UseHandlebarsWithoutOption_Expected()
     {

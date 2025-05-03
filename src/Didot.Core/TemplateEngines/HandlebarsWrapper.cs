@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.IO;
 using System.Linq;
+using System.Net.Http.Metrics;
 using System.Text;
 using System.Threading.Tasks;
 using HandlebarsDotNet;
@@ -20,9 +22,25 @@ public class HandlebarsWrapper : BaseTemplateEngine
     public override void AddFunction(string name, Func<string> template)
         => throw new NotImplementedException();
 
+    protected virtual void Enrich(ref IHandlebars context, ref object model)
+    {
+        foreach (var include in Partials)
+            context.RegisterTemplate(include.Key, include.Value.Invoke());
+
+        if (Configuration.WrapAsModel)
+        {
+            var isAlreadyWrapped = model.GetType().GetProperty("model") != null;
+
+            if (!isAlreadyWrapped)
+                model = new { model };
+        }
+    }
+
     public override string Render(string template, object model)
     {
         var handlebarsContext = CreateContext();
+        Enrich(ref handlebarsContext, ref model);
+        
         var templateInstance = handlebarsContext.Compile(template);
         return templateInstance(model);
     }
@@ -30,12 +48,10 @@ public class HandlebarsWrapper : BaseTemplateEngine
     public override string Render(Stream stream, object model)
     {
         var handlebarsContext = CreateContext();
+        Enrich(ref handlebarsContext, ref model);
 
         using var reader = new StreamReader(stream);
         var templateInstance = handlebarsContext.Compile(reader);
-
-        foreach (var include in Partials)
-            handlebarsContext.RegisterTemplate(include.Key, include.Value.Invoke());
 
         using var writer = new StringWriter(); // StringWriter as TextWriter for output
         templateInstance(writer, model);

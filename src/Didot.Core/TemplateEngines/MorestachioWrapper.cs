@@ -50,6 +50,13 @@ public class MorestachioWrapper : BaseTemplateEngine
         var document = options.BuildAndParse();
         var renderer = document.CreateRenderer();
 
+        if (Configuration.WrapAsModel)
+        {
+            var isAlreadyWrapped = model.GetType().GetProperty("model") != null;
+            if (!isAlreadyWrapped)
+                model = new { model };
+        }
+
         return renderer.RenderAndStringify(model);
     }
 

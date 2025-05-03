@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 namespace Didot.Core;
 public record struct TemplateConfiguration
 (
-    bool HtmlEncode = false
+    bool HtmlEncode = false,
+    bool WrapAsModel = true
 )
 { }
