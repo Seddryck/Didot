@@ -14,7 +14,7 @@ public class StringTemplateOptionsBuilder : ITemplateEngineOptionsBuilder
         AngleBracket
     }
 
-    private Delimiter _delimiter;
+    private Delimiter _delimiter = Delimiter.AngleBracket;
 
     public StringTemplateOptionsBuilder WithDollarDelimitedExpressions()
     {
@@ -33,6 +33,6 @@ public class StringTemplateOptionsBuilder : ITemplateEngineOptionsBuilder
         {
             Delimiter.Dollar => new StringTemplateOptions(new StringTemplateOptions.CharCouple('$', '$')),
             Delimiter.AngleBracket => new StringTemplateOptions(new StringTemplateOptions.CharCouple('<', '>')),
-            _ => throw new InvalidOperationException()
+            _ => throw new InvalidOperationException("No delimiter style was specified.Call WithDollarDelimitedExpressions() or WithAngleBracketExpressions() before building.")
         };
 }

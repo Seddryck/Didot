@@ -7,7 +7,11 @@ using Didot.Core.TemplateEngines;
 using HandlebarsDotNet;
 
 namespace Didot.Core;
-public class TemplateEngineBuilder : ITemplateEngineConfigurabable, ITemplateEngineBuildable
+
+/// <summary>
+/// Builder class for creating template engine instances with a fluent API.
+/// </summary>
+public class TemplateEngineBuilder : ITemplateEngineConfigurabable
 {
     private Type? _templateEngineType;
     private ITemplateEngineOptionsBuilder? _optionsBuilder;
@@ -71,7 +75,7 @@ public class TemplateEngineBuilder : ITemplateEngineConfigurabable, ITemplateEng
     ITemplateEngine ITemplateEngineBuildable.Build()
     {
         if (_templateEngineType is null)
-            throw new InvalidOperationException("Template engine type is not set.");
+            throw new InvalidOperationException("Template engine type is not set. Call one of the Use* methods first (e.g., UseHandlebars(), UseStringTemplate(), etc.).");
 
         var parameters = new List<object>();
         if (_optionsBuilder is not null)
@@ -81,7 +85,14 @@ public class TemplateEngineBuilder : ITemplateEngineConfigurabable, ITemplateEng
             parameters.Add(_configBuilder.Build());
 
         if (parameters.Count == 0)
-            return (ITemplateEngine)Activator.CreateInstance(_templateEngineType)!;
+            try
+            {
+                return (ITemplateEngine)Activator.CreateInstance(_templateEngineType)!;
+            }
+            catch (Exception ex) when (ex is not InvalidOperationException)
+            {
+                throw new InvalidOperationException($"Failed to create instance of {_templateEngineType.Name}.", ex);
+            }
         else
         {
             var constructor = _templateEngineType.GetConstructor([.. parameters.Select(p => p.GetType())]);
