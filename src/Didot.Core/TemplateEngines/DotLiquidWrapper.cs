@@ -32,9 +32,6 @@ public class DotLiquidWrapper : BaseTemplateEngine
         foreach (var (dictName, dictValues) in Mappings)
             hash[dictName] = dictValues;
 
-        if (Configuration.HtmlEncode)
-            throw new NotImplementedException();
-
         return templateInstance.Render(hash);
     }
 

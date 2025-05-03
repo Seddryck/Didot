@@ -32,10 +32,7 @@ public class StringTemplateWrapper : BaseTemplateEngine
 
     public override string Render(string template, object model)
     {
-        if (Configuration.HtmlEncode)
-            throw new NotImplementedException();
-
-        var templateInstance = new Template(template);
+        var templateInstance = new Template(template, Options.Delimiters.Left, Options.Delimiters.Right);
         var extractedModel = model.GetType().GetProperty("model")?.GetValue(model) ?? model;
         templateInstance.Add("model", extractedModel);
         foreach (var (key, value) in Mappings)
