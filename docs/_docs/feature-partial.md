@@ -24,8 +24,8 @@ To register a partial, use the `AddPartial` method of an `ITemplateEngine`. The 
 Once registered, mappings can be applied directly in templates by referencing the dictionary name.
 
 ```csharp
-var factory = new FileBasedTemplateEngineFactory();
-var engine = factory.GetByTag(tag);
+var factory = TemplateEngineFactory.Default;
+var engine = factory.Create(".scriban");
 engine.AddPartial("greetings", () => "Welcome");
 ```
 
@@ -53,6 +53,16 @@ Welcome, Albert Einstein!
 {% raw %}<Greetings()>, <model.Name.First> <model.Name.Last>!{% endraw %}
 ```
 
-### Liquid, Fluid, Morestachio and SmartFormat
+## Engine Compatibility
 
-This feature is not supported.
+Not all engines support automatic partial templates. Engines will throw a `NotSupportedException` natively.
+
+| Engine | Partial Support |
+|------|------|
+| Scriban | ✅ Supported |
+| Fluid | ❌ Throws |
+| Handlebars | ✅ Supported |
+| Morestachio | ❌ Throws |
+| DotLiquid | ❌ Throws |
+| SmartFormat | ❌ Throws |
+| StringTemplate | ✅ Supported |

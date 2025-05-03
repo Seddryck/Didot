@@ -1,5 +1,5 @@
 ---
-title: Instantiating a template engine
+title: Creating a template engine builder
 tags: [template, features]
 ---
 ## Overview
@@ -58,7 +58,7 @@ By default, StringTemplate uses `<...>` delimiters.
 
 ## Global Configuration
 
-To further customize engine behavior, such as enabling HTML encoding, you can attach a global configuration using .`WithConfiguration(...)`. This configuration is shared across all engines and controls cross-cutting concerns — for example, whether the rendered output should be HTML-encoded.
+To further customize engine behavior, such as enabling HTML encoding, you can attach a [**global configuration**](/docs/engine-configuration) using .`WithConfiguration(...)`. This configuration is shared across all engines and controls cross-cutting concerns — for example, whether the rendered output should be HTML-encoded.
 
 This is different from engine-specific options, which are only applicable to one particular engine (like delimiter styles for StringTemplate).
 

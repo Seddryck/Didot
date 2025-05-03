@@ -20,8 +20,8 @@ To register a dictionary, use the `AddMappings` method of an `ITemplateEngine`. 
 Once registered, mappings can be applied directly in templates by referencing the dictionary name.
 
 ```csharp
-var factory = new FileBasedTemplateEngineFactory();
-var engine = factory.GetByTag(tag);
+var factory = TemplateEngineFactory.Default;
+var engine = factory.Create(".scriban");
 engine.AddMappings("greetings", new Dictionary<object, string>() { {"french", "Bonjour"}, {"english", "Hi"}, {"spanish", "Ola"} });
 ```
 
@@ -51,9 +51,19 @@ Assume the model contains a property *Language*, and a dictionary named *greetin
 {% raw %}Greetings in <model.Language> is <greetings.(model.Lang)>{% endraw %}
 ```
 
-### Liquid and SmartFormat
+## Engine Compatibility
 
-This feature is not supported.
+Not all engines support mappings. Engines will throw a `NotSupportedException` if not supported.
+
+| Engine | Mapping Support |
+|------|------|
+| Scriban | ✅ Supported |
+| Fluid | ✅ Supported |
+| Handlebars | ✅ Supported |
+| Morestachio | ✅ Supported |
+| DotLiquid | ❌ Throws |
+| SmartFormat | ❌ Throws |
+| StringTemplate | ✅ Supported |
 
 ## Conclusion
 
