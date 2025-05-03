@@ -25,6 +25,7 @@
 - title: Features
   docs:
   - configuration
+  - instantiate-engine
   - feature-formatter
   - feature-mappings
   - feature-partial

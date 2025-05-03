@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Didot.Core.TemplateEngines;
 public abstract class BaseTemplateEngine : ITemplateEngine
 {
-    protected TemplateConfiguration Configuration { get; }
+    public TemplateConfiguration Configuration { get; }
 
     public BaseTemplateEngine()
         : this(new TemplateConfiguration())
