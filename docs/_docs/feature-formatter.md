@@ -53,12 +53,11 @@ Assume the model contains a property *Price*, and a formatter named *currency* h
 The price is <model.Price; format=\"currency\">
 ```
 
-
 ## Engine Compatibility
 
 Not all engines support automatic formatters. Engines will throw a `NotSupportedException` if not supported.
 
-| Engine | HTML Encoding Support |
+| Engine | Formatter Support |
 |------|------|
 | Scriban | ✅ Supported |
 | Fluid | ✅ Supported |

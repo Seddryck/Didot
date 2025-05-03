@@ -13,7 +13,7 @@ This configuration can be applied globally via the `TemplateEngineFactory` or pa
 The recommended way to apply configuration is through the [`TemplateEngineFactory`](/docs/engine-factory). This approach ensures that all engines built by the factory share the same rendering behavior:
 
 ```csharp
-var factory = new TemplateEngineFactory();
+var factory = TemplateEngineFactory.Default();
 factory.Configure(config => config.WithHtmlEncode());
 
 var engine = factory.Create(".scriban");

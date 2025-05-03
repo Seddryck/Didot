@@ -57,7 +57,7 @@ Welcome, Albert Einstein!
 
 Not all engines support automatic partial templates. Engines will throw a `NotSupportedException` natively.
 
-| Engine | HTML Encoding Support |
+| Engine | Partial Support |
 |------|------|
 | Scriban | ✅ Supported |
 | Fluid | ❌ Throws |

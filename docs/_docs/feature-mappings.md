@@ -55,7 +55,7 @@ Assume the model contains a property *Language*, and a dictionary named *greetin
 
 Not all engines support mappings. Engines will throw a `NotSupportedException` if not supported.
 
-| Engine | HTML Encoding Support |
+| Engine | Mapping Support |
 |------|------|
 | Scriban | ✅ Supported |
 | Fluid | ✅ Supported |
