@@ -14,10 +14,16 @@ public class SmartFormatWrapperTests : BaseTemplateWrapperTests
         => new SmartFormatWrapper();
     protected override ITemplateEngine GetEngine(TemplateConfiguration config)
         => new SmartFormatWrapper(config);
+    protected override ITemplateEngine GetEngine(ITemplateEngineOptions options)
+        => throw new NotSupportedException();
 
     [Test]
     public override void Render_SingleProperty_Successful()
         => Render_SingleProperty_Successful("Hello {model.Name}");
+
+    [Test]
+    public override void Render_SinglePropertyWithOptions_Successful()
+        => Assert.Ignore("SmartFormat wrapper does not support options");
 
     [Test]
     public override void RenderWithoutEncode_QuotedProperty_Successful()

@@ -14,10 +14,16 @@ public class MorestachioWrapperTests : BaseTemplateWrapperTests
         => new MorestachioWrapper();
     protected override ITemplateEngine GetEngine(TemplateConfiguration config)
         => new MorestachioWrapper(config);
+    protected override ITemplateEngine GetEngine(ITemplateEngineOptions options)
+        => throw new NotSupportedException();
 
     [Test]
     public override void Render_SingleProperty_Successful()
         => Render_SingleProperty_Successful("Hello {{model.Name}}");
+
+    [Test]
+    public override void Render_SinglePropertyWithOptions_Successful()
+        => Assert.Ignore("Morestachio wrapper does not support options");
 
     [Test]
     public override void RenderWithoutEncode_QuotedProperty_Successful()

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Didot.Core.TemplateEngines;
 using NUnit.Framework;
 
 namespace Didot.Core.Testing.TemplateEngines;
@@ -10,12 +11,24 @@ public abstract class BaseTemplateWrapperTests
 {
     protected abstract ITemplateEngine GetEngine();
     protected abstract ITemplateEngine GetEngine(TemplateConfiguration config);
+    protected abstract ITemplateEngine GetEngine(ITemplateEngineOptions options);
 
     [Test]
     public abstract void Render_SingleProperty_Successful();
     protected void Render_SingleProperty_Successful(string template)
     {
         var engine = GetEngine();
+        var model = new Dictionary<string, object>()
+            { { "Name", "World"} };
+        var result = engine.Render(template, new { model });
+        Assert.That(result, Is.EqualTo("Hello World"));
+    }
+
+    [Test]
+    public abstract void Render_SinglePropertyWithOptions_Successful();
+    protected void Render_SinglePropertyWithOptions_Successful(string template, ITemplateEngineOptions options)
+    {
+        var engine = GetEngine(options);
         var model = new Dictionary<string, object>()
             { { "Name", "World"} };
         var result = engine.Render(template, new { model });

@@ -15,10 +15,16 @@ public class StringTemplateWrapperTests : BaseTemplateWrapperTests
         => new StringTemplateWrapper();
     protected override ITemplateEngine GetEngine(TemplateConfiguration config)
         => new StringTemplateWrapper(config);
+    protected override ITemplateEngine GetEngine(ITemplateEngineOptions options)
+        => new StringTemplateWrapper((StringTemplateOptions)options);
 
     [Test]
     public override void Render_SingleProperty_Successful()
         => Render_SingleProperty_Successful("Hello <model.Name>");
+
+    [Test]
+    public override void Render_SinglePropertyWithOptions_Successful()
+        => Render_SinglePropertyWithOptions_Successful("Hello $model.Name$", new StringTemplateOptions(new StringTemplateOptions.CharCouple('$', '$')));
 
     [Test]
     public override void RenderWithoutEncode_QuotedProperty_Successful()
