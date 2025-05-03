@@ -71,16 +71,68 @@ If HtmlEncode = false, the output remains:
 <b>Hello</b>
 ```
 
+### Wrap as Model
+
+The `WrapAsModel` setting controls whether the template engine should wrap the provided model inside a root property named `model` when rendering.
+
+This allows a consistent access pattern like `{{ model.Name }}` or `{{ model.Age }}` even when passing multiple loose values.
+
+| Setting | Behaviour |
+|------|------|
+| `WrapAsModel = true` (default) | Input is wrapped under a model key (e.g., model.Name) |
+| `WrapAsModel = false` | Values are injected directly into the root context (e.g., Name) |
+
+**Example**: Given this model,
+
+```csharp
+new Dictionary<string, object>
+{
+    ["Name"] = "Albert",
+    ["Age"] = 42
+}
+```
+
+With WrapAsModel = true, templates should access data like:
+
+```handlebars
+Hello {{ model.Name }} — Age: {{ model.Age }}
+```
+
+With WrapAsModel = false, templates can use:
+
+```handlebars
+Hello {{ Name }} — Age: {{ Age }}
+```
+
+This allows greater flexibility when writing templates, especially when targeting engines that support root-scope variables.
+
+#### Note on Double-Wrapping Prevention
+
+When `WrapAsModel = true`, Didot checks whether the object being passed to the renderer already contains a property named "model". If this property exists, Didot assumes the object is already wrapped and skips wrapping it again.
+
+This ensures compatibility and prevents double-wrapping scenarios that would otherwise lead to awkward access patterns like `model.model.Name`.
+
+#### Configuring via Builder
+
+Use TemplateConfigurationBuilder to fluently define configuration settings:
+
+```csharp
+var config = new TemplateConfigurationBuilder()
+    .WithHtmlEncode()
+    .WithoutWrapAsModel()
+    .Build();
+```
+
+This builder is typically passed to `TemplateEngineBuilder.WithConfiguration(...)` or `TemplateEngineFactory.Configure(...)`.
+
 #### Engine Compatibility
 
-Not all engines support automatic HTML encoding. Engines will ignore the HtmlEncode flag if they don’t support it natively.
-
-| Engine | HTML Encoding Support |
+| Engine | Wrap as Model |
 |------|------|
 | Scriban | ✅ Supported |
 | Fluid | ✅ Supported |
 | Handlebars | ✅ Supported |
 | Morestachio | ✅ Supported |
-| DotLiquid | ❌ Ignored |
-| SmartFormat | ❌ Ignored |
-| StringTemplate | ❌ Ignored |
+| DotLiquid | ✅ Supported |
+| SmartFormat | ✅ Supported |
+| StringTemplate | ✅ Supported |

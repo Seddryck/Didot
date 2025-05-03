@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -24,6 +25,18 @@ public class HandlebarsWrapper : BaseTemplateEngine
     {
         var handlebarsContext = CreateContext();
         var templateInstance = handlebarsContext.Compile(template);
+
+        foreach (var include in Partials)
+            handlebarsContext.RegisterTemplate(include.Key, include.Value.Invoke());
+
+        if (!(!Configuration.WrapAsModel && model is IDictionary<string, object?> dict))
+        {
+            var isAlreadyWrapped = model.GetType().GetProperty("model") != null;
+
+            if (!isAlreadyWrapped)
+                model = new { model };
+        }
+
         return templateInstance(model);
     }
 
@@ -36,6 +49,14 @@ public class HandlebarsWrapper : BaseTemplateEngine
 
         foreach (var include in Partials)
             handlebarsContext.RegisterTemplate(include.Key, include.Value.Invoke());
+
+        if (!(!Configuration.WrapAsModel && model is IDictionary<string, object?> dict))
+        {
+            var isAlreadyWrapped = model.GetType().GetProperty("model") != null;
+
+            if (!isAlreadyWrapped)
+                model = new { model };
+        }
 
         using var writer = new StringWriter(); // StringWriter as TextWriter for output
         templateInstance(writer, model);

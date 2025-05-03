@@ -38,6 +38,14 @@ public class DotLiquidWrapperTests : BaseTemplateWrapperTests
         => Render_MultiProperty_Successful("Hello {{model.Name}}. You're {{model.Age}} years old.");
 
     [Test]
+    public override void Render_MultiPropertyWrapAsModel_Successful()
+        => Render_MultiPropertyWrapAsModel_Successful("Hello {{model.Name}}. You're {{model.Age}} years old.");
+
+    [Test]
+    public override void Render_MultiPropertyWithoutWrapAsModel_Successful()
+        => Render_MultiPropertyWithoutWrapAsModel_Successful("Hello {{Name}}. You're {{Age}} years old.");
+
+    [Test]
     public override void Render_NestedProperties_Successful()
         => Render_NestedProperties_Successful("Hello {{model.Name.First}} {{model.Name.Last}}. Your age is {{model.Age}} years old.");
 

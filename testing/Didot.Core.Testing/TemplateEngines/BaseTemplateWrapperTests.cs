@@ -71,6 +71,28 @@ public abstract class BaseTemplateWrapperTests
     }
 
     [Test]
+    public abstract void Render_MultiPropertyWrapAsModel_Successful();
+    protected void Render_MultiPropertyWrapAsModel_Successful(string template)
+    {
+        var engine = GetEngine(new TemplateConfiguration(WrapAsModel: true));
+        var model = new Dictionary<string, object>()
+            { { "Name", "Albert"}, {"Age", 30 } };
+        var result = engine.Render(template, model);
+        Assert.That(result, Is.EqualTo("Hello Albert. You're 30 years old."));
+    }
+
+    [Test]
+    public abstract void Render_MultiPropertyWithoutWrapAsModel_Successful();
+    protected void Render_MultiPropertyWithoutWrapAsModel_Successful(string template)
+    {
+        var engine = GetEngine(new TemplateConfiguration(WrapAsModel: false));
+        var model = new Dictionary<string, object>()
+            { { "Name", "Albert"}, {"Age", 30 } };
+        var result = engine.Render(template, model);
+        Assert.That(result, Is.EqualTo("Hello Albert. You're 30 years old."));
+    }
+
+    [Test]
     public abstract void Render_NestedProperties_Successful();
     protected void Render_NestedProperties_Successful(string template)
     {

@@ -27,7 +27,16 @@ public class SmartFormatWrapper : BaseTemplateEngine
         => throw new NotImplementedException();
 
     public override string Render(string template, object model)
-        => Smart.Format(template, model);
+    {
+        if (Configuration.WrapAsModel)
+        {
+            var isAlreadyWrapped = model.GetType().GetProperty("model") != null;
+            if (!isAlreadyWrapped)
+                model = new { model };
+        }
+
+        return Smart.Format(template, model);
+    }
 
     public override string Render(Stream stream, object model)
     {

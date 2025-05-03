@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -23,10 +24,20 @@ public class ScribanWrapper : BaseTemplateEngine
     public override string Render(string template, object model)
     {
         var scriptObject = new ScriptObject();
-
-        var modelScriptObject = new ScriptObject();
-        modelScriptObject.Import(model);
-        scriptObject.Import(modelScriptObject);
+        if (!Configuration.WrapAsModel && model is IDictionary<string, object?>)
+        {
+            var modelScriptObject = new ScriptObject();
+            foreach (var item in (IDictionary<string, object?>)model)
+                modelScriptObject[item.Key] = item.Value;
+            scriptObject.Import(modelScriptObject);
+        }
+        else
+        {
+            var extractedModel = model.GetType().GetProperty("model") is null ? new { model } : model;
+            var modelScriptObject = new ScriptObject();
+            modelScriptObject.Import(extractedModel);
+            scriptObject.Import(modelScriptObject);
+        }
 
         foreach (var (funcName, function) in Formatters)
             scriptObject.Import(funcName, (string value) => function(value));
