@@ -24,8 +24,9 @@
 
 - title: Features
   docs:
-  - configuration
-  - instantiate-engine
+  - engine-builder
+  - engine-factory
+  - engine-configuration
   - feature-formatter
   - feature-mappings
   - feature-partial

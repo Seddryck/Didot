@@ -16,8 +16,8 @@ To register a function, use the `AddFunction` method of an `ITemplateEngine`. Th
 - A function returning a string representing the function template.
 
 ```csharp
-var factory = new FileBasedTemplateEngineFactory();
-var engine = factory.GetByTag(tag);
+var factory = TemplateEngineFactory.Default;
+var engine = factory.Create(".scriban");
 engine.AddFunction("Hello", () => "function definition");
 ```
 
@@ -61,9 +61,20 @@ and the function itself is defined as,
 {% raw %}Hello(firstName, lastName)::= Mr. <lastName> <firstName>{% endraw %}
 ```
 
-### Liquid, Fluid, Handlebars, Morestachio and SmartFormat
 
-This feature is not supported.
+## Engine Compatibility
+
+Not all engines support automatic function templates. Engines will throw a `NotSupportedException` if not supported.
+
+| Engine | HTML Encoding Support |
+|------|------|
+| Scriban | ✅ Supported |
+| Fluid | ❌ Throws |
+| Handlebars | ❌ Throws |
+| Morestachio | ❌ Throws |
+| DotLiquid | ❌ Throws |
+| SmartFormat | ❌ Throws |
+| StringTemplate | ✅ Supported |
 
 ### Conclusions
 

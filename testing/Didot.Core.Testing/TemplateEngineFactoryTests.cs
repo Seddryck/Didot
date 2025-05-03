@@ -39,6 +39,17 @@ public class TemplateEngineFactoryTests
     }
 
     [Test]
+    public void Create_AfterConfigure_Expected()
+    {
+        var factory = new TemplateEngineFactory();
+        factory.AddOrReplace(".scriban", engine => engine.UseScriban());
+        factory.Configure(config => config.WithHtmlEncode());
+        var engine = factory.Create(".scriban");
+        Assert.That(engine, Is.TypeOf<ScribanWrapper>());
+        Assert.That(engine.Configuration.HtmlEncode, Is.True);
+    }
+
+    [Test]
     public void ClearRemoveExists_Custom_Expected()
     {
         var factory = new TemplateEngineFactory();

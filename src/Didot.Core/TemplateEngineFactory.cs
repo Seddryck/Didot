@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Didot.Core.TemplateEngines;
 
 namespace Didot.Core;
 public class TemplateEngineFactory
 {
-    private Dictionary<string, ITemplateEngineBuildable> _engines = [];
+    private Dictionary<string, ITemplateEngineConfigurabable> _engines = [];
+    private Func<TemplateConfigurationBuilder, TemplateConfigurationBuilder>? _configure;
 
     public TemplateEngineFactory()
     { }
@@ -51,7 +53,7 @@ public class TemplateEngineFactory
 
     public int Count => _engines.Count;
 
-    public void AddOrReplace(string extension, ITemplateEngineBuildable engine)
+    public void AddOrReplace(string extension, ITemplateEngineConfigurabable engine)
     {
         if (string.IsNullOrEmpty(extension))
             throw new ArgumentNullException(nameof(extension));
@@ -63,7 +65,7 @@ public class TemplateEngineFactory
             _engines[extension] = engine;
     }
 
-    public void AddOrReplace(string extension, Func<TemplateEngineBuilder, ITemplateEngineBuildable> engine)
+    public void AddOrReplace(string extension, Func<TemplateEngineBuilder, ITemplateEngineConfigurabable> engine)
         => AddOrReplace(extension, engine(new ()));
 
     public string[] AllSupportedExtensions()
@@ -77,8 +79,14 @@ public class TemplateEngineFactory
         if (!extension.StartsWith('.'))
             extension = '.' + extension;
 
-        if (_engines.TryGetValue(extension, out var engine))
-            return engine.Build();
+        if (_engines.TryGetValue(extension, out var builder))
+        {
+            var configured = _configure is not null ? builder.WithConfiguration(_configure) : builder;
+            return configured.Build();
+        }
         throw new NotSupportedException($"Template engine for extension '{extension}' is not supported.");
     }
+
+    public void Configure(Func<TemplateConfigurationBuilder, TemplateConfigurationBuilder> configure)
+        => _configure = configure;
 }

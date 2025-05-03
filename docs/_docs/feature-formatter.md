@@ -22,8 +22,8 @@ Once registered, formatters can be applied to any property within the template.
 Once registered, a formatter can be applied to values in templates by referencing the formatter name.
 
 ```csharp
-var factory = new FileBasedTemplateEngineFactory();
-var engine = factory.GetByTag(tag);
+var factory = TemplateEngineFactory.Default;
+var engine = factory.Create(".scriban");
 engine.AddFormatter("currency", (object value) => $"{value}€");
 ```
 
@@ -53,9 +53,20 @@ Assume the model contains a property *Price*, and a formatter named *currency* h
 The price is <model.Price; format=\"currency\">
 ```
 
-### Liquid and SmartFormat
 
-This feature is not supported.
+## Engine Compatibility
+
+Not all engines support automatic formatters. Engines will throw a `NotSupportedException` if not supported.
+
+| Engine | HTML Encoding Support |
+|------|------|
+| Scriban | ✅ Supported |
+| Fluid | ✅ Supported |
+| Handlebars | ✅ Supported |
+| Morestachio | ✅ Supported |
+| DotLiquid | ❌ Throws |
+| SmartFormat | ❌ Throws |
+| StringTemplate | ✅ Supported |
 
 ## Conclusion
 
