@@ -33,9 +33,9 @@ public class StringTemplateWrapper : BaseTemplateEngine
     public override string Render(string template, object model)
     {
         var templateInstance = new Template(template, Options.Delimiters.Left, Options.Delimiters.Right);
-        if (!Configuration.WrapAsModel && model is IDictionary<string, object?>)
+        if (!Configuration.WrapAsModel && model is IDictionary<string, object?> dict)
         {
-            foreach (var (key, value) in (IDictionary<string, object?>)model)
+            foreach (var (key, value) in dict)
                 templateInstance.Add(key, value);
         }
         else
