@@ -12,13 +12,23 @@ using Morestachio.Rendering;
 namespace Didot.Core.TemplateEngines;
 public class StringTemplateWrapper : BaseTemplateEngine
 {
+    public StringTemplateOptions Options { get; }
+
     public StringTemplateWrapper()
-        : base()
+        : this(StringTemplateOptions.Default)
     { }
 
+    public StringTemplateWrapper(StringTemplateOptions options)
+        : base()
+        => Options = options;
+
     public StringTemplateWrapper(TemplateConfiguration configuration)
-        : base(configuration)
+        : this(StringTemplateOptions.Default, configuration)
     { }
+
+    public StringTemplateWrapper(StringTemplateOptions options, TemplateConfiguration configuration)
+        : base(configuration)
+        => Options = options;
 
     public override string Render(string template, object model)
     {
