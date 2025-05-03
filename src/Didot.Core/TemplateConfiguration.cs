@@ -6,7 +6,7 @@ using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 
 namespace Didot.Core;
-public record TemplateConfiguration
+public record struct TemplateConfiguration
 (
     bool HtmlEncode = false
 )

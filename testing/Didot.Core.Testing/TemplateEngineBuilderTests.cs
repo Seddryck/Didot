@@ -46,6 +46,28 @@ public class TemplateEngineBuilderTests
     }
 
     [Test]
+    public void Build_UseStringTemplateWithOptionAndConfigurationHtmlEncode_Expected()
+    {
+        var engine = new TemplateEngineBuilder()
+            .UseStringTemplate(options => options.WithAngleBracketExpressions())
+            .WithConfiguration(config => config.WithHtmlEncode())
+            .Build();
+        Assert.That(engine, Is.TypeOf<StringTemplateWrapper>());
+        Assert.That(engine.Configuration.HtmlEncode, Is.True);
+    }
+
+    [Test]
+    public void Build_UseStringTemplateWithOptionAndConfigurationNoHtmlEncode_Expected()
+    {
+        var engine = new TemplateEngineBuilder()
+            .UseStringTemplate(options => options.WithAngleBracketExpressions())
+            .WithConfiguration(config => config.WithoutHtmlEncode())
+            .Build();
+        Assert.That(engine, Is.TypeOf<StringTemplateWrapper>());
+        Assert.That(engine.Configuration.HtmlEncode, Is.False);
+    }
+
+    [Test]
     public void Build_UseHandlebarsWithoutOption_Expected()
     {
         var engine = new TemplateEngineBuilder()
@@ -98,4 +120,9 @@ public class TemplateEngineBuilderTests
             .Build();
         Assert.That(engine, Is.TypeOf<SmartFormatWrapper>());
     }
+
+    [Test]
+    public void Build_NoEngine_Throws()
+        => Assert.Throws<InvalidOperationException>(
+            () => ((ITemplateEngineBuildable)(new TemplateEngineBuilder())).Build());
 }

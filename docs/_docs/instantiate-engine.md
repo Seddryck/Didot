@@ -56,9 +56,32 @@ var engine = new TemplateEngineBuilder()
 
 By default, StringTemplate uses `<...>` delimiters.
 
+## Global Configuration
+
+To further customize engine behavior, such as enabling HTML encoding, you can attach a global configuration using .`WithConfiguration(...)`. This configuration is shared across all engines and controls cross-cutting concerns — for example, whether the rendered output should be HTML-encoded.
+
+This is different from engine-specific options, which are only applicable to one particular engine (like delimiter styles for StringTemplate).
+
+```csharp
+var engine = new TemplateEngineBuilder()
+    .UseScriban()
+    .WithConfiguration(config => config.WithHtmlEncode())
+    .Build();
+```
+
+Available options:
+
+| Method         | Description                   |
+|----------------|-------------------------------|
+| `WithHtmlEncode()` | Enables HTML encoding in output |
+| `WithoutHtmlEncode()` | Disables HTML encoding (default) |
+
+The resulting `ITemplateEngine` exposes this configuration via the `Configuration` property.
+
 ## Summary
 
 - Use `TemplateEngineBuilder` to select and configure your desired template engine
 - Most engines require no options
 - `StringTemplate` supports delimiter configuration via an optional builder
+- Global behavior (like HTML encoding) can be configured via WithConfiguration(...)
 - Once built, the result is an `ITemplateEngine` instance ready for rendering
