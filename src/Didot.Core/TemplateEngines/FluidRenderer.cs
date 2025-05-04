@@ -15,6 +15,8 @@ internal class FluidRenderer : IRenderer
     private readonly Func<object, TemplateContext> _createContext;
     private readonly TextEncoder? _encoder;
 
+    private readonly object lockObj = new();
+
     public FluidRenderer(string template, Func<object, TemplateContext> createContext, TextEncoder? encoder = null)
         => (_template, _createContext, _encoder) = (template, createContext, encoder);
 
@@ -22,7 +24,7 @@ internal class FluidRenderer : IRenderer
     {
         if (_compiledTemplate is null)
         {
-            lock (this)
+            lock (lockObj)
             {
                 if (_compiledTemplate is null)
                 {
