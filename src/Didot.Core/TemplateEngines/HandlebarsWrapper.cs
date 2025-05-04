@@ -58,6 +58,11 @@ public class HandlebarsWrapper : BaseTemplateEngine
         return writer.ToString();
     }
 
+    public override IRenderer Prepare(string template)
+    {
+        return new HandlebarsRenderer(template, CreateContext);
+    }
+
     private IHandlebars CreateContext()
     {
         var config = new HandlebarsConfiguration { NoEscape = !Configuration.HtmlEncode };

@@ -47,4 +47,5 @@ public abstract class BaseTemplateEngine : ITemplateEngine
 
     public abstract string Render(string template, object model);
     public abstract string Render(Stream stream, object model);
+    public abstract IRenderer Prepare(string template);
 }

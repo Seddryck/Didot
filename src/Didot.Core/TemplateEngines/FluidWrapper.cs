@@ -14,7 +14,7 @@ namespace Didot.Core.TemplateEngines;
 public class FluidWrapper : BaseTemplateEngine
 {
     private static readonly FluidParser Parser = new();
-    
+
     public FluidWrapper()
         : base()
     { }
@@ -32,7 +32,27 @@ public class FluidWrapper : BaseTemplateEngine
     public override string Render(string source, object model)
     {
         var template = Parser.Parse(source);
+        var context = CreateContext(model);
 
+        return Configuration.HtmlEncode
+            ? template.Render(context, HtmlEncoder.Default)
+            : template.Render(context);
+    }
+
+    public override string Render(Stream stream, object model)
+    {
+        using var reader = new StreamReader(stream);
+        var template = reader.ReadToEnd();
+        return Render(template, model);
+    }
+
+    public override IRenderer Prepare(string template)
+    {
+        return new FluidRenderer(Parser.Parse(template), (model) => CreateContext(model), Configuration.HtmlEncode ? HtmlEncoder.Default : null);
+    }
+
+    protected virtual TemplateContext CreateContext(object model)
+    {
         if (Configuration.WrapAsModel)
         {
             var isAlreadyWrapped = model.GetType().GetProperty("model") != null;
@@ -62,18 +82,7 @@ public class FluidWrapper : BaseTemplateEngine
                 return new StringValue(function(input.ToObjectValue()));
             });
         }
-
-        if (Configuration.HtmlEncode)
-            return template.Render(context, HtmlEncoder.Default);
-        else
-            return template.Render(context);
-    }
-
-    public override string Render(Stream stream, object model)
-    {
-        using var reader = new StreamReader(stream);
-        var template = reader.ReadToEnd();
-        return Render(template, model);
+        return context;
     }
 }
 

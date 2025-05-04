@@ -14,4 +14,5 @@ public interface ITemplateEngine
     void AddPartial(string name, Func<string> template);
     string Render(string template, object model);
     string Render(Stream template, object model);
+    IRenderer Prepare(string template);
 }

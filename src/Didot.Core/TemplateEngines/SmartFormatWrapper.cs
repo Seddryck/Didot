@@ -28,14 +28,8 @@ public class SmartFormatWrapper : BaseTemplateEngine
 
     public override string Render(string template, object model)
     {
-        if (Configuration.WrapAsModel)
-        {
-            var isAlreadyWrapped = model.GetType().GetProperty("model") != null;
-            if (!isAlreadyWrapped)
-                model = new { model };
-        }
-
-        return Smart.Format(template, model);
+        var context = CreateContext(model);
+        return Smart.Format(template, context);
     }
 
     public override string Render(Stream stream, object model)
@@ -43,5 +37,21 @@ public class SmartFormatWrapper : BaseTemplateEngine
         using var reader = new StreamReader(stream);
         var template = reader.ReadToEnd();
         return Render(template, model);
+    }
+
+    public override IRenderer Prepare(string template)
+    {
+        return new SmartFormatRenderer(template, CreateContext);
+    }
+
+    protected virtual object CreateContext(object model)
+    {
+        if (Configuration.WrapAsModel)
+        {
+            var isAlreadyWrapped = model.GetType().GetProperty("model") != null;
+            if (!isAlreadyWrapped)
+                model = new { model };
+        }
+        return model;
     }
 }
