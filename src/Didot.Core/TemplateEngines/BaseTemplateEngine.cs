@@ -9,11 +9,11 @@ public abstract class BaseTemplateEngine : ITemplateEngine
 {
     public TemplateConfiguration Configuration { get; }
 
-    public BaseTemplateEngine()
+    protected BaseTemplateEngine()
         : this(new TemplateConfiguration())
     { }
 
-    public BaseTemplateEngine(TemplateConfiguration configuration)
+    protected BaseTemplateEngine(TemplateConfiguration configuration)
         => Configuration = configuration;
 
     protected Dictionary<string, IDictionary<string, object>> Mappings { get; } = [];
@@ -46,5 +46,6 @@ public abstract class BaseTemplateEngine : ITemplateEngine
     }
 
     public abstract string Render(string template, object model);
-    public abstract string Render(Stream stream, object model);
+    public abstract string Render(Stream template, object model);
+    public abstract IRenderer Prepare(string template);
 }

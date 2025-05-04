@@ -23,21 +23,52 @@ public class ScribanWrapper : BaseTemplateEngine
 
     public override string Render(string template, object model)
     {
-        var scriptObject = new ScriptObject();
+        var context = CreateContext(model);
+
+        if (Functions.Count > 0)
+        {
+            var include = string.Empty;
+            foreach (var name in Functions.Keys)
+                include += $"{{{{ include '{name}' ~}}}}\r\n";
+
+            template = include + template;
+        }
+
+        var parsed = Template.Parse(template);
+
+        if (parsed.HasErrors)
+            throw new InvalidOperationException($"Scriban template parse error: {string.Join(", ", parsed.Messages)}");
+
+        return parsed.Render(context);
+    }
+
+    public override string Render(Stream stream, object model)
+    {
+        using var reader = new StreamReader(stream);
+        var template = reader.ReadToEnd();
+        return Render(template, model);
+    }
+
+    public override IRenderer Prepare(string template)
+    {
+        return new ScribanRenderer(template, CreateContext);
+    }
+
+    protected virtual TemplateContext CreateContext(object model)
+    {
+        var modelScriptObject = new ScriptObject();
         if (!Configuration.WrapAsModel && model is IDictionary<string, object?>)
         {
-            var modelScriptObject = new ScriptObject();
             foreach (var item in (IDictionary<string, object?>)model)
                 modelScriptObject[item.Key] = item.Value;
-            scriptObject.Import(modelScriptObject);
         }
         else
         {
             var extractedModel = model.GetType().GetProperty("model") is null ? new { model } : model;
-            var modelScriptObject = new ScriptObject();
             modelScriptObject.Import(extractedModel);
-            scriptObject.Import(modelScriptObject);
         }
+        var scriptObject = new ScriptObject();
+        scriptObject.Import(modelScriptObject);
 
         foreach (var (funcName, function) in Formatters)
             scriptObject.Import(funcName, (string value) => function(value));
@@ -52,30 +83,12 @@ public class ScribanWrapper : BaseTemplateEngine
         foreach (var (funcName, dict) in Mappings)
             scriptObject.Import(funcName, (string value) => map(dict, value));
 
-        if (Functions.Count > 0)
-        {
-            var include = string.Empty;
-            foreach (var name in Functions.Keys)
-                include += $"{{{{ include '{name}' ~}}}}\r\n";
-
-            template = include + template;
-        }
-
         var context = Configuration.HtmlEncode ? new HtmlEncodeTemplateContext() : new TemplateContext();
         var merged = Functions.Concat(Partials).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
         var templateLoader = new InlineIncludeTemplateLoader(merged);
         context.TemplateLoader = templateLoader;
         context.PushGlobal(scriptObject);
-
-        var templateInstance = Template.Parse(template);
-        return templateInstance.Render(context);
-    }
-
-    public override string Render(Stream stream, object model)
-    {
-        using var reader = new StreamReader(stream);
-        var template = reader.ReadToEnd();
-        return Render(template, model);
+        return context;
     }
 
     private class HtmlEncodeTemplateContext : TemplateContext

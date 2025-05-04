@@ -7,6 +7,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Antlr4.StringTemplate;
+using Antlr4.StringTemplate.Compiler;
 using Morestachio.Rendering;
 
 namespace Didot.Core.TemplateEngines;
@@ -32,20 +33,31 @@ public class StringTemplateWrapper : BaseTemplateEngine
 
     public override string Render(string template, object model)
     {
-        var templateInstance = new Template(template, Options.Delimiters.Left, Options.Delimiters.Right);
-        if (!Configuration.WrapAsModel && model is IDictionary<string, object?> dict)
-        {
-            foreach (var (key, value) in dict)
-                templateInstance.Add(key, value);
-        }
-        else
-        {
-            var extractedModel = model.GetType().GetProperty("model")?.GetValue(model) ?? model;
-            templateInstance.Add("model", extractedModel);
-        }
+        var context = CreateContext();
+        var compiledTemplate = new Template(context, template).impl;
+        var instance = context.CreateStringTemplate(compiledTemplate);
+        instance = SetModel(instance, model);
+        return instance.Render();
+    }
+
+    public override string Render(Stream stream, object model)
+    {
+        using var reader = new StreamReader(stream);
+        var template = reader.ReadToEnd();
+        return Render(template, model);
+    }
+
+    public override IRenderer Prepare(string template)
+    {
+        return new StringTemplateRenderer(template, CreateContext, SetModel);
+    }
+
+    protected virtual TemplateGroup CreateContext()
+    {
+        var group = new TemplateGroup(Options.Delimiters.Left, Options.Delimiters.Right);
 
         foreach (var (key, value) in Mappings)
-            templateInstance.Group.DefineDictionary(key, value);
+            group.DefineDictionary(key, value);
 
         if (Formatters.Count > 0)
         {
@@ -55,7 +67,7 @@ public class StringTemplateWrapper : BaseTemplateEngine
                     return value?.ToString() ?? string.Empty;
                 return function(value);
             };
-            templateInstance.Group.RegisterRenderer(typeof(object), new RendererWrapper(renderer));
+            group.RegisterRenderer(typeof(object), new RendererWrapper(renderer));
         }
 
         foreach (var namedTemplate in Functions)
@@ -63,25 +75,33 @@ public class StringTemplateWrapper : BaseTemplateEngine
             var content = namedTemplate.Value.Invoke();
             if (TryParseTemplate(content, out var name, out var arguments, out var text))
             {
-                templateInstance.Group.DefineTemplate(namedTemplate.Key, text, arguments);
+                group.DefineTemplate(namedTemplate.Key, text, arguments);
                 if (name != namedTemplate.Key)
-                    templateInstance.Group.DefineTemplate(name, text, arguments);
+                    group.DefineTemplate(name, text, arguments);
             }
             else
-                templateInstance.Group.DefineTemplate(namedTemplate.Key, content);
+                group.DefineTemplate(namedTemplate.Key, content);
         }
 
         foreach (var include in Partials)
-            templateInstance.Group.DefineTemplate(include.Key, include.Value.Invoke());
+            group.DefineTemplate(include.Key, include.Value.Invoke());
 
-        return templateInstance.Render();
+        return group;
     }
 
-    public override string Render(Stream stream, object model)
+    protected virtual Template SetModel(Template template, object model)
     {
-        using var reader = new StreamReader(stream);
-        var template = reader.ReadToEnd();
-        return Render(template, model);
+        if (!Configuration.WrapAsModel && model is IDictionary<string, object?> dict)
+        {
+            foreach (var (key, value) in dict)
+                template.Add(key, value);
+        }
+        else
+        {
+            var extractedModel = model.GetType().GetProperty("model")?.GetValue(model) ?? model;
+            template.Add("model", extractedModel);
+        }
+        return template;
     }
 
     internal class RendererWrapper : StringRenderer

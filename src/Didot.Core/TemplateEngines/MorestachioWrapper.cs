@@ -28,24 +28,7 @@ public class MorestachioWrapper : BaseTemplateEngine
         if (string.IsNullOrWhiteSpace(template))
             throw new ArgumentException("Template content cannot be null or whitespace.", nameof(template));
 
-        var options = ParserOptionsBuilder
-               .New()
-               .WithTemplate(template)
-               .WithDisableContentEscaping(!Configuration.HtmlEncode)
-               .WithEncoding(Encoding.Default);
-
-        static object? map(IDictionary<string, object> mappings, string key)
-        {
-            if (mappings.TryGetValue(key, out var result))
-                return result;
-            return null;
-        }
-
-        foreach (var mapping in Mappings)
-            options.WithFormatter((string value) => map(mapping.Value, value), mapping.Key);
-
-        foreach (var formatter in Formatters)
-            options.WithFormatter(formatter.Value, formatter.Key);
+        var options = CreateContext(template);
 
         var document = options.BuildAndParse();
         var renderer = document.CreateRenderer();
@@ -65,5 +48,32 @@ public class MorestachioWrapper : BaseTemplateEngine
         using var reader = new StreamReader(stream);
         var template = reader.ReadToEnd();
         return Render(template, model);
+    }
+
+    public override IRenderer Prepare(string template)
+    {
+        return new MorestachioRenderer(template, (tpl) => CreateContext(tpl));
+    }
+
+    protected virtual IParserOptionsBuilder CreateContext(string template)
+    {
+        var options = ParserOptionsBuilder
+               .New()
+               .WithTemplate(template)
+               .WithDisableContentEscaping(!Configuration.HtmlEncode)
+               .WithEncoding(Encoding.Default);
+
+        static object? map(IDictionary<string, object> mappings, string key)
+        {
+            if (mappings.TryGetValue(key, out var result))
+                return result;
+            return null;
+        }
+        foreach (var mapping in Mappings)
+            options.WithFormatter((string value) => map(mapping.Value, value), mapping.Key);
+        foreach (var formatter in Formatters)
+            options.WithFormatter(formatter.Value, formatter.Key);
+
+        return options;
     }
 }

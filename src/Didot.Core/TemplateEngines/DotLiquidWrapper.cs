@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DotLiquid;
+using SmartFormat.Core.Extensions;
 
 namespace Didot.Core.TemplateEngines;
 public class DotLiquidWrapper : BaseTemplateEngine
@@ -52,5 +53,31 @@ public class DotLiquidWrapper : BaseTemplateEngine
         using var reader = new StreamReader(stream);
         var template = reader.ReadToEnd();
         return Render(template, model);
+    }
+
+    public override IRenderer Prepare(string template)
+    {
+        return new DotLiquidRenderer(template, CreateContext);
+    }
+
+    protected virtual Hash CreateContext(object model)
+    {
+        Hash hash;
+        if (!Configuration.WrapAsModel && model is IDictionary<string, object?> dict)
+        {
+            hash = Hash.FromDictionary(dict);
+        }
+        else
+        {
+            var isAlreadyWrapped = model.GetType().GetProperty("model") != null;
+            if (!isAlreadyWrapped)
+                model = new { model };
+            hash = Hash.FromAnonymousObject(model);
+        }
+
+        foreach (var (dictName, dictValues) in Mappings)
+            hash[dictName] = dictValues;
+
+        return hash;
     }
 }

@@ -27,6 +27,7 @@
   - engine-builder
   - engine-factory
   - engine-configuration
+  - engine-renderer
   - feature-formatter
   - feature-mappings
   - feature-partial
