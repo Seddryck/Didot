@@ -57,7 +57,7 @@ public class DotLiquidWrapper : BaseTemplateEngine
 
     public override IRenderer Prepare(string template)
     {
-        return new DotLiquidRenderer(Template.Parse(template), (model) => CreateContext(model));
+        return new DotLiquidRenderer(template, CreateContext);
     }
 
     protected virtual Hash CreateContext(object model)

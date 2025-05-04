@@ -5,22 +5,30 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Fluid;
+using Fluid.Values;
 
 namespace Didot.Core.TemplateEngines;
 internal class FluidRenderer : IRenderer
 {
-    private readonly IFluidTemplate _template;
+    private readonly string _template;
+    private IFluidTemplate? _compiledTemplate;
     private readonly Func<object, TemplateContext> _createContext;
     private readonly TextEncoder? _encoder;
 
-    public FluidRenderer(IFluidTemplate template, Func<object, TemplateContext> createContext, TextEncoder? encoder = null)
+    public FluidRenderer(string template, Func<object, TemplateContext> createContext, TextEncoder? encoder = null)
         => (_template, _createContext, _encoder) = (template, createContext, encoder);
 
     public string Render(object model)
     {
+        if (_compiledTemplate is null)
+        {
+             var parser = new FluidParser();
+            _compiledTemplate = parser.Parse(_template);
+        }
+        
         var context = _createContext(model);
         return _encoder is null
-            ? _template.Render(context)
-            : _template.Render(context, _encoder);
+            ? _compiledTemplate.Render(context)
+            : _compiledTemplate.Render(context, _encoder);
     }
 }

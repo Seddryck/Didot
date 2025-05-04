@@ -34,8 +34,12 @@ public class ScribanWrapper : BaseTemplateEngine
             template = include + template;
         }
 
-        var templateInstance = Template.Parse(template);
-        return templateInstance.Render(context);
+        var parsed = Template.Parse(template);
+
+        if (parsed.HasErrors)
+            throw new InvalidOperationException($"Scriban template parse error: {string.Join(", ", parsed.Messages)}");
+
+        return parsed.Render(context);
     }
 
     public override string Render(Stream stream, object model)
@@ -47,7 +51,7 @@ public class ScribanWrapper : BaseTemplateEngine
 
     public override IRenderer Prepare(string template)
     {
-        return new ScribanRenderer(Template.Parse(template), CreateContext);
+        return new ScribanRenderer(template, CreateContext);
     }
 
     protected virtual TemplateContext CreateContext(object model)

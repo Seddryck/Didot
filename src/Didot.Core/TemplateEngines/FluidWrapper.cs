@@ -6,9 +6,6 @@ using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Fluid;
 using Fluid.Values;
-using Microsoft.Extensions.FileProviders;
-using Microsoft.Extensions.Primitives;
-using SmartFormat.Core.Extensions;
 
 namespace Didot.Core.TemplateEngines;
 public class FluidWrapper : BaseTemplateEngine
@@ -48,7 +45,7 @@ public class FluidWrapper : BaseTemplateEngine
 
     public override IRenderer Prepare(string template)
     {
-        return new FluidRenderer(Parser.Parse(template), (model) => CreateContext(model), Configuration.HtmlEncode ? HtmlEncoder.Default : null);
+        return new FluidRenderer(template, (model) => CreateContext(model), Configuration.HtmlEncode ? HtmlEncoder.Default : null);
     }
 
     protected virtual TemplateContext CreateContext(object model)
