@@ -22,10 +22,18 @@ internal class FluidRenderer : IRenderer
     {
         if (_compiledTemplate is null)
         {
-             var parser = new FluidParser();
-            _compiledTemplate = parser.Parse(_template);
+            lock (this)
+            {
+                if (_compiledTemplate is null)
+                {
+                    var parser = new FluidParser();
+                    if (!parser.TryParse(_template, out var template, out var errors))
+                        throw new InvalidOperationException($"Failed to parse Fluid template: {string.Join(", ", errors)}");
+                    _compiledTemplate = template;
+                }
+            }
         }
-        
+
         var context = _createContext(model);
         return _encoder is null
             ? _compiledTemplate.Render(context)
