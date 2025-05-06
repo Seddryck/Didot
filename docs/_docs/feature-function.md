@@ -61,7 +61,6 @@ and the function itself is defined as,
 {% raw %}Hello(firstName, lastName)::= Mr. <lastName> <firstName>{% endraw %}
 ```
 
-
 ## Engine Compatibility
 
 Not all engines support automatic function templates. Engines will throw a `NotSupportedException` if not supported.
