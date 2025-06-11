@@ -23,9 +23,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.5" />
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.5" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.5" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.6" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.6" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.6" />
     <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1"/>
   </ItemGroup>
 
@@ -34,7 +34,7 @@
     <PackageReference Include="DotLiquid" Version="2.3.197" />
     <PackageReference Include="Fluid.Core" Version="2.24.0" />
     <PackageReference Include="Handlebars.Net" Version="2.1.6" />
-    <PackageReference Include="Handlebars.Net.Helpers" Version="2.5.1" />
+    <PackageReference Include="Handlebars.Net.Helpers" Version="2.5.2" />
     <PackageReference Include="Morestachio" Version="5.0.1.631" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="PocketCsvReader" Version="2.36.7" />
