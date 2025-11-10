@@ -17,7 +17,7 @@ environment:
   github_access_token:
     secure: gtEHCUmmDjYfrp/NEe2qUBJQUTz/4CF7Z6q+pbZCv/8+shELGhhWadWEJfe45oLB3iF1uAPy0V3mahu3WaqWEl2+OFJcTctzLMEB0qf4mBH6qjMVA9Qfveq2+ZbrfLSx
   docker_access_token:
-    secure: TphJvTXq8VrwhLYbQqreSIBkYB9H18ufh+wzB6h44HCa48L2Wby3yKIf1fNumGW7
+    secure: /cfAe/ChRS3igN3cZfqgGtReuwI9D3IVWYWiYXfyO95D+nsQkkTx3lmTdhGbMES2
 
 init:
 - cmd: git config --global core.autocrlf true
