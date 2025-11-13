@@ -14,13 +14,11 @@ public class EngineExtensionTests
     public void EngineExtension_Empty_Valid()
     {
         var options = new Cli.RenderOptions();
-        var parser = new Parser(new RenderCommand(options));
         var args = new List<string>() { "--template=file1.txt", "--stdin", "--parser=json" };
 
-        var result = parser.Parse(args);
-        var context = new InvocationContext(result);
+        var result = new RenderCommand(options).Parse(args);
 
-        Assert.That(context.ParseResult.GetValueForOption(options.EngineExtensions), Is.Empty);
+        Assert.That(result.GetValue(options.EngineExtensions), Is.Empty);
     }
 
     [Test]
@@ -30,14 +28,12 @@ public class EngineExtensionTests
     public void EngineExtension_One_Valid(string additionalArgs)
     {
         var options = new Cli.RenderOptions();
-        var parser = new Parser(new RenderCommand(options));
         var args = new List<string>() { "--template=file1.txt", "--stdin", "--parser=json", additionalArgs };
 
-        var result = parser.Parse(args);
-        var context = new InvocationContext(result);
+        var result = new RenderCommand(options).Parse(args);
 
-        Assert.That(context.ParseResult.Errors, Is.Null.Or.Empty);
-        var value = context.ParseResult.GetValueForOption(options.EngineExtensions);
+        Assert.That(result.Errors, Is.Null.Or.Empty);
+        var value = result.GetValue(options.EngineExtensions);
         Assert.That(value, Is.Not.Null);
         Assert.That(value, Has.Count.EqualTo(1));
         Assert.That(value, Does.ContainKey(".liquid"));
@@ -51,14 +47,12 @@ public class EngineExtensionTests
     public void EngineExtension_Many_Valid(string additionalArgs)
     {
         var options = new Cli.RenderOptions();
-        var parser = new Parser(new RenderCommand(options));
         var args = new List<string>() { "--template=file1.txt", "--stdin", "--parser=json", additionalArgs };
 
-        var result = parser.Parse(args);
-        var context = new InvocationContext(result);
+        var result = new RenderCommand(options).Parse(args);
 
-        Assert.That(context.ParseResult.Errors, Is.Null.Or.Empty);
-        var value = context.ParseResult.GetValueForOption(options.EngineExtensions);
+        Assert.That(result.Errors, Is.Null.Or.Empty);
+        var value = result.GetValue(options.EngineExtensions);
         Assert.That(value, Is.Not.Null);
         Assert.That(value, Has.Count.EqualTo(2));
         Assert.That(value, Does.ContainKey(".liquid"));

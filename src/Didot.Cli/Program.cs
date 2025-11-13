@@ -45,6 +45,6 @@ public class Program
         logger.LogInformation($"Didot Command Line Interface: version {Assembly.GetExecutingAssembly().GetName().Version}");
 
         var renderCommand = host.Services.GetRequiredService<RootCommand>();
-        return await renderCommand.InvokeAsync(args);
+        return await renderCommand.Parse(args).InvokeAsync();
     }
 }

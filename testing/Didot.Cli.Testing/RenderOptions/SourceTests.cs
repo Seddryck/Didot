@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.CommandLine;
 using System.CommandLine.Invocation;
 using System.CommandLine.Parsing;
 using System.Linq;
@@ -14,13 +15,11 @@ public class SourceTests
     public void Source_Empty_Valid()
     {
         var options = new Cli.RenderOptions();
-        var parser = new Parser(new RenderCommand(options));
         var args = new[] { "--template=file1.txt", "--stdin", "--parser=json" };
 
-        var result = parser.Parse(args);
-        var context = new InvocationContext(result);
+        var result = new RenderCommand(options).Parse(args);
 
-        Assert.That(context.ParseResult.GetValueForOption(options.Sources), Is.Empty);
+        Assert.That(result.GetValue(options.Sources), Is.Empty);
     }
 
     [Test]
@@ -31,15 +30,13 @@ public class SourceTests
     public void Source_One_Valid(params string[] additionalArgs)
     {
         var options = new Cli.RenderOptions();
-        var parser = new Parser(new RenderCommand(options));
         var args = new List<string>() { "--template", "file1.txt" };
         args.AddRange(additionalArgs);
 
-        var result = parser.Parse(args);
-        var context = new InvocationContext(result);
+        var result = new RenderCommand(options).Parse(args);
 
-        Assert.That(context.ParseResult.Errors, Is.Null.Or.Empty);
-        var value = context.ParseResult.GetValueForOption(options.Sources);
+        Assert.That(result.Errors, Is.Empty);
+        var value = result.GetValue(options.Sources);
         Assert.That(value, Is.Not.Null);
         Assert.That(value, Has.Count.EqualTo(1));
         Assert.That(value, Does.ContainKey(string.Empty));
@@ -56,15 +53,13 @@ public class SourceTests
     public void Source_Many_Valid(params string[] additionalArgs)
     {
         var options = new Cli.RenderOptions();
-        var parser = new Parser(new RenderCommand(options));
         var args = new List<string>() { "--template=file1.txt" };
         args.AddRange(additionalArgs);
 
-        var result = parser.Parse(args);
-        var context = new InvocationContext(result);
+        var result = new RenderCommand(options).Parse(args);
 
-        Assert.That(context.ParseResult.Errors, Is.Null.Or.Empty);
-        var value = context.ParseResult.GetValueForOption(options.Sources);
+        Assert.That(result.Errors, Is.Null.Or.Empty);
+        var value = result.GetValue(options.Sources);
         Assert.That(value, Is.Not.Null);
         Assert.That(value, Has.Count.EqualTo(2));
         Assert.That(value, Does.ContainKey("employees"));
@@ -78,15 +73,13 @@ public class SourceTests
     public void Source_ManyWithoutKeys_Invalid(params string[] additionalArgs)
     {
         var options = new Cli.RenderOptions();
-        var parser = new Parser(new RenderCommand(options));
         var args = new List<string>() { "--template=file1.txt", "--stdin", "--parser=json" };
         args.AddRange(additionalArgs);
 
-        var result = parser.Parse(args);
-        var context = new InvocationContext(result);
+        var result = new RenderCommand(options).Parse(args);
 
-        Assert.That(context.ParseResult.Errors, Is.Not.Null.And.Not.Empty);
-        Assert.That(context.ParseResult.Errors.Select(x => x.Message)
+        Assert.That(result.Errors, Is.Not.Null.And.Not.Empty);
+        Assert.That(result.Errors.Select(x => x.Message)
             , Does.Contain("The key is missing for the key-value pair: org.yaml. A key is required when multiple key-value pairs are provided."));
     }
 }

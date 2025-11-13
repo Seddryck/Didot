@@ -186,7 +186,7 @@ public class ProgramTests
         };
         var exitCode = await Program.Main(args);
         Assert.That(exitCode, Is.Not.EqualTo(0));
-        Assert.That(ReadErrorStream(), Does.StartWith("Option '-t' is required."));
+        Assert.That(ReadErrorStream(), Does.Contain("Option '--template' is required."));
     }
 
     [Test]
