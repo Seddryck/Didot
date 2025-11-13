@@ -14,13 +14,11 @@ public class ParserParamsTests
     public void ParserParams_Empty_Valid()
     {
         var options = new Cli.RenderOptions();
-        var parser = new Parser(new RenderCommand(options));
         var args = new List<string>() { "--template=file1.txt", "--stdin", "--parser=json" };
 
-        var result = parser.Parse(args);
-        var context = new InvocationContext(result);
+        var result = new RenderCommand(options).Parse(args);
 
-        Assert.That(context.ParseResult.GetValueForOption(options.ParserParams), Is.Empty);
+        Assert.That(result.GetValue(options.ParserParams), Is.Empty);
     }
 
     [Test]
@@ -30,14 +28,12 @@ public class ParserParamsTests
     public void ParserExtension_One_Valid(string additionalArgs)
     {
         var options = new Cli.RenderOptions();
-        var parser = new Parser(new RenderCommand(options));
         var args = new List<string>() { "--template=file1.txt", "--stdin", "--parser=stdin", additionalArgs };
 
-        var result = parser.Parse(args);
-        var context = new InvocationContext(result);
+        var result = new RenderCommand(options).Parse(args);
 
-        Assert.That(context.ParseResult.Errors, Is.Null.Or.Empty);
-        var value = context.ParseResult.GetValueForOption(options.ParserParams);
+        Assert.That(result.Errors, Is.Null.Or.Empty);
+        var value = result.GetValue(options.ParserParams);
         Assert.That(value, Is.Not.Null);
         Assert.That(value, Has.Count.EqualTo(1));
         Assert.That(value, Does.ContainKey("txt@delimiter"));
@@ -51,15 +47,13 @@ public class ParserParamsTests
     public void ParserExtension_Many_Valid(params string[] additionalArgs)
     {
         var options = new Cli.RenderOptions();
-        var parser = new Parser(new RenderCommand(options));
         var args = new List<string>() { "--template=file1.txt", "--stdin", "--parser=csv" };
         args.AddRange(additionalArgs);
 
-        var result = parser.Parse(args);
-        var context = new InvocationContext(result);
+        var result = new RenderCommand(options).Parse(args);
 
-        Assert.That(context.ParseResult.Errors, Is.Null.Or.Empty);
-        var value = context.ParseResult.GetValueForOption(options.ParserParams);
+        Assert.That(result.Errors, Is.Null.Or.Empty);
+        var value = result.GetValue(options.ParserParams);
         Assert.That(value, Is.Not.Null);
         Assert.That(value, Has.Count.EqualTo(2));
         Assert.That(value, Does.ContainKey("txt@delimiter"));
