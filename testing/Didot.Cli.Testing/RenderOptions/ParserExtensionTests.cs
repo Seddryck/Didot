@@ -14,13 +14,12 @@ public class ParserExtensionTests
     public void ParserExtension_Empty_Valid()
     {
         var options = new Cli.RenderOptions();
-        var parser = new Parser(new RenderCommand(options));
+        var command = new RenderCommand(options);
         var args = new List<string>() { "--template=file1.txt", "--stdin", "--parser=json" };
 
-        var result = parser.Parse(args);
-        var context = new InvocationContext(result);
+        var result = command.Parse(args);
 
-        Assert.That(context.ParseResult.GetValueForOption(options.ParserExtensions), Is.Empty);
+        Assert.That(result.GetValue(options.ParserExtensions), Is.Empty);
     }
 
     [Test]
@@ -30,14 +29,13 @@ public class ParserExtensionTests
     public void ParserExtension_One_Valid(string additionalArgs)
     {
         var options = new Cli.RenderOptions();
-        var parser = new Parser(new RenderCommand(options));
+        var command = new RenderCommand(options);
         var args = new List<string>() { "--template=file1.txt", "--stdin", "--parser=json", additionalArgs };
 
-        var result = parser.Parse(args);
-        var context = new InvocationContext(result);
+        var result = command.Parse(args);
 
-        Assert.That(context.ParseResult.Errors, Is.Null.Or.Empty);
-        var value = context.ParseResult.GetValueForOption(options.ParserExtensions);
+        Assert.That(result.Errors, Is.Null.Or.Empty);
+        var value = result.GetValue(options.ParserExtensions);
         Assert.That(value, Is.Not.Null);
         Assert.That(value, Has.Count.EqualTo(1));
         Assert.That(value, Does.ContainKey(".txt"));
@@ -53,15 +51,15 @@ public class ParserExtensionTests
     public void ParserExtension_Many_Valid(params string[] additionalArgs)
     {
         var options = new Cli.RenderOptions();
-        var parser = new Parser(new RenderCommand(options));
+        var command = new RenderCommand(options);
         var args = new List<string>() { "--template=file1.txt", "--stdin", "--parser=json" };
         args.AddRange(additionalArgs);
 
-        var result = parser.Parse(args);
-        var context = new InvocationContext(result);
+        var result = command.Parse(args);
 
-        Assert.That(context.ParseResult.Errors, Is.Null.Or.Empty);
-        var value = context.ParseResult.GetValueForOption(options.ParserExtensions);
+
+        Assert.That(result.Errors, Is.Null.Or.Empty);
+        var value = result.GetValue(options.ParserExtensions);
         Assert.That(value, Is.Not.Null);
         Assert.That(value, Has.Count.EqualTo(2));
         Assert.That(value, Does.ContainKey(".txt"));

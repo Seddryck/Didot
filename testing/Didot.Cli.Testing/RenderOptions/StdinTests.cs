@@ -18,28 +18,26 @@ public class StdInTests
     public void StdIn_Provided_Valid(string stdIn)
     {
         var options = new Cli.RenderOptions();
-        var parser = new Parser(new RenderCommand(options));
+        var command = new RenderCommand(options);
         var args = new[] { "--template", "file1.txt", "--parser", "json", stdIn };
 
-        var result = parser.Parse(args);
-        var context = new InvocationContext(result);
+        var result = command.Parse(args);
 
-        Assert.That(context.ParseResult.Errors, Is.Null.Or.Empty);
-        Assert.That(context.ParseResult.GetValueForOption(options.StdIn), Is.True);
+        Assert.That(result.Errors, Is.Null.Or.Empty);
+        Assert.That(result.GetValue(options.StdIn), Is.True);
     }
 
     [Test]
     public void StdIn_NotProvided_Valid()
     {
         var options = new Cli.RenderOptions();
-        var parser = new Parser(new RenderCommand(options));
+        var command = new RenderCommand(options);
         var args = new[] { "--template=file1.txt", "--source=file.json" };
 
-        var result = parser.Parse(args);
-        var context = new InvocationContext(result);
+        var result = command.Parse(args);
 
-        Assert.That(context.ParseResult.Errors, Is.Null.Or.Empty);
-        Assert.That(context.ParseResult.GetValueForOption(options.StdIn), Is.False);
+        Assert.That(result.Errors, Is.Null.Or.Empty);
+        Assert.That(result.GetValue(options.StdIn), Is.False);
     }
 
     [Test]
@@ -47,84 +45,74 @@ public class StdInTests
     public void StdIn_ProvidedExplicitelySet_Valid(bool value)
     {
         var options = new Cli.RenderOptions();
-        var parser = new Parser(new RenderCommand(options));
+        var command = new RenderCommand(options);
         var args = new[] { "--template", "file1.txt", "--parser", "json", "--stdin", $"{value}" };
 
-        var result = parser.Parse(args);
-        var context = new InvocationContext(result);
+        var result = command.Parse(args);
 
-        Assert.That(context.ParseResult.Errors, Is.Null.Or.Empty);
-        Assert.That(context.ParseResult.GetValueForOption(options.StdIn), Is.EqualTo(value));
+        Assert.That(result.Errors, Is.Null.Or.Empty);
+        Assert.That(result.GetValue(options.StdIn), Is.EqualTo(value));
     }
 
     [Test]
     public void StdInSource_BothProvided_Error()
     {
         var options = new Cli.RenderOptions();
-        var parser = new Parser(new RenderCommand(options));
-        var args = new List<string>() { "--template=file1.txt", "--stdin", "--source=file1.json"};
+        var command = new RenderCommand(options);
+        var args = new[] { "--template=file1.txt", "--stdin", "--source=file1.json" };
 
-        var result = parser.Parse(args);
-        var context = new InvocationContext(result);
+        var result = command.Parse(args);
 
-        Assert.That(context.ParseResult.Errors, Is.Not.Null.And.Not.Empty);
-        Assert.That(context.ParseResult.Errors.Select(x => x.Message), Does.Contain("The --stdin option cannot be provided together with the --source option."));
+        Assert.That(result.Errors, Is.Not.Null.And.Not.Empty);
+        Assert.That(result.Errors.Select(x => x.Message), Does.Contain("The --stdin option cannot be provided together with the --source option."));
     }
 
     [Test]
     public void StdInSource_BothProvidedButStdInSetToFalse_Valid()
     {
         var options = new Cli.RenderOptions();
-        var parser = new Parser(new RenderCommand(options));
-        var args = new List<string>() { "--template", "file1.txt" };
-        args.AddRange(new[] { "--stdin", "false" });
-        args.AddRange(new[] { "--source", "file1.json" });
+        var command = new RenderCommand(options);
+        var args = new[] { "--template", "file1.txt", "--stdin", "false", "--source", "file1.json" };
 
-        var result = parser.Parse(args);
-        var context = new InvocationContext(result);
+        var result = command.Parse(args);
 
-        Assert.That(context.ParseResult.Errors, Is.Null.Or.Empty);
+        Assert.That(result.Errors, Is.Null.Or.Empty);
     }
 
     [Test]
     public void StdInParser_ParserNotProvided_Error()
     {
         var options = new Cli.RenderOptions();
-        var parser = new Parser(new RenderCommand(options));
-        var args = new List<string>() { "--template=file1.txt", "--stdin"};
+        var command = new RenderCommand(options);
+        var args = new[] { "--template=file1.txt", "--stdin" };
 
-        var result = parser.Parse(args);
-        var context = new InvocationContext(result);
+        var result = command.Parse(args);
 
-        Assert.That(context.ParseResult.Errors, Is.Not.Null.And.Not.Empty);
-        Assert.That(context.ParseResult.Errors.Select(x => x.Message), Does.Contain("The --parser option is required when using --stdin to specify the input source."));
+        Assert.That(result.Errors, Is.Not.Null.And.Not.Empty);
+        Assert.That(result.Errors.Select(x => x.Message), Does.Contain("The --parser option is required when using --stdin to specify the input source."));
     }
 
     [Test]
     public void StdInParser_ParserNotProvidedButStdInSetToFalse_Valid()
     {
         var options = new Cli.RenderOptions();
-        var parser = new Parser(new RenderCommand(options));
-        var args = new List<string>() { "--template=file1.txt", "--stdin", "false", "--source=file.json" };
+        var command = new RenderCommand(options);
+        var args = new[] { "--template=file1.txt", "--stdin", "false", "--source=file.json" };
 
-        var result = parser.Parse(args);
-        var context = new InvocationContext(result);
+        var result = command.Parse(args);
 
-        Assert.That(context.ParseResult.Errors, Is.Null.Or.Empty);
+        Assert.That(result.Errors, Is.Null.Or.Empty);
     }
 
     [Test]
     public void StdInParserSource_ParserNotProvidedSourceProvided_Errors()
     {
         var options = new Cli.RenderOptions();
-        var parser = new Parser(new RenderCommand(options));
-        var args = new List<string>() { "--template", "file1.txt" };
-        args.AddRange(new[] { "--stdin" });
-        args.AddRange(new[] { "--source", "file1.json" });
+        var command = new RenderCommand(options);
+        var args = new[] { "--template", "file1.txt", "--stdin", "--source", "file1.json" };
 
-        var result = parser.Parse(args);
-        var context = new InvocationContext(result);
+        var result = command.Parse(args);
 
-        Assert.That(context.ParseResult.Errors, Is.Not.Null.And.Not.Empty);
+        Assert.That(result.Errors, Is.Not.Null.And.Not.Empty);
     }
 }

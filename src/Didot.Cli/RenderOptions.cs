@@ -11,86 +11,87 @@ using Didot.Core;
 namespace Didot.Cli;
 public class RenderOptions
 {
-    public Option<string> Template { get; } = new Option<string>(
-        new[] { "-t", "--template" },
-        description: "Path to the template file."
+    public Option<string> Template { get; } = new (
+        "--template", "-t"
     )
     {
-        IsRequired = true,
+        Description = "Path to the template file.",
+        Required = true,
         Arity = ArgumentArity.ExactlyOne
     };
 
-    public Option<string> Engine { get; } = new Option<string>(
-        new[] { "-e", "--engine" },
-        description: "The template engine to use or to enforce when rendering the template.",
-        parseArgument: result => result.Tokens.Any() ? result.Tokens[0].Value.Trim() : string.Empty
+    public Option<string> Engine { get; } = new (
+        "--engine", "-e"
     )
     {
-        Arity = ArgumentArity.ZeroOrOne
+        Description = "The template engine to use or to enforce when rendering the template.",
+        Arity = ArgumentArity.ZeroOrOne,
+        CustomParser = result => result.Tokens.Any() ? result.Tokens[0].Value.Trim() : string.Empty
     };
 
-    public Option<Dictionary<string, string>> EngineExtensions { get; } = new Option<Dictionary<string, string>>(
-        new[] { "-x", "--engine-extension" },
-        description: "Associate a file's extension to a specific template engine.",
-        parseArgument: result => ParseKeyValuePairs(result, ':', ';', NormalizeExtension)
+    public Option<Dictionary<string, string>> EngineExtensions { get; } = new (
+        "--engine-extension", "-x"
     )
     {
+        Description = "Associate a file's extension to a specific template engine.",
         Arity = ArgumentArity.ZeroOrMore,
-        AllowMultipleArgumentsPerToken = false
+        AllowMultipleArgumentsPerToken = false,
+        CustomParser = result => ParseKeyValuePairs(result, ':', ';', NormalizeExtension)
     };
 
-    public Option<Dictionary<string, string>> Sources { get; } = new Option<Dictionary<string, string>>(
-        new[] { "-s", "--source" },
-        description: "Path to the source file.",
-        parseArgument: result => ParseKeyValuePairs(result, ':', ';', null, true)
+    public Option<Dictionary<string, string>> Sources { get; } = new (
+        "--source", "-s"
     )
     {
+        Description = "The source file(s) to use when rendering the template. The key is an optional identifier for the source that can be used in the template to reference it. If only one source file is provided without a key, it will be associated with an empty string key. This option cannot be used together with --stdin.",
         Arity = ArgumentArity.ZeroOrMore,
-        AllowMultipleArgumentsPerToken = true
+        AllowMultipleArgumentsPerToken = true,
+        CustomParser = result => ParseKeyValuePairs(result, ':', ';', null, true)
     };
 
-    public Option<bool> StdIn { get; } = new Option<bool>(
-        new[] { "-i", "--stdin" },
-        description: "Indicates that the input will come from stdin."
+    public Option<bool> StdIn { get; } = new (
+        "--stdin", "-i"
+        
     )
     {
+        Description = "Indicates that the input will come from stdin.",
         Arity = ArgumentArity.ZeroOrOne
     };
 
-    public Option<string> Parser { get; } = new Option<string>(
-        new[] { "-r", "--parser" },
-        description: "The parser to use when reading from StdIn or to enforce when reading from files.",
-        parseArgument: result => result.Tokens.Any() ? result.Tokens[0].Value.Trim() : string.Empty
+    public Option<string> Parser { get; } = new (
+        "--parser", "-r"
     )
     {
-        Arity = ArgumentArity.ZeroOrOne
+        Description = "The parser to use when reading from StdIn or to enforce when reading from files.",
+        Arity = ArgumentArity.ZeroOrOne,
+        CustomParser = result => result.Tokens.Any() ? result.Tokens[0].Value.Trim() : string.Empty
     };
 
     public Option<Dictionary<string, string>> ParserExtensions { get; } = new Option<Dictionary<string, string>>(
-            new[] { "-X", "--parser-extension" },
-            description: "Associate a file's extension to a specific parser.",
-            parseArgument: result => ParseKeyValuePairs(result, ':', ';', NormalizeExtension)
+        "--parser-extension", "-X"
     )
     {
+        Description = "Associate a file's extension to a specific parser.",
         Arity = ArgumentArity.ZeroOrMore,
-        AllowMultipleArgumentsPerToken = true
+        AllowMultipleArgumentsPerToken = true,
+        CustomParser = result => ParseKeyValuePairs(result, ':', ';', NormalizeExtension)
     };
 
-    public Option<Dictionary<string, string>> ParserParams { get; } = new Option<Dictionary<string, string>>(
-            new[] { "-P", "--parser-parameter" },
-            description: "Provide key-value parameters for parsers, such as configuration or dialect settings.",
-            parseArgument: result => ParseKeyValuePairs(result, ':', ';')
+    public Option<Dictionary<string, string>> ParserParams { get; } = new (
+        "--parser-parameter", "-P"
     )
     {
+        Description = "Provide key-value parameters for parsers, such as configuration or dialect settings.",
         Arity = ArgumentArity.ZeroOrMore,
-        AllowMultipleArgumentsPerToken = true
+        AllowMultipleArgumentsPerToken = true,
+        CustomParser = result => ParseKeyValuePairs(result, ':', ';')
     };
 
-    public Option<string> Output { get; } = new Option<string>(
-        new[] { "-o", "--output" },
-        description: "Path to the generated file."
+    public Option<string> Output { get; } = new (
+        "--output", "-o"
     )
     {
+        Description = "Path to the output file. If not provided, the rendered template will be written to stdout.",
         Arity = ArgumentArity.ZeroOrOne
     };
 
@@ -110,8 +111,7 @@ public class RenderOptions
                         dictionary[string.Empty] = keyValue[0].Trim();
                     else
                     {
-                        result.ErrorMessage = $"The key is missing for the key-value pair: {pair}. A key is required when multiple key-value pairs are provided.";
-                        return dictionary;
+                        result.AddError($"The key is missing for the key-value pair: {pair}. A key is required when multiple key-value pairs are provided.");
                     }
                 }
                 else if (keyValue.Length == 2)
@@ -121,7 +121,7 @@ public class RenderOptions
                 }
                 else
                 {
-                    result.ErrorMessage = $"Invalid key-value pair: {pair}";
+                    result.AddError($"Invalid key-value pair: {pair}");
                     return dictionary;
                 }
             }
