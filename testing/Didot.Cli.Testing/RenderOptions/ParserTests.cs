@@ -17,27 +17,25 @@ public class ParserTests
     public void Parser_Provided_Valid(string option)
     {
         var options = new Cli.RenderOptions();
-        var parser = new Parser(new RenderCommand(options));
+        var command = new RenderCommand(options);
         var args = new[] { "--template=file1.txt", "--stdin", option };
 
-        var result = parser.Parse(args);
-        var context = new InvocationContext(result);
+        var result = command.Parse(args);
 
-        Assert.That(context.ParseResult.Errors, Is.Null.Or.Empty);
-        Assert.That(context.ParseResult.GetValueForOption(options.Parser), Is.EqualTo("json"));
+        Assert.That(result.Errors, Is.Null.Or.Empty);
+        Assert.That(result.GetValue(options.Parser), Is.EqualTo("json"));
     }
 
     [Test]
     public void Parser_NotProvided_Valid()
     {
         var options = new Cli.RenderOptions();
-        var parser = new Parser(new RenderCommand(options));
+        var command = new RenderCommand(options);
         var args = new[] { "--template=file1.txt", "--source=file.txt" };
 
-        var result = parser.Parse(args);
-        var context = new InvocationContext(result);
+        var result = command.Parse(args);
 
-        Assert.That(context.ParseResult.Errors, Is.Null.Or.Empty);
-        Assert.That(context.ParseResult.GetValueForOption(options.Parser), Is.Null);
+        Assert.That(result.Errors, Is.Null.Or.Empty);
+        Assert.That(result.GetValue(options.Parser), Is.Null);
     }
 }

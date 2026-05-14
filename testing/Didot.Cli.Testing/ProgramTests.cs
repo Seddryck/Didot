@@ -185,8 +185,8 @@ public class ProgramTests
             $"-o", $"failure.txt"
         };
         var exitCode = await Program.Main(args);
-        Assert.That(exitCode, Is.Not.EqualTo(0));
-        Assert.That(ReadErrorStream(), Does.StartWith("Option '-t' is required."));
+        Assert.That(exitCode, Is.Not.Zero);
+        Assert.That(ReadErrorStream(), Does.StartWith("Option '--template' is required."));
     }
 
     [Test]
@@ -199,7 +199,7 @@ public class ProgramTests
             $"-efluid"
         };
         var exitCode = await Program.Main(args);
-        Assert.That(exitCode, Is.EqualTo(0), message: ReadErrorStream());
+        Assert.That(exitCode, Is.Zero, message: ReadErrorStream());
 
         var expected = File.ReadAllText(Path.Combine("Expectation", $"employees.txt")).Standardize();
         Assert.That(ReadOutputStream(), Is.EqualTo(expected));
