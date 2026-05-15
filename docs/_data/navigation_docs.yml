@@ -9,6 +9,7 @@
   - installation-net-local-tool
   - deployment-docker
   - installation-windows
+  - installation-windows-zip
   - installation-linux
   - installation-library-nuget
 
