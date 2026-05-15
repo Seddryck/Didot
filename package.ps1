@@ -50,7 +50,11 @@ foreach ($project in $projects) {
     }
     if (-not $InstallerOnly) {
         Write-Host "Packaging Nuget $project ..."
-        dotnet pack $project -p:version="$version" -c Release --include-symbols --no-build --nologo
+        if ($project -like "*Didot.Core*") {
+            dotnet pack $project -p:version="$version" -c Release --include-symbols --no-build --nologo
+        } else {
+            dotnet pack $project -p:version="$version" -c Release -p:IncludeSymbols=false --no-build --nologo
+        }
     }
 }
 Write-Host "Building Windows installer for Didot CLI ..."
