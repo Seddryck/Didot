@@ -93,7 +93,7 @@ public class ScribanWrapper : BaseTemplateEngine
 
     private class HtmlEncodeTemplateContext : TemplateContext
     {
-        public override TemplateContext Write(SourceSpan span, object textAsObject)
+        public override TemplateContext Write(SourceSpan span, object? textAsObject)
             => base.Write(span, textAsObject is string text ? WebUtility.HtmlEncode(text) : textAsObject);
     }
 
@@ -104,8 +104,8 @@ public class ScribanWrapper : BaseTemplateEngine
         public InlineIncludeTemplateLoader(IDictionary<string, Func<string>> namedTemplates)
             => _namedTemplates = namedTemplates;
 
-        public ValueTask<string> LoadAsync(TemplateContext context, SourceSpan callerSpan, string templatePath)
-            => ValueTask.FromResult(Load(context, callerSpan, templatePath));
+        public ValueTask<string?> LoadAsync(TemplateContext context, SourceSpan callerSpan, string templatePath)
+            => ValueTask.FromResult<string?>(Load(context, callerSpan, templatePath));
 
         public string GetPath(TemplateContext context, SourceSpan callerSpan, string templateName)
             => templateName;
