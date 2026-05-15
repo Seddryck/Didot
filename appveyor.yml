@@ -95,7 +95,8 @@ after_test:
 artifacts:
 - path: '**\*.nupkg'
 - path: '**\*.snupkg'
-- path: '**\*.zip'
+- path: '.publish\*.zip'
+- path: '.publish\*.exe'
 
 deploy:
 - provider: NuGet
@@ -127,7 +128,8 @@ on_success:
 
                 $context | Upload-Release-Assets `
                     -Tag "v$($env:GitVersion_SemVer)" `
-                    -Path "./.publish"
+                    -Path "./.publish" `
+                    -Extensions @('zip', 'exe')
             }
         } else {
             Write-Host "No release published on GitHub when patch is not set to zero."

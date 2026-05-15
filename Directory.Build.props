@@ -23,7 +23,7 @@
 	</ItemGroup>
 
 	<PropertyGroup>
-		<Version>0.0.0</Version>
+        <Version Condition="'$(Version)' == ''">0.0.0-local</Version>
 		<Authors>Cédric L. Charlier</Authors>
 		<Owners>Seddryck</Owners>
 		<Company>nbiguity</Company>
