@@ -28,7 +28,7 @@ public class FileBasedTemplateEngineFactoryTests
     public void GetSourceParser_NotSupportedExtension_Exception(string extension)
     {
         var factory = new FileBasedTemplateEngineFactory();
-        Assert.Throws<NotSupportedException>(() => factory.GetByExtension(extension));
+        Assert.That(() => factory.GetByExtension(extension), Throws.TypeOf<NotSupportedException>());
     }
 
     [Test]
