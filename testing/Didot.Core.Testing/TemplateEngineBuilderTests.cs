@@ -146,6 +146,7 @@ public class TemplateEngineBuilderTests
 
     [Test]
     public void Build_NoEngine_Throws()
-        => Assert.Throws<InvalidOperationException>(
-            () => ((ITemplateEngineBuildable)(new TemplateEngineBuilder())).Build());
+        => Assert.That(
+            () => ((ITemplateEngineBuildable)(new TemplateEngineBuilder())).Build(),
+            Throws.TypeOf<InvalidOperationException>());
 }

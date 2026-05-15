@@ -28,7 +28,7 @@ public class FileBasedSourceParserFactoryTests
     public void GetSourceParser_NotSupportedExtension_Exception(string extension)
     {
         var factory = new FileBasedSourceParserFactory(new Dictionary<string, string>());
-        Assert.Throws<NotSupportedException>(() => factory.GetByExtension(extension));
+        Assert.That(() => factory.GetByExtension(extension), Throws.TypeOf<NotSupportedException>());
     }
 
     [Test]

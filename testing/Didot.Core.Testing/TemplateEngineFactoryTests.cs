@@ -82,6 +82,6 @@ public class TemplateEngineFactoryTests
         var factory = new TemplateEngineFactory();
         factory.Clear();
 
-        Assert.That(() => factory.Create(".unknown"), Throws.Exception.TypeOf<NotSupportedException>());
+        Assert.That(() => factory.Create(".unknown"), Throws.TypeOf<NotSupportedException>());
     }
 }
