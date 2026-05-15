@@ -1,3 +1,7 @@
+param(
+    [switch]$InstallerOnly
+)
+
 if (Test-Path "./.publish") {
     Remove-Item -Recurse -Force "./.publish"
 }
@@ -9,12 +13,23 @@ if ([string]::IsNullOrWhiteSpace($version)) {
     $version = "0.0.0-local"
 }
 
-$projects = @(
-  "src/Didot.Core/Didot.Core.csproj",
-  "src/Didot.Cli/Didot.Cli.csproj"
-)
-$frameworks = @("net8.0", "net9.0", "net10.0")
-$runtimes = ("win-x64", "linux-x64")
+if ($InstallerOnly) {
+    Write-Host "Creating only installer for Didot CLI version $version ..."
+    $projects = @(
+        "src/Didot.Cli/Didot.Cli.csproj"
+    )
+    $frameworks = @("net10.0")
+    $runtimes = @("win-x64")
+}
+else {
+    Write-Host "Creating all packages for Didot CLI and Core version $version ..."
+    $projects = @(
+        "src/Didot.Core/Didot.Core.csproj",
+        "src/Didot.Cli/Didot.Cli.csproj"
+    )
+    $frameworks = @("net8.0", "net9.0", "net10.0")
+    $runtimes = @("win-x64", "linux-x64")
+}
 
 foreach ($project in $projects) {
     foreach ($framework in $frameworks) {
@@ -26,12 +41,17 @@ foreach ($project in $projects) {
                 dotnet build $project -p:version="$version" -c Release -f $framework -r $runtime /p:ContinuousIntegrationBuild=true --nologo
                 Write-Host "Packaging .exe artifacts $project for $framework on $runtime..."
                 dotnet publish $project -p:version="$version" -c Release -f $framework -r $runtime --no-self-contained -o ./.publish/$framework/$runtime --no-build --nologo
-                7z a ./.publish/Didot-$version-$framework-$runtime.zip ./.publish/$framework/$runtime/*.*                
+                if (-not $InstallerOnly) {
+                    Write-Host "Creating archive .zip of $project for $framework on $runtime..."
+                    7z a ./.publish/Didot-$version-$framework-$runtime.zip ./.publish/$framework/$runtime/*.*
+                }
             }
         }
     }
-    Write-Host "Packaging Nuget $project ..."
-    dotnet pack $project -p:version="$version" -c Release --include-symbols --no-build --nologo
+    if (-not $InstallerOnly) {
+        Write-Host "Packaging Nuget $project ..."
+        dotnet pack $project -p:version="$version" -c Release --include-symbols --no-build --nologo
+    }
 }
 Write-Host "Building Windows installer for Didot CLI ..."
-iscc "/DAppVersion=$version" "/DTargetFramework=net10.0" "/DRuntimeIdentifier=win-x64" ".\distribution\installer\didot-cli.iss"
+iscc /Qp "/DAppVersion=$version" "/DTargetFramework=net10.0" "/DRuntimeIdentifier=win-x64" ".\distribution\installer\didot-cli.iss"
