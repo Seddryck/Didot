@@ -1,6 +1,6 @@
 [CmdletBinding()]
 param()
-Write-Host "Hello"
+
 $searchRoots = @(
     ${env:ProgramFiles(x86)}
     $env:ProgramFiles
@@ -32,19 +32,32 @@ if (-not $isccFolder) {
         --accept-package-agreements `
         --accept-source-agreements
     $isccFolder = Find-Iscc
-} else {
-    Write-Host "ISCC.exe found at: $isccFolder"
 }
+
 if (-not $isccFolder) {
     throw "Unable to locate ISCC.exe after installation."
 }
+
 Write-Host "Inno Setup installation path: $isccFolder"
-if ($env:Path -notlike "*$isccFolder*") {
+$userPath = [Environment]::GetEnvironmentVariable("Path", "User")
+
+if ($userPath -notlike "*$isccFolder*") {
+
+    [Environment]::SetEnvironmentVariable(
+        "Path",
+        "$userPath;$isccFolder",
+        "User"
+    )
+
     $env:Path = "$env:Path;$isccFolder"
-    Write-Host "Added '$isccFolder' to PATH for current session."
+
+    Write-Host "Added '$isccFolder' to user PATH."
+} else {
+    Write-Host "ISCC.exe folder is already in user PATH."
 }
+
 if (-not (Get-Command iscc.exe -ErrorAction SilentlyContinue)) {
     throw "ISCC.exe still cannot be resolved from PATH."
 }
+
 Write-Host "ISCC.exe is available."
-return "iscc.exe"
