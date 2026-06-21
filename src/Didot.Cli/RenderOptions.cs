@@ -16,7 +16,7 @@ public class RenderOptions
     )
     {
         Description = "Path to the template file.",
-        Required = true,
+        Required = false,
         Arity = ArgumentArity.ExactlyOne
     };
 

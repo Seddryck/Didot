@@ -1,5 +1,6 @@
 ﻿using System;
 using System.CommandLine;
+using System.CommandLine.Parsing;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -14,23 +15,39 @@ public class RenderCommand : RootCommand
 {
     public RenderCommand(RenderOptions options, ILogger<RenderCommand>? logger = null)
         : base("Didot Command Line Interface")
+        => Configure(this, options, logger);
+
+    public static void Configure(Command command, RenderOptions options, ILogger<RenderCommand>? logger = null)
     {
         options.EngineExtensions.DefaultValueFactory = _ => [];
         options.ParserExtensions.DefaultValueFactory = _ => [];
         options.ParserParams.DefaultValueFactory = _ => [];
         options.Sources.DefaultValueFactory = _ => [];
 
-        Options.Add(options.Template);
-        Options.Add(options.Engine);
-        Options.Add(options.EngineExtensions);
-        Options.Add(options.Sources);
-        Options.Add(options.StdIn);
-        Options.Add(options.Parser);
-        Options.Add(options.ParserExtensions);
-        Options.Add(options.ParserParams);
-        Options.Add(options.Output);
+        command.Options.Add(options.Template);
+        command.Options.Add(options.Engine);
+        command.Options.Add(options.EngineExtensions);
+        command.Options.Add(options.Sources);
+        command.Options.Add(options.StdIn);
+        command.Options.Add(options.Parser);
+        command.Options.Add(options.ParserExtensions);
+        command.Options.Add(options.ParserParams);
+        command.Options.Add(options.Output);
 
-        Validators.Add(result => {
+        command.Validators.Add(result =>
+        {
+            if (HasSubcommand(result))
+                return;
+
+            var template = result.GetValue(options.Template);
+            if (string.IsNullOrWhiteSpace(template))
+                result.AddError("Option '--template' is required.");
+        });
+
+        command.Validators.Add(result => {
+            if (HasSubcommand(result))
+                return;
+
             var stdIn = result.GetValue(options.StdIn);
 
             var sourcesResult = result.GetResult(options.Sources);
@@ -45,14 +62,20 @@ public class RenderCommand : RootCommand
             }
         });
 
-        Validators.Add(result => {
+        command.Validators.Add(result => {
+            if (HasSubcommand(result))
+                return;
+
             var stdIn = result.GetValue(options.StdIn);
             var parser = result.GetValue(options.Parser) ?? string.Empty;
             if (stdIn && string.IsNullOrEmpty(parser))
                 result.AddError("The --parser option is required when using --stdin to specify the input source.");
         });
 
-        Validators.Add(result => {
+        command.Validators.Add(result => {
+            if (HasSubcommand(result))
+                return;
+
             var stdIn = result.GetValue(options.StdIn);
             var sourcesResult = result.GetResult(options.Sources);
             var hasSources = sourcesResult is not null
@@ -63,7 +86,7 @@ public class RenderCommand : RootCommand
                 result.AddError("The --stdin option is required when not using --source to specify the input file(s).");
         });
 
-        this.SetAction(parseResult =>
+        command.SetAction(parseResult =>
         {
             var handler = new RenderCommandHandler(logger);
 
@@ -79,5 +102,8 @@ public class RenderCommand : RootCommand
             );
         });
     }
+
+    private static bool HasSubcommand(CommandResult result)
+        => result.Children.Any(x => x is CommandResult);
 }
 

@@ -130,3 +130,22 @@ Example: `-t path/to/template` or `--template=path/to/template`
 - Accept: single value.
 - Mandatory: no.
 - Example: `-o path/to/output` or `--output=path/to/output`
+
+### Extensions register command
+
+- Command: `didot extensions register <reference>`
+- Optional: `--name <friendly-name>`
+- Description: Registers an extension in Didot's extension registry.
+
+`<reference>` is a neutral reference and can be:
+- an assembly path: `./Didot.Expressif.dll`
+- a directory path containing one extension assembly: `./extensions/Didot.Expressif/`
+- a non-path identifier resolved by lookup (id, friendly name, or assembly name): `Didot.Expressif`
+
+Lookup order for non-path references:
+1. current directory
+2. current directory `/extensions`
+3. Didot installation directory `/extensions`
+4. user-level `~/.didot/extensions`
+
+If multiple candidates match, registration fails and requires an explicit path.

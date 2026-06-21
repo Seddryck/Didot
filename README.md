@@ -316,6 +316,30 @@ In this example:
 - Mandatory: no.
 - Example: `-o path/to/output` or `--output=path/to/output`
 
+### Extensions register command
+
+- Command: `didot extensions register <reference>`
+- Optional: `--name <friendly-name>`
+- Description: Registers an extension in Didot's extension registry.
+
+`<reference>` can be an id/name/assembly name, a `.dll` file path, or a directory path containing one extension assembly.
+
+Examples:
+
+```bash
+didot extensions register Didot.Expressif
+didot extensions register ./Didot.Expressif.dll
+didot extensions register ./extensions/Didot.Expressif --name Expressif
+```
+
+When the reference is not a path, Didot probes in this order:
+1. current directory
+2. current directory `/extensions`
+3. Didot installation directory `/extensions`
+4. user-level `~/.didot/extensions`
+
+If more than one candidate matches, registration fails and asks for an explicit path.
+
 #### Example:
 
 ##### With a source file:

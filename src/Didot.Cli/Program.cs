@@ -33,9 +33,17 @@ public class Program
             {
                 services.AddLogging();
                 services.AddTransient<RenderOptions>();
+                services.AddTransient<RegisterExtensionOptions>();
+                services.AddTransient<ExtensionMetadataReader>();
+                services.AddTransient<ExtensionReferenceResolver>();
+                services.AddTransient<InstallationExtensionRegistryRepository>();
+                services.AddTransient<RegisterExtensionCommandHandler>();
+                services.AddTransient<RegisterExtensionCommand>();
+                services.AddTransient<ExtensionsCommand>();
                 services.AddTransient<RootCommand>(provider =>
-                    new RenderCommand(
+                    new CliRootCommand(
                         provider.GetRequiredService<RenderOptions>(),
+                        provider.GetRequiredService<ExtensionsCommand>(),
                         provider.GetRequiredService<ILogger<RenderCommand>>()
                     ));
             })
