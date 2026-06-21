@@ -128,9 +128,17 @@ public class RenderCommandHandler
     {
         try
         {
-            var printer = new Printer(engine);
             using var templateStream = File.OpenRead(template);
-            return printer.Render(templateStream, sources);
+
+            var pipeline = new RenderPipeline();
+            var context = new RenderPipelineContext()
+            {
+                TemplateEngine = engine,
+                TemplateStream = templateStream,
+                Inputs = sources.ToDictionary(x => x.Key, x => (IModelInput)new SourceModelInput(x.Value)),
+            };
+            pipeline.Execute(context);
+            return context.Output ?? string.Empty;
         }
         catch (Exception)
         { throw; }
