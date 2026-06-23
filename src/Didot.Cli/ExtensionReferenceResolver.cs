@@ -161,6 +161,12 @@ public class ExtensionReferenceResolver
         if (!Directory.Exists(directory))
             return [];
 
-        return Directory.GetFiles(directory, "*.dll", searchOption);
+        var options = new EnumerationOptions
+        {
+            RecurseSubdirectories = searchOption == SearchOption.AllDirectories,
+            IgnoreInaccessible = true,
+        };
+
+        return Directory.EnumerateFiles(directory, "*.dll", options);
     }
 }
