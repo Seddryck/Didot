@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Runtime.Loader;
 using Didot.Core;
 
 namespace Didot.Cli;
@@ -25,7 +26,7 @@ public class ExtensionAssemblyLoader
     {
         try
         {
-            return Assembly.LoadFrom(assemblyPath);
+            return AssemblyLoadContext.Default.LoadFromAssemblyPath(assemblyPath);
         }
         catch (FileNotFoundException ex)
         {

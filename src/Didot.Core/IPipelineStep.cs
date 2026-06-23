@@ -1,6 +1,6 @@
 namespace Didot.Core;
 
-public interface IPipelineStep<TContext> where TContext : IPipelineContext
+public interface IPipelineStep<in TContext> where TContext : IPipelineContext
 {
     void Execute(TContext context);
 }

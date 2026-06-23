@@ -64,12 +64,12 @@ public class Program
         }
         catch (CliException ex)
         {
-            Console.Error.WriteLine(ex.Message);
+            await Console.Error.WriteLineAsync(ex.Message);
             return (int)ex.ExitCode;
         }
         catch (Exception ex)
         {
-            Console.Error.WriteLine($"Unexpected error: {ex.Message}");
+            await Console.Error.WriteLineAsync($"Unexpected error: {ex.Message}");
             return (int)CliExitCode.InternalError;
         }
     }

@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Runtime.Loader;
 using Didot.Core;
 
 namespace Didot.Cli;
@@ -13,7 +14,7 @@ public class ExtensionMetadataReader
         try
         {
             var fullPath = Path.GetFullPath(assemblyPath);
-            var assembly = Assembly.LoadFrom(fullPath);
+            var assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(fullPath);
             var attribute = assembly.GetCustomAttribute<DidotExtensionAttribute>();
             if (attribute is null)
             {

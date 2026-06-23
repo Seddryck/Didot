@@ -16,8 +16,7 @@ public class Printer
 
     public Printer AddHook(IPipelineExtensionHook hook)
     {
-        if (hook is null)
-            throw new ArgumentNullException(nameof(hook));
+        ArgumentNullException.ThrowIfNull(hook);
 
         Hooks.Add(hook);
         return this;
@@ -72,7 +71,7 @@ public class Printer
     protected virtual IPipeline<RenderPipelineContext> BuildRenderPipeline()
         => new RenderPipeline();
 
-    private Dictionary<string, IModelInput> ToModelInputs(IDictionary<string, ISource> sources)
+    private static Dictionary<string, IModelInput> ToModelInputs(IDictionary<string, ISource> sources)
     {
         var inputs = new Dictionary<string, IModelInput>();
         foreach (var source in sources)

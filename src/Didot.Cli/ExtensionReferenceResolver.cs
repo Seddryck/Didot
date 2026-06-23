@@ -31,7 +31,7 @@ public class ExtensionReferenceResolver
         => Path.IsPathRooted(reference)
             || reference.Contains(Path.DirectorySeparatorChar)
             || reference.Contains(Path.AltDirectorySeparatorChar)
-            || reference.StartsWith(".");
+            || reference.StartsWith('.');
 
     private static string ResolveFromDirectory(string directory)
     {
