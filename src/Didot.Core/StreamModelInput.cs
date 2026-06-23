@@ -6,7 +6,11 @@ public class StreamModelInput : IModelInput
     private ISourceParser Parser { get; }
 
     public StreamModelInput(Stream content, ISourceParser parser)
-        => (Content, Parser) = (content, parser);
+    {
+        ArgumentNullException.ThrowIfNull(content);
+        ArgumentNullException.ThrowIfNull(parser);
+        (Content, Parser) = (content, parser);
+    }
 
     public object Parse()
         => Parser.Parse(Content);

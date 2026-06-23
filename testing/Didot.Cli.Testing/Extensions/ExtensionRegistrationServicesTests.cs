@@ -46,6 +46,7 @@ public class ExtensionRegistrationServicesTests
     }
 
     [Test]
+    [NonParallelizable]
     public void ReferenceResolver_NonPathWithMultipleMatches_Throws()
     {
         var sourceAssembly = Assembly.GetExecutingAssembly().Location;

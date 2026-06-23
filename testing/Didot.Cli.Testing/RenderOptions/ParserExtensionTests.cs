@@ -30,7 +30,9 @@ public class ParserExtensionTests
     {
         var options = new Cli.RenderOptions();
         var command = new RenderCommand(options);
-        var args = new[] { "--template=file1.txt", "--stdin", "--parser=json", additionalArgs };
+        var baseArgs = new[] { "--template=file1.txt", "--stdin", "--parser=json" };
+        var splitAdditionalArgs = additionalArgs.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        var args = baseArgs.Concat(splitAdditionalArgs).ToArray();
 
         var result = command.Parse(args);
 

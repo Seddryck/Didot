@@ -38,10 +38,20 @@ public class RegisterExtensionCommandHandler
             Console.Out.WriteLine($"Registered extension '{entry.Name}' ({entry.Id}) version {entry.Version} from '{entry.Assembly}'.");
             return 0;
         }
+        catch (Core.ExtensionException ex)
+        {
+            Console.Error.WriteLine(ex.Message);
+            return (int)ex.ToCliExitCode();
+        }
+        catch (InvalidOperationException ex)
+        {
+            Console.Error.WriteLine(ex.Message);
+            return (int)CliExitCode.InvalidInput;
+        }
         catch (Exception ex)
         {
             Console.Error.WriteLine(ex.Message);
-            return 1;
+            return (int)CliExitCode.InternalError;
         }
     }
 }

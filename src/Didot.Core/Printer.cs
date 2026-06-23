@@ -33,10 +33,10 @@ public class Printer
     }
 
     public string Render(string template, object model)
-        => TemplateEngine.Render(template, model);
+        => RenderPipeline(template, model);
 
     public string Render(Stream template, object model)
-        => TemplateEngine.Render(template, model);
+        => RenderPipeline(template, model);
 
     public string Render(string template, string content, ISourceParser parser)
         => RenderPipeline(template, new Dictionary<string, IModelInput>()
@@ -73,6 +73,8 @@ public class Printer
 
     private static Dictionary<string, IModelInput> ToModelInputs(IDictionary<string, ISource> sources)
     {
+        ArgumentNullException.ThrowIfNull(sources);
+
         var inputs = new Dictionary<string, IModelInput>();
         foreach (var source in sources)
             inputs.Add(source.Key, new SourceModelInput(source.Value));
@@ -99,6 +101,32 @@ public class Printer
             TemplateEngine = TemplateEngine,
             TemplateStream = template,
             Inputs = inputs,
+            Hooks = Hooks,
+        };
+        BuildRenderPipeline().Execute(context);
+        return context.Output ?? string.Empty;
+    }
+
+    private string RenderPipeline(string template, object model)
+    {
+        var context = new RenderPipelineContext()
+        {
+            TemplateEngine = TemplateEngine,
+            Template = template,
+            Model = model,
+            Hooks = Hooks,
+        };
+        BuildRenderPipeline().Execute(context);
+        return context.Output ?? string.Empty;
+    }
+
+    private string RenderPipeline(Stream template, object model)
+    {
+        var context = new RenderPipelineContext()
+        {
+            TemplateEngine = TemplateEngine,
+            TemplateStream = template,
+            Model = model,
             Hooks = Hooks,
         };
         BuildRenderPipeline().Execute(context);

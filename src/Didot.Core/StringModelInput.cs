@@ -6,7 +6,11 @@ public class StringModelInput : IModelInput
     private ISourceParser Parser { get; }
 
     public StringModelInput(string content, ISourceParser parser)
-        => (Content, Parser) = (content, parser);
+    {
+        ArgumentNullException.ThrowIfNull(content);
+        ArgumentNullException.ThrowIfNull(parser);
+        (Content, Parser) = (content, parser);
+    }
 
     public object Parse()
         => Parser.Parse(Content);

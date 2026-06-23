@@ -5,6 +5,7 @@ namespace Didot.Cli;
 public class InstallationExtensionRegistryRepository
 {
     public const string RegistryFileName = "didot.extensions.registry.json";
+    private readonly object _lock = new();
 
     public string RegistryPath { get; }
 
@@ -24,21 +25,31 @@ public class InstallationExtensionRegistryRepository
         if (string.IsNullOrWhiteSpace(json))
             return [];
 
-        return JsonSerializer.Deserialize<List<ExtensionRegistryEntry>>(json) ?? [];
+        try
+        {
+            return JsonSerializer.Deserialize<List<ExtensionRegistryEntry>>(json) ?? [];
+        }
+        catch (JsonException ex)
+        {
+            throw new Core.RegistrationFileInvalidException(RegistryPath, ex);
+        }
     }
 
     public virtual void Register(ExtensionRegistryEntry entry)
     {
-        var entries = ReadAll().ToList();
+        lock (_lock)
+        {
+            var entries = ReadAll().ToList();
 
-        if (entries.Any(x => x.Id.Equals(entry.Id, StringComparison.OrdinalIgnoreCase)))
-            throw new InvalidOperationException($"An extension with id '{entry.Id}' is already registered.");
+            if (entries.Any(x => x.Id.Equals(entry.Id, StringComparison.OrdinalIgnoreCase)))
+                throw new InvalidOperationException($"An extension with id '{entry.Id}' is already registered.");
 
-        if (entries.Any(x => Path.GetFullPath(x.Assembly).Equals(Path.GetFullPath(entry.Assembly), StringComparison.OrdinalIgnoreCase)))
-            throw new InvalidOperationException($"The assembly '{entry.Assembly}' is already registered.");
+            if (entries.Any(x => Path.GetFullPath(x.Assembly).Equals(Path.GetFullPath(entry.Assembly), StringComparison.OrdinalIgnoreCase)))
+                throw new InvalidOperationException($"The assembly '{entry.Assembly}' is already registered.");
 
-        entries.Add(entry);
-        Save(entries);
+            entries.Add(entry);
+            Save(entries);
+        }
     }
 
     private void Save(IReadOnlyList<ExtensionRegistryEntry> entries)

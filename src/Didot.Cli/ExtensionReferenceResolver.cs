@@ -82,7 +82,7 @@ public class ExtensionReferenceResolver
                 + string.Join(Environment.NewLine, candidates.Select(x => $"- {x}"))
                 + Environment.NewLine + Environment.NewLine
                 + "Register one explicitly:" + Environment.NewLine
-                + $"didot extensions register {candidates[0]}"
+                + $"didot extensions register \"{candidates[0]}\""
             );
         }
 

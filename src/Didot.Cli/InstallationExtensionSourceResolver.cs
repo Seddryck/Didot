@@ -25,24 +25,23 @@ public class InstallationExtensionSourceResolver
         if (!HasRegistryFile())
             throw new RegistrationFileNotFoundException(sourcePath: Repository.RegistryPath);
 
-        IReadOnlyList<ExtensionRegistryEntry> entries;
         try
         {
-            entries = Repository.ReadAll();
+            var entries = Repository.ReadAll();
+
+            return entries
+                .Where(x => x.Enabled)
+                .Select(x => new RegisteredExtensionSource(
+                    x.Id,
+                    x.Name,
+                    NormalizePath(x.Assembly)
+                ))
+                .ToList();
         }
         catch (Exception ex)
         {
             throw new RegistrationFileInvalidException(Repository.RegistryPath, ex);
         }
-
-        return entries
-            .Where(x => x.Enabled)
-            .Select(x => new RegisteredExtensionSource(
-                x.Id,
-                x.Name,
-                NormalizePath(x.Assembly)
-            ))
-            .ToList();
     }
 
     private string NormalizePath(string assemblyPath)

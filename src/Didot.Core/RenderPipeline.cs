@@ -13,7 +13,10 @@ public class RenderPipeline : IPipeline<RenderPipelineContext>
     { }
 
     public RenderPipeline(IEnumerable<IPipelineStep<RenderPipelineContext>> steps)
-        => Steps = [.. steps];
+    {
+        ArgumentNullException.ThrowIfNull(steps);
+        Steps = [.. steps];
+    }
 
     public void Execute(RenderPipelineContext context)
     {
