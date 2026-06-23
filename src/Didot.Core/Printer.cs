@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -25,8 +25,7 @@ public class Printer
 
     public Printer AddHooks(IEnumerable<IPipelineExtensionHook> hooks)
     {
-        if (hooks is null)
-            throw new ArgumentNullException(nameof(hooks));
+        ArgumentNullException.ThrowIfNull(hooks);
 
         foreach (var hook in hooks)
             AddHook(hook);

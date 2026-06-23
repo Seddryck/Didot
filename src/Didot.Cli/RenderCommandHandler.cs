@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.CommandLine;
 using System.Linq;
 using System.Reflection;
@@ -42,16 +42,16 @@ public class RenderCommandHandler
 
         try
         {
-            Logger?.LogInformation("Configured {ParserExtensionCount} parser associations to file extensions.", parserExtensions.Count());
-            Logger?.LogInformation("Configured {ParserExtensionCount} parser parameters.", parserParams.Count());
+            Logger?.LogInformation("Configured {ParserExtensionCount} parser associations to file extensions.", parserExtensions.Count);
+            Logger?.LogInformation("Configured {ParserExtensionCount} parser parameters.", parserParams.Count);
             foreach (var param in parserParams)
                 Logger?.LogInformation("Parser parameter: {ParserParamKey}={ParserParamValue}.", param.Key, param.Value);
             var parserFactory = GetSourceParserFactory(parserExtensions, parserParams);
 
-            Logger?.LogInformation("Configured {EnginerExtensionCount} template engine associations to file extensions.", engineExtensions.Count());
+            Logger?.LogInformation("Configured {EnginerExtensionCount} template engine associations to file extensions.", engineExtensions.Count);
             var engineFactory = GetTemplateEngineFactory(engineExtensions);
 
-            Logger?.LogInformation("Configured {DataSourceFileCount} data source file(s) for processing.", sources.Count());
+            Logger?.LogInformation("Configured {DataSourceFileCount} data source file(s) for processing.", sources.Count);
             var allSources = GetSources(sources, parserFactory, parser);
 
             var templateEngine = GetTemplateEngine(engineFactory, engine, template);
