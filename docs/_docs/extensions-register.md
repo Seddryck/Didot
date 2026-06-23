@@ -18,7 +18,7 @@ didot extensions register <reference> --name "My Extension"
 
 ## Supported references
 
-`<reference>` can be:
+Supported `<reference>` values are:
 
 - a DLL path (absolute or relative),
 - a directory containing exactly one DLL,
