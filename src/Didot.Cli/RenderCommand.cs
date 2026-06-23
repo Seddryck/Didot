@@ -17,7 +17,7 @@ public class RenderCommand : RootCommand
         : base("Didot Command Line Interface")
         => Configure(this, options, logger);
 
-    public static void Configure(Command command, RenderOptions options, ILogger<RenderCommand>? logger = null)
+    public static void Configure(Command command, RenderOptions options, ILogger<RenderCommand>? logger = null, RenderCommandHandler? commandHandler = null)
     {
         options.EngineExtensions.DefaultValueFactory = _ => [];
         options.ParserExtensions.DefaultValueFactory = _ => [];
@@ -88,18 +88,33 @@ public class RenderCommand : RootCommand
 
         command.SetAction(parseResult =>
         {
-            var handler = new RenderCommandHandler(logger);
+            try
+            {
+                var handler = commandHandler ?? new RenderCommandHandler(logger);
 
-            handler.Execute(
-                parseResult.GetValue(options.Template)!,
-                parseResult.GetValue(options.Engine)!,
-                parseResult.GetValue(options.EngineExtensions) ?? [],
-                parseResult.GetValue(options.Sources) ?? [],
-                parseResult.GetValue(options.Parser)!,
-                parseResult.GetValue(options.ParserExtensions) ?? [],
-                parseResult.GetValue(options.ParserParams) ?? [],
-                parseResult.GetValue(options.Output)!
-            );
+                handler.Execute(
+                    parseResult.GetValue(options.Template)!,
+                    parseResult.GetValue(options.Engine)!,
+                    parseResult.GetValue(options.EngineExtensions) ?? [],
+                    parseResult.GetValue(options.Sources) ?? [],
+                    parseResult.GetValue(options.Parser)!,
+                    parseResult.GetValue(options.ParserExtensions) ?? [],
+                    parseResult.GetValue(options.ParserParams) ?? [],
+                    parseResult.GetValue(options.Output)!
+                );
+
+                return (int)CliExitCode.Success;
+            }
+            catch (CliException ex)
+            {
+                Console.Error.WriteLine(ex.Message);
+                return (int)ex.ExitCode;
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Unexpected error: {ex.Message}");
+                return (int)CliExitCode.InternalError;
+            }
         });
     }
 

@@ -340,6 +340,29 @@ When the reference is not a path, Didot probes in this order:
 
 If more than one candidate matches, registration fails and asks for an explicit path.
 
+### Extension loading at runtime
+
+When rendering, Didot reads registered extensions from the static installation registry file:
+
+- `didot.extensions.registry.json` (in the Didot installation directory)
+
+For each enabled entry, Didot:
+
+1. loads the registered assembly,
+2. searches for exactly one class marked with `DidotExtensionAttribute`,
+3. requires that class to implement `IPipelineExtensionHook`,
+4. creates it using a public parameterless constructor,
+5. adds the instance as a render pipeline hook.
+
+If loading fails, Didot reports a controlled diagnostic with an error code, for example:
+
+- `RegistrationFileInvalid`
+- `ExtensionSourceNotFound`
+- `AssemblyLoadFailed`
+- `ExtensionTypeNotFound`
+- `ExtensionTypeAmbiguous`
+- `ExtensionInstantiationFailed`
+
 #### Example:
 
 ##### With a source file:

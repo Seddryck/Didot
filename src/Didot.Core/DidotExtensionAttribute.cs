@@ -1,6 +1,6 @@
 namespace Didot.Core;
 
-[AttributeUsage(AttributeTargets.Assembly, AllowMultiple = false)]
+[AttributeUsage(AttributeTargets.Assembly | AttributeTargets.Class, AllowMultiple = false)]
 public sealed class DidotExtensionAttribute(string id, string name) : Attribute
 {
     public string Id { get; } = string.IsNullOrWhiteSpace(id)

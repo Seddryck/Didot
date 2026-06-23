@@ -1,4 +1,5 @@
 using System.Reflection;
+using Didot.Core;
 using NUnit.Framework;
 
 namespace Didot.Cli.Testing.Extensions;
@@ -163,5 +164,73 @@ public class ExtensionRegistrationServicesTests
         Assert.That(success, Is.False);
         Assert.That(metadata, Is.Null);
         Assert.That(error, Does.Contain("DidotExtensionAttribute"));
+    }
+
+    [Test]
+    public void ExtensionAssemblyLoader_Load_WithCompatibleType_Success()
+    {
+        var loader = new Cli.ExtensionAssemblyLoader();
+        var assemblyPath = Assembly.GetExecutingAssembly().Location;
+
+        var extension = loader.Load(assemblyPath, "didot.cli.testing.extension");
+
+        Assert.That(extension, Is.Not.Null);
+        Assert.That(extension.Instance, Is.TypeOf<PipelineHookForE2eTests>());
+    }
+
+    [Test]
+    public void ExtensionAssemblyLoader_Load_WithoutCompatibleType_Failure()
+    {
+        var loader = new Cli.ExtensionAssemblyLoader();
+        var assemblyPath = typeof(Cli.Program).Assembly.Location;
+
+        Assert.That(
+            () => loader.Load(assemblyPath),
+            Throws.TypeOf<ExtensionTypeNotFoundException>());
+    }
+
+    [Test]
+    public void RenderCommandHandler_LoadExtensionHooks_LoadsRegisteredHook()
+    {
+        var directory = Path.Combine(Path.GetTempPath(), $"didot-ext-test-{Guid.NewGuid():N}");
+        Directory.CreateDirectory(directory);
+        var registryPath = Path.Combine(directory, Cli.InstallationExtensionRegistryRepository.RegistryFileName);
+
+        try
+        {
+            var repository = new Cli.InstallationExtensionRegistryRepository(registryPath);
+            repository.Register(new Cli.ExtensionRegistryEntry
+            {
+                Id = "didot.cli.testing.extension",
+                Name = "Pipeline hook",
+                Assembly = Assembly.GetExecutingAssembly().Location,
+                Enabled = true,
+                Version = "1.0.0",
+                RegisteredAt = DateTimeOffset.UtcNow,
+            });
+
+            var resolver = new Cli.InstallationExtensionSourceResolver(repository, directory);
+            var loader = new Cli.ExtensionAssemblyLoader();
+            var handler = new RenderCommandHandlerProbe(resolver, loader);
+
+            var hooks = handler.InvokeLoadExtensionHooks();
+
+            Assert.That(hooks, Has.Count.EqualTo(1));
+            Assert.That(hooks[0], Is.TypeOf<PipelineHookForE2eTests>());
+        }
+        finally
+        {
+            if (Directory.Exists(directory))
+                Directory.Delete(directory, true);
+        }
+    }
+
+    private sealed class RenderCommandHandlerProbe(
+        Cli.InstallationExtensionSourceResolver resolver,
+        Cli.ExtensionAssemblyLoader loader)
+        : Cli.RenderCommandHandler(null, resolver, loader)
+    {
+        public IList<IPipelineExtensionHook> InvokeLoadExtensionHooks()
+            => LoadExtensionHooks();
     }
 }

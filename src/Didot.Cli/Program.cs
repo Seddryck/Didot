@@ -37,6 +37,9 @@ public class Program
                 services.AddTransient<ExtensionMetadataReader>();
                 services.AddTransient<ExtensionReferenceResolver>();
                 services.AddTransient<InstallationExtensionRegistryRepository>();
+                services.AddTransient<InstallationExtensionSourceResolver>();
+                services.AddTransient<ExtensionAssemblyLoader>();
+                services.AddTransient<RenderCommandHandler>();
                 services.AddTransient<RegisterExtensionCommandHandler>();
                 services.AddTransient<RegisterExtensionCommand>();
                 services.AddTransient<ExtensionsCommand>();
@@ -44,6 +47,7 @@ public class Program
                     new CliRootCommand(
                         provider.GetRequiredService<RenderOptions>(),
                         provider.GetRequiredService<ExtensionsCommand>(),
+                        provider.GetRequiredService<RenderCommandHandler>(),
                         provider.GetRequiredService<ILogger<RenderCommand>>()
                     ));
             })
@@ -52,8 +56,21 @@ public class Program
         var logger = host.Services.GetRequiredService<ILogger<Program>>();
         logger.LogInformation($"Didot Command Line Interface: version {Assembly.GetExecutingAssembly().GetName().Version}");
 
-        var renderCommand = host.Services.GetRequiredService<RootCommand>();
-        var parseResult = renderCommand.Parse(args);
-        return await parseResult.InvokeAsync();
+        try
+        {
+            var renderCommand = host.Services.GetRequiredService<RootCommand>();
+            var parseResult = renderCommand.Parse(args);
+            return await parseResult.InvokeAsync();
+        }
+        catch (CliException ex)
+        {
+            Console.Error.WriteLine(ex.Message);
+            return (int)ex.ExitCode;
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Unexpected error: {ex.Message}");
+            return (int)CliExitCode.InternalError;
+        }
     }
 }

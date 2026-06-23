@@ -4,10 +4,12 @@ namespace Didot.Cli;
 
 public class InstallationExtensionRegistryRepository
 {
+    public const string RegistryFileName = "didot.extensions.registry.json";
+
     public string RegistryPath { get; }
 
     public InstallationExtensionRegistryRepository()
-        : this(Path.Combine(AppContext.BaseDirectory, "didot.extensions.registry.json"))
+        : this(Path.Combine(AppContext.BaseDirectory, RegistryFileName))
     { }
 
     public InstallationExtensionRegistryRepository(string registryPath)
