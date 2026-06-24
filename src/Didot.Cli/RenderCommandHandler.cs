@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.CommandLine;
 using System.Linq;
 using System.Reflection;
@@ -13,9 +13,18 @@ namespace Didot.Cli;
 public class RenderCommandHandler
 {
     protected ILogger<RenderCommand>? Logger { get; }
+    private InstallationExtensionSourceResolver? SourceResolver { get; }
+    private ExtensionAssemblyLoader? AssemblyLoader { get; }
 
-    public RenderCommandHandler(ILogger<RenderCommand>? logger = null)
-        => Logger = logger;
+    public RenderCommandHandler(
+        ILogger<RenderCommand>? logger = null,
+        InstallationExtensionSourceResolver? sourceResolver = null,
+        ExtensionAssemblyLoader? assemblyLoader = null)
+    {
+        Logger = logger;
+        SourceResolver = sourceResolver;
+        AssemblyLoader = assemblyLoader;
+    }
 
     public virtual void Execute(
         string template
@@ -33,22 +42,25 @@ public class RenderCommandHandler
 
         try
         {
-            Logger?.LogInformation("Configured {ParserExtensionCount} parser associations to file extensions.", parserExtensions.Count());
-            Logger?.LogInformation("Configured {ParserExtensionCount} parser parameters.", parserParams.Count());
+            Logger?.LogInformation("Configured {ParserExtensionCount} parser associations to file extensions.", parserExtensions.Count);
+            Logger?.LogInformation("Configured {ParserExtensionCount} parser parameters.", parserParams.Count);
             foreach (var param in parserParams)
                 Logger?.LogInformation("Parser parameter: {ParserParamKey}={ParserParamValue}.", param.Key, param.Value);
             var parserFactory = GetSourceParserFactory(parserExtensions, parserParams);
 
-            Logger?.LogInformation("Configured {EnginerExtensionCount} template engine associations to file extensions.", engineExtensions.Count());
+            Logger?.LogInformation("Configured {EnginerExtensionCount} template engine associations to file extensions.", engineExtensions.Count);
             var engineFactory = GetTemplateEngineFactory(engineExtensions);
 
-            Logger?.LogInformation("Configured {DataSourceFileCount} data source file(s) for processing.", sources.Count());
+            Logger?.LogInformation("Configured {DataSourceFileCount} data source file(s) for processing.", sources.Count);
             var allSources = GetSources(sources, parserFactory, parser);
 
             var templateEngine = GetTemplateEngine(engineFactory, engine, template);
             Logger?.LogInformation("Using template engine: {TemplateEngineName}.", templateEngine.GetType().Name);
 
-            var result = GetRenderedOutput(templateEngine, template, allSources);
+            var hooks = LoadExtensionHooks();
+            Logger?.LogInformation("Loaded {HookCount} extension hook(s).", hooks.Count);
+
+            var result = GetRenderedOutput(templateEngine, template, allSources, hooks);
 
             if (string.IsNullOrEmpty(output))
             {
@@ -97,7 +109,8 @@ public class RenderCommandHandler
         {
             foreach (var source in sources)
             {
-                var sourceStream = File.OpenRead(source.Value);
+                var sourceStream = OpenReadOrThrowCli(source.Value);
+
                 var parser = string.IsNullOrEmpty(parserTag)
                                 ? factory.GetByExtension(new FileInfo(source.Value).Extension)
                                 : factory.GetByTag(parserTag);
@@ -124,20 +137,102 @@ public class RenderCommandHandler
         }
     }
 
-    protected virtual string GetRenderedOutput(ITemplateEngine engine, string template, IDictionary<string, ISource> sources)
+    protected virtual string GetRenderedOutput(ITemplateEngine engine, string template, IDictionary<string, ISource> sources, IList<IPipelineExtensionHook> hooks)
     {
         try
         {
-            var printer = new Printer(engine);
-            using var templateStream = File.OpenRead(template);
-            return printer.Render(templateStream, sources);
+            using var templateStream = OpenReadOrThrowCli(template);
+
+            var pipeline = new RenderPipeline();
+            var context = new RenderPipelineContext()
+            {
+                TemplateEngine = engine,
+                TemplateStream = templateStream,
+                Inputs = sources.ToDictionary(x => x.Key, x => (IModelInput)new SourceModelInput(x.Value)),
+                Hooks = hooks,
+            };
+            pipeline.Execute(context);
+            return context.Output ?? string.Empty;
         }
-        catch (Exception)
-        { throw; }
         finally
         {
             foreach (var source in sources)
                 source.Value.Content.Dispose();
         }
+    }
+
+    private static FileStream OpenReadOrThrowCli(string path)
+    {
+        try
+        {
+            return File.OpenRead(path);
+        }
+        catch (FileNotFoundException ex)
+        {
+            throw new RenderCliException(
+                CliExitCode.NotFound,
+                $"Input file '{path}' was not found.",
+                path,
+                ex);
+        }
+        catch (DirectoryNotFoundException ex)
+        {
+            throw new RenderCliException(
+                CliExitCode.NotFound,
+                $"Input file '{path}' was not found.",
+                path,
+                ex);
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            throw new RenderCliException(
+                CliExitCode.LoadFailure,
+                $"Access denied while reading '{path}'.",
+                path,
+                ex);
+        }
+        catch (IOException ex)
+        {
+            throw new RenderCliException(
+                CliExitCode.LoadFailure,
+                $"I/O error while reading '{path}'. {ex.Message}",
+                path,
+                ex);
+        }
+    }
+
+    protected virtual IList<IPipelineExtensionHook> LoadExtensionHooks()
+    {
+        if (SourceResolver is null || AssemblyLoader is null)
+            return [];
+
+        if (!SourceResolver.HasRegistryFile())
+            return [];
+
+        IReadOnlyList<RegisteredExtensionSource> registeredSources;
+        try
+        {
+            registeredSources = SourceResolver.ResolveEnabled();
+        }
+        catch (ExtensionException ex)
+        {
+            throw ex.ToCliException();
+        }
+
+        var hooks = new List<IPipelineExtensionHook>();
+        foreach (var source in registeredSources)
+        {
+            try
+            {
+                var loadedExtension = AssemblyLoader.Load(source.AssemblyPath, source.Id);
+                hooks.Add(loadedExtension.Instance);
+            }
+            catch (ExtensionException ex)
+            {
+                throw ex.ToCliException();
+            }
+        }
+
+        return hooks;
     }
 }

@@ -18,8 +18,9 @@ public class OutputTests
     {
         var options = new Cli.RenderOptions();
         var command = new RenderCommand(options);
-        var args = new List<string> { "--template=file1.txt", "--stdin", "--parser=json" };
-        args.AddRange(optionArray);
+        var args = (new[] { "--template=file1.txt", "--stdin", "--parser=json" })
+            .Concat(optionArray)
+            .ToArray();
 
         var result = command.Parse(args);
 

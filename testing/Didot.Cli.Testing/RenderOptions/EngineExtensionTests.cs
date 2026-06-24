@@ -30,8 +30,9 @@ public class EngineExtensionTests
     {
         var options = new Cli.RenderOptions();
         var command = new RenderCommand(options);
-        var args = new List<string> { "--template=file1.txt", "--stdin", "--parser=json" };
-        args.AddRange(additionalArgs.Split(' ', StringSplitOptions.RemoveEmptyEntries));
+        var args = (new[] { "--template=file1.txt", "--stdin", "--parser=json" })
+            .Concat(additionalArgs.Split(' ', StringSplitOptions.RemoveEmptyEntries))
+            .ToArray();
 
         var result = command.Parse(args);
 
@@ -51,8 +52,9 @@ public class EngineExtensionTests
     {
         var options = new Cli.RenderOptions();
         var command = new RenderCommand(options);
-        var args = new List<string> { "--template=file1.txt", "--stdin", "--parser=json" };
-        args.AddRange(additionalArgs.Split(' ', StringSplitOptions.RemoveEmptyEntries));
+        var args = (new[] { "--template=file1.txt", "--stdin", "--parser=json" })
+            .Concat(additionalArgs.Split(' ', StringSplitOptions.RemoveEmptyEntries))
+            .ToArray();
 
         var result = command.Parse(args);
 

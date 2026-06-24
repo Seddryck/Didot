@@ -1,55 +1,135 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Didot.Core;
-using SmartFormat.Core.Extensions;
 
 namespace Didot.Core;
 
 public class Printer
 {
     protected ITemplateEngine TemplateEngine { get; }
+    private IList<IPipelineExtensionHook> Hooks { get; } = [];
 
     public Printer(ITemplateEngine templateEngine)
         => (TemplateEngine) = (templateEngine);
 
+    public Printer AddHook(IPipelineExtensionHook hook)
+    {
+        ArgumentNullException.ThrowIfNull(hook);
+
+        Hooks.Add(hook);
+        return this;
+    }
+
+    public Printer AddHooks(IEnumerable<IPipelineExtensionHook> hooks)
+    {
+        ArgumentNullException.ThrowIfNull(hooks);
+
+        foreach (var hook in hooks)
+            AddHook(hook);
+
+        return this;
+    }
+
     public string Render(string template, object model)
-        => TemplateEngine.Render(template, model);
+        => RenderPipeline(template, model);
 
     public string Render(Stream template, object model)
-        => TemplateEngine.Render(template, model);
+        => RenderPipeline(template, model);
 
     public string Render(string template, string content, ISourceParser parser)
-        => Render(template, new { model = parser.Parse(content)});
+        => RenderPipeline(template, new Dictionary<string, IModelInput>()
+        {
+            [string.Empty] = new StringModelInput(content, parser),
+        });
 
     public string Render(Stream template, string content, ISourceParser parser)
-        => Render(template, new { model = parser.Parse(content) });
+        => RenderPipeline(template, new Dictionary<string, IModelInput>()
+        {
+            [string.Empty] = new StringModelInput(content, parser),
+        });
 
     public string Render(string template, Stream content, ISourceParser parser)
-        => Render(template, new { model = parser.Parse(content) });
+        => RenderPipeline(template, new Dictionary<string, IModelInput>()
+        {
+            [string.Empty] = new StreamModelInput(content, parser),
+        });
 
     public string Render(Stream template, Stream content, ISourceParser parser)
-        => Render(template, new { model = parser.Parse(content) });
+        => RenderPipeline(template, new Dictionary<string, IModelInput>()
+        {
+            [string.Empty] = new StreamModelInput(content, parser),
+        });
 
     public string Render(string template, IDictionary<string, ISource> sources)
-        => Render(template, new { model = BuildModel(sources) });
+        => RenderPipeline(template, ToModelInputs(sources));
 
     public string Render(Stream template, IDictionary<string, ISource> sources)
-        => Render(template, new { model = BuildModel(sources) });
+        => RenderPipeline(template, ToModelInputs(sources));
 
-    private object BuildModel(IDictionary<string, ISource> sources)
+    protected virtual IPipeline<RenderPipelineContext> BuildRenderPipeline()
+        => new RenderPipeline();
+
+    private static Dictionary<string, IModelInput> ToModelInputs(IDictionary<string, ISource> sources)
     {
-        if (sources.Count == 1 && string.IsNullOrEmpty(sources.First().Key))
-            return sources.First().Value.Parser.Parse(sources.First().Value.Content);
+        ArgumentNullException.ThrowIfNull(sources);
 
-        var model = new Dictionary<string, object>();
+        var inputs = new Dictionary<string, IModelInput>();
         foreach (var source in sources)
+            inputs.Add(source.Key, new SourceModelInput(source.Value));
+        return inputs;
+    }
+
+    private string RenderPipeline(string template, IDictionary<string, IModelInput> inputs)
+    {
+        var context = new RenderPipelineContext()
         {
-            model.Add(source.Key, source.Value.Parser.Parse(source.Value.Content));
-            source.Value.Content.Dispose();
-        }
-        return model;
+            TemplateEngine = TemplateEngine,
+            Template = template,
+            Inputs = inputs,
+            Hooks = Hooks,
+        };
+        BuildRenderPipeline().Execute(context);
+        return context.Output ?? string.Empty;
+    }
+
+    private string RenderPipeline(Stream template, IDictionary<string, IModelInput> inputs)
+    {
+        var context = new RenderPipelineContext()
+        {
+            TemplateEngine = TemplateEngine,
+            TemplateStream = template,
+            Inputs = inputs,
+            Hooks = Hooks,
+        };
+        BuildRenderPipeline().Execute(context);
+        return context.Output ?? string.Empty;
+    }
+
+    private string RenderPipeline(string template, object model)
+    {
+        var context = new RenderPipelineContext()
+        {
+            TemplateEngine = TemplateEngine,
+            Template = template,
+            Model = model,
+            Hooks = Hooks,
+        };
+        BuildRenderPipeline().Execute(context);
+        return context.Output ?? string.Empty;
+    }
+
+    private string RenderPipeline(Stream template, object model)
+    {
+        var context = new RenderPipelineContext()
+        {
+            TemplateEngine = TemplateEngine,
+            TemplateStream = template,
+            Model = model,
+            Hooks = Hooks,
+        };
+        BuildRenderPipeline().Execute(context);
+        return context.Output ?? string.Empty;
     }
 }

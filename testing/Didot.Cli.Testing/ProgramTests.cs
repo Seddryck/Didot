@@ -42,6 +42,35 @@ public class ProgramTests
         return reader.ReadToEnd().Standardize();
     }
 
+    private static string GetInstallationRegistryPath()
+        => Path.Combine(AppContext.BaseDirectory, Cli.InstallationExtensionRegistryRepository.RegistryFileName);
+
+    private static async Task ExecuteWithIsolatedRegistry(Func<string, Task> action)
+    {
+        var registryPath = GetInstallationRegistryPath();
+        var backupPath = string.Empty;
+
+        if (File.Exists(registryPath))
+        {
+            backupPath = $"{registryPath}.{Guid.NewGuid():N}.bak";
+            File.Copy(registryPath, backupPath, true);
+            File.Delete(registryPath);
+        }
+
+        try
+        {
+            await action(registryPath);
+        }
+        finally
+        {
+            if (File.Exists(registryPath))
+                File.Delete(registryPath);
+
+            if (!string.IsNullOrEmpty(backupPath) && File.Exists(backupPath))
+                File.Move(backupPath, registryPath, true);
+        }
+    }
+
     [SetUp]
     public void SetUp()
     {
@@ -71,8 +100,161 @@ public class ProgramTests
 
         ErrorWriter.Dispose();
         ErrorStream.Dispose();
-        Console.SetOut(OriginalError);
+        Console.SetError(OriginalError);
     }
+
+    [Test]
+    [NonParallelizable]
+    public async Task Main_ExtensionsRegister_WritesInstallationRegistry()
+        => await ExecuteWithIsolatedRegistry(async registryPath =>
+        {
+            var extensionPath = typeof(Extensions.PipelineHookForE2eTests).Assembly.Location;
+
+            var exitCode = await Program.Main([
+                "extensions", "register", extensionPath, "--name", "Hook E2E"
+            ]);
+
+            Assert.That(exitCode, Is.Zero, message: ReadErrorStream());
+            Assert.That(File.Exists(registryPath), Is.True);
+
+            var repository = new Cli.InstallationExtensionRegistryRepository(registryPath);
+            var entries = repository.ReadAll();
+            Assert.That(entries, Has.Count.EqualTo(1));
+            Assert.That(entries[0].Assembly, Is.EqualTo(Path.GetFullPath(extensionPath)));
+            Assert.That(entries[0].Name, Is.EqualTo("Hook E2E"));
+        });
+
+    [Test]
+    [NonParallelizable]
+    public async Task Main_Render_WithRegisteredExtension_AppliesHook()
+        => await ExecuteWithIsolatedRegistry(async registryPath =>
+        {
+            var repository = new Cli.InstallationExtensionRegistryRepository(registryPath);
+            repository.Register(new Cli.ExtensionRegistryEntry
+            {
+                Id = "didot.cli.testing.extension",
+                Name = "Cli Testing Extension",
+                Assembly = typeof(Extensions.PipelineHookForE2eTests).Assembly.Location,
+                Enabled = true,
+                Version = "1.0.0",
+                RegisteredAt = DateTimeOffset.UtcNow,
+            });
+
+            var directory = Path.Combine(Path.GetTempPath(), $"didot-e2e-hook-{Guid.NewGuid():N}");
+            Directory.CreateDirectory(directory);
+
+            try
+            {
+                File.WriteAllText(Path.Combine(directory, "template.hbs"), "{{model.fullname}}");
+                File.WriteAllText(Path.Combine(directory, "source.json"), "{\"firstname\":\"Ada\",\"lastname\":\"Lovelace\"}");
+
+                var originalCurrentDirectory = Directory.GetCurrentDirectory();
+                Directory.SetCurrentDirectory(directory);
+                try
+                {
+                    var exitCode = await Program.Main([
+                        "-t", "template.hbs",
+                        "-s", "source.json",
+                        "-r", "json"
+                    ]);
+
+                    Assert.That(exitCode, Is.Zero, message: ReadErrorStream());
+                    Assert.That(ReadOutputStream(), Is.EqualTo("Ada Lovelace"));
+                }
+                finally
+                {
+                    Directory.SetCurrentDirectory(originalCurrentDirectory);
+                }
+            }
+            finally
+            {
+                if (Directory.Exists(directory))
+                    Directory.Delete(directory, true);
+            }
+        });
+
+    [Test]
+    [NonParallelizable]
+    public async Task Main_Render_WithRegisteredThrowingExtension_Fails()
+        => await ExecuteWithIsolatedRegistry(async registryPath =>
+        {
+            var repository = new Cli.InstallationExtensionRegistryRepository(registryPath);
+            repository.Register(new Cli.ExtensionRegistryEntry
+            {
+                Id = "didot.cli.testing.throwing",
+                Name = "Cli Testing Throwing Extension",
+                Assembly = typeof(Extensions.PipelineHookForE2eTests).Assembly.Location,
+                Enabled = true,
+                Version = "1.0.0",
+                RegisteredAt = DateTimeOffset.UtcNow,
+            });
+
+            var exitCode = await Program.Main([
+                "-t", "template/employees.hbs",
+                "-s", "data/employees.json",
+                "-r", "json"
+            ]);
+
+            Assert.That(exitCode, Is.Not.Zero);
+            Assert.That(ReadErrorStream(), Does.Contain("hook was applied"));
+        });
+
+    [Test]
+    [NonParallelizable]
+    public async Task Main_Render_WithDisabledExtension_DoesNotApplyHook()
+        => await ExecuteWithIsolatedRegistry(async registryPath =>
+        {
+            var repository = new Cli.InstallationExtensionRegistryRepository(registryPath);
+            repository.Register(new Cli.ExtensionRegistryEntry
+            {
+                Id = "didot.cli.testing.extension",
+                Name = "Cli Testing Extension",
+                Assembly = typeof(Extensions.PipelineHookForE2eTests).Assembly.Location,
+                Enabled = false,
+                Version = "1.0.0",
+                RegisteredAt = DateTimeOffset.UtcNow,
+            });
+
+            var exitCode = await Program.Main([
+                "-t", "template/employees.hbs",
+                "-s", "data/employees.json",
+                "-r", "json"
+            ]);
+
+            Assert.That(exitCode, Is.Zero, message: ReadErrorStream());
+
+            var expected = File.ReadAllText(Path.Combine("Expectation", "employees.txt")).Standardize();
+            Assert.That(ReadOutputStream(), Is.EqualTo(expected));
+        });
+
+    [Test]
+    [NonParallelizable]
+    public async Task Main_Render_WithMissingExtensionSource_FailsWithDiagnosticCode()
+        => await ExecuteWithIsolatedRegistry(async registryPath =>
+        {
+            var repository = new Cli.InstallationExtensionRegistryRepository(registryPath);
+            repository.Register(new Cli.ExtensionRegistryEntry
+            {
+                Id = "missing.extension",
+                Name = "Missing extension",
+                Assembly = Path.Combine(Path.GetTempPath(), $"missing-{Guid.NewGuid():N}.dll"),
+                Enabled = true,
+                Version = "1.0.0",
+                RegisteredAt = DateTimeOffset.UtcNow,
+            });
+
+            var args = new[]
+            {
+                "-t", "template/employees.hbs",
+                "-s", "data/employees.json",
+                "-r", "json"
+            };
+
+            var exitCode = await Program.Main(args);
+
+            Assert.That(exitCode, Is.EqualTo((int)Cli.CliExitCode.NotFound));
+            Assert.That(ReadErrorStream(), Does.Contain("[ExtensionSourceNotFoundException]"));
+        });
 
     [Test, Combinatorial]
     public async Task Main_StdInStdOut_Successful(

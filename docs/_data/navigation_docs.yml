@@ -37,3 +37,9 @@
 - title: Parsers
   docs:
   - csv-parser
+  
+- title: Extensions
+  docs:
+  - extensions-concept
+  - extensions-register
+  - extensions-develop

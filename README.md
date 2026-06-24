@@ -316,6 +316,53 @@ In this example:
 - Mandatory: no.
 - Example: `-o path/to/output` or `--output=path/to/output`
 
+### Extensions register command
+
+- Command: `didot extensions register <reference>`
+- Optional: `--name <friendly-name>`
+- Description: Registers an extension in Didot's extension registry.
+
+`<reference>` can be an id/name/assembly name, a `.dll` file path, or a directory path containing one extension assembly.
+
+Examples:
+
+```bash
+didot extensions register Didot.Expressif
+didot extensions register ./Didot.Expressif.dll
+didot extensions register ./extensions/Didot.Expressif --name Expressif
+```
+
+When the reference is not a path, Didot probes in this order:
+1. current directory
+2. current directory `/extensions`
+3. Didot installation directory `/extensions`
+4. user-level `~/.didot/extensions`
+
+If more than one candidate matches, registration fails and asks for an explicit path.
+
+### Extension loading at runtime
+
+When rendering, Didot reads registered extensions from the static installation registry file:
+
+- `didot.extensions.registry.json` (in the Didot installation directory)
+
+For each enabled entry, Didot:
+
+1. loads the registered assembly,
+2. searches for exactly one class marked with `DidotExtensionAttribute`,
+3. requires that class to implement `IPipelineExtensionHook`,
+4. creates it using a public parameterless constructor,
+5. adds the instance as a render pipeline hook.
+
+If loading fails, Didot reports a controlled diagnostic with an error code, for example:
+
+- `RegistrationFileInvalid`
+- `ExtensionSourceNotFound`
+- `AssemblyLoadFailed`
+- `ExtensionTypeNotFound`
+- `ExtensionTypeAmbiguous`
+- `ExtensionInstantiationFailed`
+
 #### Example:
 
 ##### With a source file:
