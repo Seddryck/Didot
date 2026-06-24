@@ -38,7 +38,7 @@
     <PackageReference Include="Morestachio" Version="5.0.1.631" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageReference Include="PocketCsvReader" Version="2.36.30" />
-    <PackageReference Include="Scriban" Version="7.2.4" />
+    <PackageReference Include="Scriban" Version="7.2.5" />
     <PackageReference Include="SmartFormat.NET" Version="3.6.1" />
     <PackageReference Include="YamlDotNet" Version="18.0.0" />
   </ItemGroup>
