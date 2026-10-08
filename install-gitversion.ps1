@@ -79,6 +79,27 @@ if (-not (Test-Path $gitVersionExe)) {
     throw "dotnet-gitversion.exe was not found after installing GitVersion.Tool."
 }
 
+$userPath = [Environment]::GetEnvironmentVariable("Path", "User")
+
+if ($userPath -notlike "*$dotnetToolsPath*") {
+    Write-Host "Adding .NET tools folder to User PATH..."
+
+    $newUserPath = if ([string]::IsNullOrWhiteSpace($userPath)) {
+        $dotnetToolsPath
+    }
+    else {
+        "$userPath;$dotnetToolsPath"
+    }
+
+    [Environment]::SetEnvironmentVariable("Path", $newUserPath, "User")
+}
+else {
+    Write-Host ".NET tools folder is already in User PATH."
+}
+
+$env:Path = [Environment]::GetEnvironmentVariable("Path", "Machine") + ";" +
+            [Environment]::GetEnvironmentVariable("Path", "User")
+
 $installedVersion = Get-GitVersionVersion -Command $gitVersionExe
 
 if (-not $installedVersion -or $installedVersion -lt $minimumVersion) {
@@ -91,12 +112,6 @@ $shimPath = Join-Path $dotnetToolsPath "gitversion.cmd"
 @echo off
 "%USERPROFILE%\.dotnet\tools\dotnet-gitversion.exe" %*
 "@ | Set-Content -Path $shimPath -Encoding ASCII
-
-$env:Path = "$dotnetToolsPath;$env:Path"
-
-if (Get-Command Set-AppveyorBuildVariable -ErrorAction SilentlyContinue) {
-    Set-AppveyorBuildVariable -Name "PATH" -Value $env:Path
-}
 
 Write-Host "GitVersion $installedVersion installed successfully."
 Write-Host "Path: $gitVersionExe"
