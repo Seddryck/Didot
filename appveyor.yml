@@ -58,16 +58,28 @@ build_script:
 test_script:
 - pwsh: |
     $ErrorActionPreference = "Stop"
+    $PSNativeCommandUseErrorActionPreference = $false
     dotnet test testing/Didot.Core.Testing -c Release /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:Include="[Didot.Core]*" /p:Threshold=80 /p:ThresholdType=line /p:CoverletOutput=../.coverage/coverage.Didot.Core.xml --test-adapter-path:. --logger:Appveyor --no-build --nologo
-    $globalTestResult = $LastExitCode
-    dotnet test testing/Didot.Cli.Testing -c Release /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:Include="Didot.Cli" /p:Threshold=10 /p:ThresholdType=line /p:CoverletOutput=../.coverage/coverage.Didot.Cli.xml --test-adapter-path:. --logger:Appveyor --no-build --nologo
-    $globalTestResult = $LastExitCode
-    if($globalTestResult -ne 0) { $host.SetShouldExit($globalTestResult) }
+    $coreTestResult = $LastExitCode
+    dotnet test testing/Didot.Cli.Testing -c Release /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:Include="[Didot]*" /p:Threshold=80 /p:ThresholdType=line /p:CoverletOutput=../.coverage/coverage.Didot.Cli.xml --test-adapter-path:. --logger:Appveyor --no-build --nologo
+    $cliTestResult = $LastExitCode
+
+    Write-Host "Didot.Core.Testing exit code: $coreTestResult"
+    Write-Host "Didot.Cli.Testing exit code: $cliTestResult"
+    if (($coreTestResult -ne 0) -or ($cliTestResult -ne 0)) {
+      throw "One or more test projects failed."
+    }
 
 - pwsh: |
+    $ErrorActionPreference = 'Stop'
+    $PSNativeCommandUseErrorActionPreference = $false
     $ProgressPreference = 'SilentlyContinue'
     Invoke-WebRequest -Uri https://uploader.codecov.io/latest/windows/codecov.exe -Outfile codecov.exe
     .\codecov.exe --dir "./testing/.coverage/"
+    $codecovResult = $LastExitCode
+    if ($codecovResult -ne 0) {
+      throw "Codecov upload failed with exit code $codecovResult."
+    }
 
 after_test:
 - ps: |
