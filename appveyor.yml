@@ -33,7 +33,7 @@ before_build:
 - pwsh: .\install-gitversion.ps1
 - cmd: RefreshEnv.cmd
 - pwsh: Write-Host "Target branch is '$($env:APPVEYOR_REPO_BRANCH)'"
-- cmd: gitversion /output buildserver /verbosity Minimal
+- cmd: '"%USERPROFILE%\.dotnet\tools\dotnet-gitversion.exe" /output buildserver /verbosity Minimal'
 - pwsh: Write-Host "Building Didot version $($env:GitVersion_SemVer)"
 - pwsh: |
     . "$env:APPVEYOR_BUILD_FOLDER\github.ps1"
